@@ -66,6 +66,11 @@ public class Inventory {
     }
 
 
+    //crud
+    //add (create)
+
+
+    //read
     public static ObservableList<Inventory> getAllInventory(){
         ObservableList<Inventory> inventoryData = FXCollections.observableArrayList();
         //get the statement
@@ -90,4 +95,12 @@ public class Inventory {
         }
         return inventoryData;
     }
+
+    //update (edit)
+
+
+
+
+    //delete
+
 }
