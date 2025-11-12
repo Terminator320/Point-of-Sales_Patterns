@@ -1,6 +1,7 @@
 module com.example.posapp {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
 
     opens com.example.posapp to javafx.fxml;
