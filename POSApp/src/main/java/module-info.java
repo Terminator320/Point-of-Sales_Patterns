@@ -6,4 +6,7 @@ module com.example.posapp {
 
     opens com.example.posapp to javafx.fxml;
     exports com.example.posapp;
+    exports com.example.posapp.controller;
+    opens com.example.posapp.controller to javafx.fxml;
+    opens com.example.posapp.models to javafx.base;
 }
