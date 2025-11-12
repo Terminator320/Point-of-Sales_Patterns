@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 12, 2025 at 01:26 AM
+-- Generation Time: Nov 12, 2025 at 11:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -112,6 +112,40 @@ INSERT INTO `menu_item` (`id`, `name`, `price`, `category_id`, `inv_id`) VALUES
 (14, 'Mango Smoothie', 5.75, 5, 14),
 (15, 'Protein Shake', 6, 5, 15);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_item`
+--
+
+CREATE TABLE `order_item` (
+  `order_item_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `menu_id` int(11) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `unit_price_cents` int(11) NOT NULL,
+  `line_subtotal_cents` int(11) NOT NULL,
+  `line_tax_cents` int(11) NOT NULL,
+  `line_total_cents` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sale_order`
+--
+
+CREATE TABLE `sale_order` (
+  `order_id` int(11) NOT NULL,
+  `status` text NOT NULL DEFAULT 'NEW',
+  `created_at` text NOT NULL DEFAULT current_timestamp(),
+  `finalized_at` text DEFAULT NULL,
+  `subtotal_cents` int(11) NOT NULL DEFAULT 0,
+  `tax_total_cents` int(11) NOT NULL DEFAULT 0,
+  `discount_cents` int(11) NOT NULL DEFAULT 0,
+  `total_cents` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -138,6 +172,19 @@ ALTER TABLE `menu_item`
   ADD KEY `inventory_FK` (`inv_id`);
 
 --
+-- Indexes for table `order_item`
+--
+ALTER TABLE `order_item`
+  ADD PRIMARY KEY (`order_item_id`),
+  ADD UNIQUE KEY `order_id` (`order_id`,`menu_id`);
+
+--
+-- Indexes for table `sale_order`
+--
+ALTER TABLE `sale_order`
+  ADD PRIMARY KEY (`order_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -158,6 +205,18 @@ ALTER TABLE `inventory`
 --
 ALTER TABLE `menu_item`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `order_item`
+--
+ALTER TABLE `order_item`
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sale_order`
+--
+ALTER TABLE `sale_order`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
