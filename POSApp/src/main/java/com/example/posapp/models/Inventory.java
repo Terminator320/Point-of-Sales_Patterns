@@ -103,4 +103,29 @@ public class Inventory {
 
     //delete
 
+
+    //category cb
+    public static ObservableList<String> getAllCategory(){
+        ObservableList<Category> categoryData = FXCollections.observableArrayList();
+        ObservableList<String> categoryList = FXCollections.observableArrayList();
+        //get the statement
+        final String sql = "SELECT category_name FROM category";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)){
+
+            ResultSet resultSet = pstmt.executeQuery();
+            while(resultSet.next()){
+                while (resultSet.next()) {
+                    categoryList.add(resultSet.getString("category_name"));
+                }
+            }
+        }
+        catch (SQLException e) {
+            //change to logger later
+            e.printStackTrace();
+        }
+        return categoryList;
+    }
+
 }

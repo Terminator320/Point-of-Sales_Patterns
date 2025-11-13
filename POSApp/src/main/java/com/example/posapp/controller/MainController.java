@@ -28,7 +28,7 @@ public class MainController {
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
-            stage.setTitle("menu"); // Optional: set a new title for the window
+            stage.setTitle("Menu");
         }
         catch (IOException e) {
             //check top looger
@@ -49,7 +49,7 @@ public class MainController {
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
-            stage.setTitle("menu"); // Optional: set a new title for the window
+            stage.setTitle("menu");
         }
         catch (IOException e) {
             //check top looger
@@ -69,7 +69,7 @@ public class MainController {
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
-            stage.setTitle("menu"); // Optional: set a new title for the window
+            stage.setTitle("Refund");
         }
         catch (IOException e) {
             //check top looger
@@ -80,7 +80,7 @@ public class MainController {
     public void inventory(ActionEvent event){
         try {
             // Load the FXML file for the second scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/inventory.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/inventory-view.fxml"));
             Parent newRoot = loader.load();
 
             Scene newScene = new Scene(newRoot);
@@ -88,7 +88,7 @@ public class MainController {
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
-            stage.setTitle("menu"); // Optional: set a new title for the window
+            stage.setTitle("Inventory");
         }
         catch (IOException e) {
             //check top looger
