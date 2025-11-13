@@ -20,11 +20,11 @@
       <TextField fx:id="input_TF" layoutX="38.0" layoutY="22.0" promptText="Search by name" />
       <Button layoutX="195.0" layoutY="22.0" mnemonicParsing="false" onAction="#searchInventory" prefHeight="25.0" prefWidth="80.0" text="Search" />
       <Button layoutX="286.0" layoutY="22.0" mnemonicParsing="false" onAction="#clearSearch" text="Clear Search" />
-      <Button layoutX="385.0" layoutY="322.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Button" />
+      <Button layoutX="385.0" layoutY="322.0" mnemonicParsing="false" onAction="#updateItem" prefHeight="25.0" prefWidth="109.0" text="Edit Inventory" />
       <TextField fx:id="invName_TF" layoutX="34.0" layoutY="322.0" promptText="Inventory Name" />
       <TextField fx:id="qty_TF" layoutX="34.0" layoutY="361.0" promptText="Quanty" />
       <TextField fx:id="lowStoke_TF" layoutX="34.0" layoutY="401.0" promptText="Low Stoke Threehold" />
-      <Button layoutX="385.0" layoutY="361.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Button" />
+      <Button layoutX="385.0" layoutY="361.0" mnemonicParsing="false" onAction="#deleteItem" prefHeight="25.0" prefWidth="109.0" text="Delete Inventory" />
       <Separator layoutX="34.0" layoutY="300.0" prefHeight="3.0" prefWidth="437.0" />
       <Button layoutX="34.0" layoutY="439.0" mnemonicParsing="false" onAction="#addInventory" prefHeight="25.0" prefWidth="149.0" text="Add Inventory" textAlignment="CENTER" />
    </children>
