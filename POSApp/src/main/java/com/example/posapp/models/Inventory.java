@@ -96,11 +96,54 @@ public class Inventory {
         return inventoryData;
     }
 
+    //
+
+
+
+
     //update (edit)
 
+    //if order more stoke update the quanty they have
+    public static void addQuantity(int invId, int amount){
+        final String sql = "UPDATE inventory set qty = qty + ? where invId = ?";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)){
+
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, invId);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            //change to logger later
+            e.printStackTrace();
+        }
+    }
+
+    //removing that the end when order has been payed
+    public static void subtractQuantity(int invId, int amount){
+        final String sql = "UPDATE inventory set qty = qty - ? where invId = ?";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)){
+
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, invId);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            //change to logger later
+            e.printStackTrace();
+        }
+    }
 
 
 
     //delete
+
+
+
+
+
 
 }

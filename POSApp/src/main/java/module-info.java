@@ -4,6 +4,7 @@ module com.example.posapp {
     requires java.sql;
 
 
+
     opens com.example.posapp to javafx.fxml;
     exports com.example.posapp;
     exports com.example.posapp.controller;
