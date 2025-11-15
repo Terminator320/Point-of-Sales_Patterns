@@ -90,35 +90,35 @@
          </image>
       </ImageView>
       <Button layoutX="543.0" layoutY="255.0" mnemonicParsing="false" onAction="#iceCoffeeClick" prefHeight="25.0" prefWidth="79.0" text="Ice Coffee" />
-      <Label layoutX="722.0" layoutY="36.0" text="Smoothies" textAlignment="CENTER">
+      <Label layoutX="791.0" layoutY="34.0" text="Smoothies" textAlignment="CENTER">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <ImageView fitHeight="67.0" fitWidth="70.0" layoutX="689.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="67.0" fitWidth="70.0" layoutX="748.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/strawberry.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="683.0" layoutY="148.0" mnemonicParsing="false" onAction="#starwberrySmoClick" prefHeight="25.0" prefWidth="79.0" text="Starwberry" />
-      <ImageView fitHeight="84.0" fitWidth="70.0" layoutX="813.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
+      <Button layoutX="742.0" layoutY="148.0" mnemonicParsing="false" onAction="#starwberrySmoClick" prefHeight="25.0" prefWidth="79.0" text="Starwberry" />
+      <ImageView fitHeight="84.0" fitWidth="70.0" layoutX="872.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/Mango.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="809.0" layoutY="148.0" mnemonicParsing="false" onAction="#mangoSmClick" prefHeight="25.0" prefWidth="79.0" text="Mango" />
-      <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="685.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
+      <Button layoutX="868.0" layoutY="148.0" mnemonicParsing="false" onAction="#mangoSmClick" prefHeight="25.0" prefWidth="79.0" text="Mango" />
+      <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="744.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/berry.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="675.0" layoutY="255.0" mnemonicParsing="false" onAction="#mixedBerrySmClick" prefHeight="25.0" prefWidth="90.0" text="Mixed Berry" />
-      <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="800.0" layoutY="188.0" pickOnBounds="true" preserveRatio="true">
+      <Button layoutX="734.0" layoutY="255.0" mnemonicParsing="false" onAction="#mixedBerrySmClick" prefHeight="25.0" prefWidth="90.0" text="Mixed Berry" />
+      <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="859.0" layoutY="188.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/protein.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="798.0" layoutY="260.0" mnemonicParsing="false" onAction="#proteinShakenClick" prefHeight="25.0" prefWidth="97.0" text="Protein Shaken" />
+      <Button layoutX="857.0" layoutY="260.0" mnemonicParsing="false" onAction="#proteinShakenClick" prefHeight="25.0" prefWidth="97.0" text="Protein Shaken" />
       <Separator layoutX="646.0" layoutY="73.0" orientation="VERTICAL" prefHeight="200.0" />
       <Label layoutX="807.0" layoutY="338.0" text="Food" textAlignment="CENTER">
          <font>
