@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="224.0" prefWidth="425.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="224.0" prefWidth="425.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button layoutX="261.0" layoutY="175.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="131.0" text="Add" />
       <TextField fx:id="invNameTF" layoutX="40.0" layoutY="101.0" prefHeight="25.0" prefWidth="162.0" promptText="Enter name" />
       <TextField fx:id="qtyTF" layoutX="40.0" layoutY="142.0" prefHeight="25.0" prefWidth="162.0" promptText="Enter quanty" />
       <TextField fx:id="lowStokeThreeholdTF" layoutX="40.0" layoutY="180.0" prefHeight="25.0" prefWidth="162.0" promptText="Enter low stoke threehold" />
-      <ChoiceBox fx:id="categoryCB" layoutX="251.0" layoutY="64.0" prefWidth="150.0" />
       <TextField fx:id="invIdTF" disable="true" layoutX="40.0" layoutY="64.0" prefHeight="25.0" prefWidth="162.0" />
       <Label alignment="CENTER" layoutX="87.0" layoutY="14.0" text="Adding Inventory Menu" textAlignment="CENTER">
          <font>
