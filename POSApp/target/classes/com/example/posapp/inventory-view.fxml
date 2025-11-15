@@ -24,6 +24,6 @@
       <Button layoutX="259.0" layoutY="310.0" mnemonicParsing="false" onAction="#deleteItem" prefHeight="31.0" prefWidth="109.0" text="Delete Inventory" />
       <Separator layoutX="18.0" layoutY="297.0" prefHeight="6.0" prefWidth="453.0" />
       <Button layoutX="14.0" layoutY="310.0" mnemonicParsing="false" onAction="#addPopUp" prefHeight="31.0" prefWidth="109.0" text="Add Inventory" textAlignment="CENTER" />
-      <Button layoutX="383.0" layoutY="310.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Main Menu" />
+      <Button layoutX="383.0" layoutY="310.0" mnemonicParsing="false" onAction="#backMainMenu" prefHeight="31.0" prefWidth="88.0" text="Main Menu" />
    </children>
 </AnchorPane>

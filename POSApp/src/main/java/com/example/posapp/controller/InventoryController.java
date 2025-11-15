@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
@@ -65,22 +66,24 @@ public class InventoryController {
         inventoryListView.setItems(getInventory());
     }
 
-    //add new inventory
-    @FXML
-    public void addInventory() {}
+
 
     //delete inventory
     @FXML
     public void deleteItem() {}
 
     //edit
+    //
     @FXML
     public void updateItem() {}
+
+
+
+
 
     //pop up
     @FXML
     public void addPopUp(ActionEvent event){
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/popUpInventory.fxml"));
             Parent root = loader.load();
@@ -90,19 +93,37 @@ public class InventoryController {
             popupStage.setTitle("Adding Inventory");
             popupStage.setScene(new Scene(root));
 
-
             popupStage.initModality(Modality.APPLICATION_MODAL);
 
-            popupStage.show(); // or showAndWait()
+            popupStage.show();
 
         } catch (IOException e) {
+            //logger
             e.printStackTrace();
         }
-
-        
     }
 
 
+    //
+    @FXML
+    private void backMainMenu(ActionEvent event) {
+        try {
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
+            Parent newRoot = loader.load();
+
+            Scene newScene = new Scene(newRoot);
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Menu");
+        }
+        catch (IOException e) {
+            //check top looger
+            e.printStackTrace();
+        }
+    }
 
 
 
