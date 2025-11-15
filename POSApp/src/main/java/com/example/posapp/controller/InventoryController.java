@@ -32,6 +32,12 @@ public class InventoryController {
     @FXML
     public void initialize() {
         innitAndLoadInventory();
+        reloadInventory();
+    }
+
+    private void reloadInventory(){
+        ObservableList<Inventory> inventoryList = getInventory();
+        inventoryListView.setItems(inventoryList);
     }
 
     @FXML
@@ -95,6 +101,7 @@ public class InventoryController {
 
             popupStage.initModality(Modality.APPLICATION_MODAL);
 
+            popupStage.setOnHiding(e -> reloadInventory());
             popupStage.show();
 
         } catch (IOException e) {

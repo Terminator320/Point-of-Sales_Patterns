@@ -13,6 +13,9 @@ public class Inventory {
     private int invId,qty, lowStokeThreeshold;
     private String invName;
 
+    public Inventory() {
+
+    }
 
     public Inventory(String invName, int qty, int lowStokeThreeshold) {
         this.invName = invName;
@@ -68,6 +71,23 @@ public class Inventory {
 
     //crud
     //add (create)
+    public static void addItem(String invName, int qty, int lowStokeThreeshold ) {
+        final String sql = "INSERT INTO inventory (invName,qty,lowStokeThreeshold) VALUES(?,?,?)";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)){
+
+            pstmt.setString(1, invName);
+            pstmt.setInt(2, qty);
+            pstmt.setInt(3, lowStokeThreeshold);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            //change to logger later
+            e.printStackTrace();
+        }
+    }
+
 
 
     //read
@@ -102,6 +122,8 @@ public class Inventory {
 
 
     //update (edit)
+
+
 
     //if order more stoke update the quanty they have
     public static void addQuantity(int invId, int amount){
@@ -140,6 +162,21 @@ public class Inventory {
 
 
     //delete
+    public static void deleteItem(int invId, int amount){
+        final String sql = "UPDATE inventory set qty = qty - ? where invId = ?";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)){
+
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, invId);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            //change to logger later
+            e.printStackTrace();
+        }
+    }
 
 
 
