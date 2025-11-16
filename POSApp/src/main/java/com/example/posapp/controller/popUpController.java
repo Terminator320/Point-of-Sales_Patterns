@@ -18,6 +18,7 @@ public class popUpController {
     @FXML
     public void addInventoryClick(){
         try{
+
             String invName = invNameTF.getText();
             int qty = Integer.parseInt(qtyTF.getText());
             int lowStoke = Integer.parseInt(lowStokeThreeholdTF.getText());

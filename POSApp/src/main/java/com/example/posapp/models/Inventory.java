@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 public class Inventory {
     private int invId,qty, lowStokeThreeshold,itemCode;
     private String invName;

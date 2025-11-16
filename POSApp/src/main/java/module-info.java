@@ -3,8 +3,6 @@ module com.example.posapp {
     requires javafx.fxml;
     requires java.sql;
     requires javafx.base;
-    requires com.example.posapp;
-
 
 
     opens com.example.posapp to javafx.fxml;
