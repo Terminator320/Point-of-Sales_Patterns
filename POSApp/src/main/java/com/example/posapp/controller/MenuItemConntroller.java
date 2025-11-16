@@ -246,7 +246,7 @@ public class MenuItemConntroller {
             stage.setTitle("Sales-Order Report");
         }
         catch (IOException e) {
-            //check top looger
+            //check top logger
             e.printStackTrace();
         }
     }
