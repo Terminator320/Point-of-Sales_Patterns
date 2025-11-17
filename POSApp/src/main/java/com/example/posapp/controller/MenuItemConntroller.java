@@ -24,17 +24,47 @@ public class MenuItemConntroller {
 
     @FXML private ListView<String> recitedView;
 
-    // menu items available on the screen: menuId -> MenuItem
+    //meunId , MenuItem
     private  Map<Integer, MenuItem> menuItems = new HashMap<>();
 
     private Map<Integer, Inventory> inventoryMap = new HashMap<>();
 
-
-    // active order: menuId -> quantity
+    // menuId , quantity
     private final Map<Integer, Integer> activeOrder = new HashMap<>();
 
-    // backing list for the ListView
     private final ObservableList<String> receiptLines = FXCollections.observableArrayList();
+
+    public ListView<String> getRecitedView() {
+        return recitedView;
+    }
+
+    public void setRecitedView(ListView<String> recitedView) {
+        this.recitedView = recitedView;
+    }
+
+    public Map<Integer, MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(Map<Integer, MenuItem> menuItems) {
+        this.menuItems = menuItems;
+    }
+
+    public Map<Integer, Inventory> getInventoryMap() {
+        return inventoryMap;
+    }
+
+    public void setInventoryMap(Map<Integer, Inventory> inventoryMap) {
+        this.inventoryMap = inventoryMap;
+    }
+
+    public Map<Integer, Integer> getActiveOrder() {
+        return activeOrder;
+    }
+
+    public ObservableList<String> getReceiptLines() {
+        return receiptLines;
+    }
 
     public void initialize() {
         recitedView.setItems(receiptLines);
@@ -43,43 +73,47 @@ public class MenuItemConntroller {
             inventoryMap.put(inv.getItemCode(), inv);
         }
 
-        menuItems.put(1, new MenuItem(100, "Espresso",       2.50, inventoryMap.get(100)));
-        menuItems.put(2, new MenuItem(101, "Latte",          3.25, inventoryMap.get(101)));
-        menuItems.put(3, new MenuItem(102, "Cappuccino",     3.50, inventoryMap.get(102)));
-        menuItems.put(4, new MenuItem(103, "Iced Americano", 3.25, inventoryMap.get(103)));
-        menuItems.put(5, new MenuItem(103, "Iced Coffee",    3.25, inventoryMap.get(103)));
-        menuItems.put(6, new MenuItem(104, "Green Tea",      2.75, inventoryMap.get(104)));
-        menuItems.put(7, new MenuItem(105, "Chai Latte",     3.00, inventoryMap.get(105)));
+        //coffees
+        menuItems.put(1, new MenuItem(1, "Espresso",3, inventoryMap.get(1)));
+        menuItems.put(2, new MenuItem(2, "Latte",4.5, inventoryMap.get(2)));
+        menuItems.put(3, new MenuItem(3, "Cappuccino",4.25, inventoryMap.get(3)));
+        menuItems.put(4, new MenuItem(4, "Iced Americano",3.5, inventoryMap.get(4)));
+        menuItems.put(5, new MenuItem(17, "Iced Coffee",2.99, inventoryMap.get(16)));
+        menuItems.put(6, new MenuItem(16, "Greek Frappe",4, inventoryMap.get(17)));
 
-        menuItems.put(20, new MenuItem(106, "Croissant",         3.00, inventoryMap.get(106)));
-        menuItems.put(21, new MenuItem(107, "Muffin",            2.50, inventoryMap.get(107)));
-        menuItems.put(22, new MenuItem(108, "Cheese Bagel",      3.50, inventoryMap.get(108)));
-        menuItems.put(23, new MenuItem(109, "BLT Sandwich",      6.00, inventoryMap.get(109)));
-        menuItems.put(24, new MenuItem(110, "Grilled Cheese",    5.00, inventoryMap.get(110)));
-        menuItems.put(25, new MenuItem(111, "Chicken Wrap",      7.00, inventoryMap.get(111)));
+        //teas
+        menuItems.put(7, new MenuItem(5, "Green Tea",3, inventoryMap.get(5)));
+        menuItems.put(8, new MenuItem(6, "Chai Latte",4, inventoryMap.get(6)));
+        menuItems.put(9,new MenuItem(18, "Black Tea",1.5, inventoryMap.get(18)));
+        menuItems.put(10,new MenuItem(19,"Oolong Tea",3,inventoryMap.get(19)));
+        menuItems.put(11,new MenuItem(20,"Peach Tea",2.5,inventoryMap.get(20)));
+        menuItems.put(12,new MenuItem(21,"Strawberry Tea",2.5,inventoryMap.get(21)));
+
+        //food
+        menuItems.put(20, new MenuItem(7, "Croissant",2.75, inventoryMap.get(7)));
+        menuItems.put(21, new MenuItem(8, "Muffin",2.50, inventoryMap.get(8)));
+        menuItems.put(22, new MenuItem(9, "Cheese Bagel",3.25, inventoryMap.get(9)));
+        menuItems.put(23, new MenuItem(10, "BLT Sandwich",6.50, inventoryMap.get(10)));
+        menuItems.put(24, new MenuItem(11, "Grilled Cheese",5.50, inventoryMap.get(11)));
+        menuItems.put(25, new MenuItem(12, "Chicken Wrap",7.00, inventoryMap.get(12)));
 
 
-        menuItems.put(30, new MenuItem(112, "Strawberry Smoothie", 4.50, inventoryMap.get(112)));
-        menuItems.put(31, new MenuItem(113, "Mixed Berry",         5.00, inventoryMap.get(113)));
-        menuItems.put(32, new MenuItem(114, "Protein Shake",       6.50, inventoryMap.get(114)));
+        //smoothies
+        menuItems.put(30, new MenuItem(22,"Strawberry Smoothie",5.75, inventoryMap.get(22)));
+        menuItems.put(31, new MenuItem(13,"Berry Smoothie",5.75, inventoryMap.get(13)));
+        menuItems.put(32, new MenuItem(15,"Protein Shake",6, inventoryMap.get(15)));
+        menuItems.put(33,new MenuItem(14,"Mango Smoothie",5.75, inventoryMap.get(14)));
 
     }
 
+
     //addMethod
     private void addItemToOrder(int menuId) {
-
         MenuItem item = menuItems.get(menuId);
         if (item == null) return;
 
-
         // update quantity in order
         int newQty = activeOrder.getOrDefault(menuId, 0) + 1;
-
-        Inventory stoke = item.getInventory();
-        if (stoke.getQty() < newQty) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Out of Stoke!");
-            alert.showAndWait();
-        }
 
         activeOrder.put(menuId, newQty);
 
@@ -88,9 +122,8 @@ public class MenuItemConntroller {
 
     private void removeSelectedItem() {
         int index = recitedView.getSelectionModel().getSelectedIndex();
-        if (index < 0) return;  // nothing selected
+        if (index < 0) return;
 
-        // Find which menuId this corresponds to
         int i = 0;
         Integer menuIdToRemove = null;
 
@@ -104,7 +137,7 @@ public class MenuItemConntroller {
 
         if (menuIdToRemove != null) {
             activeOrder.remove(menuIdToRemove);
-            rebuildReceipt();   // refresh ListView
+            rebuildReceipt();
         }
     }
 
@@ -137,7 +170,7 @@ public class MenuItemConntroller {
 
     @FXML
     public void frappeClick(ActionEvent event) {
-
+        addItemToOrder(6);
     }
 
     @FXML
@@ -152,32 +185,32 @@ public class MenuItemConntroller {
 
     @FXML
     public void greenTeaClick(ActionEvent event) {
-        addItemToOrder(6);
-    }
-
-    @FXML
-    public void blackTeaClick(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void peachTeaClick(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void starwberryTeaClick(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void chaiLatteTeaClick(ActionEvent event) {
         addItemToOrder(7);
     }
 
     @FXML
-    public void oolongTeaClick(ActionEvent event) {
+    public void blackTeaClick(ActionEvent event) {
+        addItemToOrder(9);
+    }
 
+    @FXML
+    public void peachTeaClick(ActionEvent event) {
+        addItemToOrder(11);
+    }
+
+    @FXML
+    public void starwberryTeaClick(ActionEvent event) {
+        addItemToOrder(12);
+    }
+
+    @FXML
+    public void chaiLatteTeaClick(ActionEvent event) {
+        addItemToOrder(8);
+    }
+
+    @FXML
+    public void oolongTeaClick(ActionEvent event) {
+        addItemToOrder(10);
     }
 
     @FXML
@@ -187,7 +220,7 @@ public class MenuItemConntroller {
 
     @FXML
     public void mangoSmClick(ActionEvent event) {
-
+        addItemToOrder(33);
     }
 
     @FXML
@@ -237,8 +270,10 @@ public class MenuItemConntroller {
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-order.fxml"));
             Parent newRoot = loader.load();
-
             Scene newScene = new Scene(newRoot);
+
+            SalesOrderController controller = loader.getController();
+            //controller.loadOrder(activeOrder, menuItems);
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

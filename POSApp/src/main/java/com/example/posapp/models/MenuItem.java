@@ -3,27 +3,17 @@ package com.example.posapp.models;
 import java.util.Objects;
 
 public class MenuItem {
-    private int id, itemCode;
+    private int id;
     private String name;
     private double price;
     private Inventory inventory;
 
-    public MenuItem(int itemCode,String name,double price,Inventory inventory) {
-        this.itemCode = itemCode;
-        this.name = name;
-        this.price = price;
-        this.inventory = inventory;
-    }
-
-    public MenuItem(int id, int itemCode, String name, double price) {
+    public MenuItem(int id,String name,double price,Inventory inventory) {
         this.id = id;
-        this.itemCode = itemCode;
         this.name = name;
         this.price = price;
         this.inventory = inventory;
     }
-
-
 
     public int getId() {
         return id;
@@ -31,14 +21,6 @@ public class MenuItem {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getItemCode() {
-        return this.itemCode;
-    }
-
-    public void setItemCode(int itemCode) {
-        this.itemCode = itemCode;
     }
 
     public String getName() {
@@ -67,7 +49,8 @@ public class MenuItem {
 
     @Override
     public String toString() {
-        return name;
-
+        return this.name;
     }
+
+    //crud
 }

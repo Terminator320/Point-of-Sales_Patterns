@@ -114,8 +114,9 @@ public class Inventory {
             pstmt.setInt(1, itemCode);
             ResultSet rs = pstmt.executeQuery();
 
+            //to check if its ture
             if (rs.next()) {
-                return rs.getInt(1) > 0; // true if exists
+                return rs.getInt(1) > 0;
             }
         }
         catch (SQLException e) {
@@ -158,7 +159,7 @@ public class Inventory {
 
     //update (edit)
     public static void editLowStoke(int lowStokeThreeshold,int invId) {
-        final String sql = "UPDATE inventory set lowStokeThreeshold = lowStokeThreeshold + ? where invId = ?";
+        final String sql = "UPDATE inventory set lowStokeThreeshold = ? where invId = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
@@ -174,7 +175,7 @@ public class Inventory {
     }
 
     public static void editItemQTY(int qty,int invId) {
-        final String sql = "UPDATE inventory set qty = qty + ? where invId = ?";
+        final String sql = "UPDATE inventory set qty = ? where invId = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
@@ -193,7 +194,7 @@ public class Inventory {
 
     //if order more stoke update the quanty they have
     public static void addQuantity(int itemCode, int amount){
-        final String sql = "UPDATE inventory set qty = qty + ? where itemCode = ?";
+        final String sql = "UPDATE inventory set qty = ? where itemCode = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
@@ -242,13 +243,6 @@ public class Inventory {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
 
 
 }

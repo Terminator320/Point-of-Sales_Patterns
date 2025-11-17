@@ -89,7 +89,7 @@ public class InventoryController {
         }
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-           // Logger log = Logger.getLogger(InventoryController.class.getName());
+            // Logger log = Logger.getLogger(InventoryController.class.getName());
         }
     }
 
@@ -118,10 +118,6 @@ public class InventoryController {
         }
 
     }
-
-
-
-
 
     //pop up
     @FXML
@@ -167,7 +163,6 @@ public class InventoryController {
             e.printStackTrace();
         }
     }
-
 
 
     public static ObservableList<Inventory> getInventory(){
