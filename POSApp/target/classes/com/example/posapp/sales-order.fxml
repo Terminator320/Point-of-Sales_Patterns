@@ -2,22 +2,28 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="396.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
-   <children>
-      <ListView layoutX="72.0" layoutY="94.0" prefHeight="334.0" prefWidth="249.0" />
-      <Label alignment="CENTER" layoutX="112.0" layoutY="29.0" prefHeight="55.0" prefWidth="155.0" text="ORDER">
-         <font>
-            <Font size="38.0" />
-         </font>
-      </Label>
-      <Label alignment="CENTER" layoutX="70.0" layoutY="477.0" prefHeight="29.0" prefWidth="84.0" text="Sub-Total:" />
-      <TextField disable="true" layoutX="147.0" layoutY="479.0" />
-      <Button layoutX="154.0" layoutY="441.0" mnemonicParsing="false" text="Edit Item" textFill="#3c3838" />
-      <Button layoutX="321.0" layoutY="479.0" mnemonicParsing="false" text="Pay Now" />
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="396.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
+    <children>
+        <Label alignment="CENTER" layoutX="122.0" layoutY="29.0" prefHeight="55.0" prefWidth="155.0" text="ORDER">
+            <font>
+                <Font size="38.0" />
+            </font>
+        </Label>
+        <Label alignment="CENTER" layoutX="28.0" layoutY="423.0" prefHeight="29.0" prefWidth="84.0" text="Sub-Total:" />
+        <TextField fx:id="totalPriceText" disable="true" layoutX="112.0" layoutY="425.0" />
+        <Button fx:id="editPayButton" layoutX="286.0" layoutY="419.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="75.0" text="Check Out" />
+        <TableView fx:id="orderTableView" layoutX="22.0" layoutY="84.0" prefHeight="327.0" prefWidth="348.0">
+            <columns>
+                <TableColumn fx:id="colItemName" prefWidth="208.0" text="Item Name" />
+                <TableColumn fx:id="colQuantity" prefWidth="67.0" text="Quantity" />
+                <TableColumn fx:id="colPrice" minWidth="0.0" prefWidth="72.0" text="Price" />
+            </columns>
+        </TableView>
+    </children>
 </AnchorPane>

@@ -273,7 +273,7 @@ public class MenuItemConntroller {
             Scene newScene = new Scene(newRoot);
 
             SalesOrderController controller = loader.getController();
-            //controller.loadOrder(activeOrder, menuItems);
+            controller.loadOrder(activeOrder, menuItems);
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

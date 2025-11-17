@@ -70,7 +70,7 @@
             <Image url="@img/StraberryTea.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="412.0" layoutY="538.0" mnemonicParsing="false" onAction="#starwberryTeaClick" prefHeight="25.0" prefWidth="105.0" text="Starwberry Tea" />
+      <Button layoutX="412.0" layoutY="538.0" mnemonicParsing="false" onAction="#starwberryTeaClick" prefHeight="25.0" prefWidth="105.0" text="Strawberry Tea" />
       <ImageView fitHeight="59.0" fitWidth="87.0" layoutX="539.0" layoutY="373.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/oolongTea.jpeg" />
