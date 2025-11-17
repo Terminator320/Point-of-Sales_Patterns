@@ -1,5 +1,11 @@
 package com.example.posapp.models;
 
+import database.ConnectionManager;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class SalesOrder {
     private int order_id;
     private String status;
@@ -118,5 +124,24 @@ public class SalesOrder {
     public void setTotal_cents(int total_cents) {
             this.total_cents = total_cents;
         }
+
+    //CRUD
+
+    //Adding to SALES_ORDER when 'checkout' button is clicked
+    public static void addSale(double subtotal){
+        final String sql = "INSERT INTO sale_order (status,subtotal_cents) VALUES(Open,?)";
+
+        try (Connection connection = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+
+            preparedStatement.setDouble(1,subtotal);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            //change to logger later
+            e.printStackTrace();
+        }
+
+    }
 }
 

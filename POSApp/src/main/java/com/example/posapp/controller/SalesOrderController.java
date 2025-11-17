@@ -3,6 +3,7 @@ package com.example.posapp.controller;
 import com.example.posapp.models.Inventory;
 import com.example.posapp.models.MenuItem;
 import com.example.posapp.models.SalesOrder;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,12 +23,17 @@ import javafx.util.converter.IntegerStringConverter;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.example.posapp.models.SalesOrder.addSale;
+
 public class SalesOrderController {
     @FXML private TextField totalPriceText;
     @FXML private TableView<SalesOrder> orderTableView;
     @FXML private TableColumn<SalesOrder, String> colItemName;
     @FXML private TableColumn<SalesOrder, Integer> colQuantity;
     @FXML private TableColumn<SalesOrder, Double> colPrice;
+    @FXML private TextField searchText;
+    private ObservableList<SalesOrder> items;
+
 
     public void initialize() {
         innitAndLoadInventory();
@@ -64,6 +70,8 @@ public class SalesOrderController {
             totalPrice += quantity * price;
         }
 
+        items = orderTableView.getItems();
+
         totalPriceText.setText("$ " + Double.toString(totalPrice));
     }
 
@@ -78,6 +86,26 @@ public class SalesOrderController {
     }
 
     @FXML
+    public void searchButtonClick(ActionEvent event) {
+        String search = searchText.getText();
+        ObservableList<SalesOrder> salesOrdersList = items;
+
+        ObservableList<SalesOrder> filteredSalesOrderList = FXCollections.observableArrayList();
+        for (SalesOrder salesOrder : salesOrdersList) {
+            if (salesOrder.getItemName().contains(search)) {
+                filteredSalesOrderList.add(salesOrder);
+            }
+        }
+        orderTableView.setItems(filteredSalesOrderList);
+    }
+    @FXML
+    public void refreshButtonClick(ActionEvent event) {
+        orderTableView.setItems(items);
+    }
+
+
+
+    @FXML
     public void checkOutClick(ActionEvent event) {
         try {
             // Load the FXML file for the second scene
@@ -87,6 +115,10 @@ public class SalesOrderController {
 
             //SalesOrderController controller = loader.getController(); //REPLACE THIS WITH YOUR CONTROLLER STEVE
             //controller.loadOrder(activeOrder, menuItems); // ADD YOUR STUFF HERE STEVE
+
+            //Adds the sale to the database (not the completed transaction though)
+            double subtotal = Double.parseDouble(totalPriceText.getText());
+            addSale(subtotal);
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
