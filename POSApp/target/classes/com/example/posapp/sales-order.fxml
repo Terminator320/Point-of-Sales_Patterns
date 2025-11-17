@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="396.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="396.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
     <children>
         <Label alignment="CENTER" layoutX="122.0" layoutY="29.0" prefHeight="55.0" prefWidth="155.0" text="ORDER">
             <font>
@@ -17,7 +17,7 @@
         </Label>
         <Label alignment="CENTER" layoutX="28.0" layoutY="423.0" prefHeight="29.0" prefWidth="84.0" text="Sub-Total:" />
         <TextField fx:id="totalPriceText" disable="true" layoutX="112.0" layoutY="425.0" />
-        <Button fx:id="editPayButton" layoutX="286.0" layoutY="419.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="75.0" text="Check Out" />
+        <Button fx:id="editPayButton" layoutX="286.0" layoutY="419.0" mnemonicParsing="false" onAction="#checkOutClick" prefHeight="37.0" prefWidth="75.0" text="Check Out" />
         <TableView fx:id="orderTableView" layoutX="22.0" layoutY="84.0" prefHeight="327.0" prefWidth="348.0">
             <columns>
                 <TableColumn fx:id="colItemName" prefWidth="208.0" text="Item Name" />

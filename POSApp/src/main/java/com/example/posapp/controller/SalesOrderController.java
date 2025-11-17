@@ -6,14 +6,20 @@ import com.example.posapp.models.SalesOrder;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class SalesOrderController {
@@ -69,6 +75,28 @@ public class SalesOrderController {
             totalPrice += quantity * price;
         }
         totalPriceText.setText("$ " + Double.toString(totalPrice));
+    }
+
+    @FXML
+    public void checkOutClick(ActionEvent event) {
+        try {
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/payment-view.fxml"));
+            Parent newRoot = loader.load();
+            Scene newScene = new Scene(newRoot);
+
+            //SalesOrderController controller = loader.getController(); //REPLACE THIS WITH YOUR CONTROLLER STEVE
+            //controller.loadOrder(activeOrder, menuItems); // ADD YOUR STUFF HERE STEVE
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Payment");
+        }
+        catch (IOException e) {
+            //check top logger
+            e.printStackTrace();
+        }
     }
 }
 
