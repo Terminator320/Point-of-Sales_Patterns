@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.ToggleGroup?>
+<AnchorPane prefHeight="804.0" prefWidth="460.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.PaymentController">
+   <children>
+       <fx:define>
+           <ToggleGroup fx:id="tipGroup" />
+       </fx:define>
+       <HBox layoutX="54.0" layoutY="440.0" prefHeight="118.0" prefWidth="356.0">
+           <children>
+               <AnchorPane prefHeight="116.0" prefWidth="89.0">
+                   <children>
+                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%" toggleGroup="$tipGroup">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     </RadioButton>
+                       <Label fx:id="amount10PercentTip" layoutX="28.0" layoutY="49.0" text="Label">
+                     <font>
+                        <Font size="13.0" />
+                     </font></Label>
+                  <RadioButton fx:id="noTip" layoutX="10.0" layoutY="88.0" mnemonicParsing="false" onAction="#getTipPercentage" text="No thanks" toggleGroup="$tipGroup">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </RadioButton>
+                   </children>
+               </AnchorPane>
+
+               <AnchorPane prefHeight="80.0" prefWidth="89.0">
+                   <children>
+                       <RadioButton fx:id="radioButton15percent" layoutX="13.0" layoutY="14.0" onAction="#getTipPercentage" text="15%" toggleGroup="$tipGroup">
+                     <font>
+                        <Font size="13.0" />
+                     </font></RadioButton>
+                       <Label fx:id="amount15PercentTip" layoutX="29.0" layoutY="49.0" text="Label">
+                     <font>
+                        <Font size="13.0" />
+                     </font></Label>
+                   </children>
+               </AnchorPane>
+
+               <AnchorPane prefHeight="80.0" prefWidth="89.0">
+                   <children>
+                       <RadioButton fx:id="radioButton20percent" layoutX="10.0" layoutY="14.0" onAction="#getTipPercentage" text="20%" toggleGroup="$tipGroup">
+                     <font>
+                        <Font size="13.0" />
+                     </font></RadioButton>
+                       <Label fx:id="amount20PercentTip" layoutX="26.0" layoutY="49.0" text="Label">
+                     <font>
+                        <Font size="13.0" />
+                     </font></Label>
+                   </children>
+               </AnchorPane>
+
+               <AnchorPane prefHeight="81.0" prefWidth="89.0">
+                   <children>
+                       <RadioButton fx:id="radioButtonCustom" layoutX="5.0" layoutY="14.0" onAction="#getTipPercentage" text="Custom" toggleGroup="$tipGroup">
+                     <font>
+                        <Font size="13.0" />
+                     </font></RadioButton>
+
+                       <TextField fx:id="customTipField" disable="true" layoutX="5.0" layoutY="42.0" onAction="#onCustomTipAction" prefWidth="70.0" promptText="\$">
+                     <font>
+                        <Font size="13.0" />
+                     </font></TextField>
+                   </children>
+               </AnchorPane>
+           </children>
+       </HBox>
+
+       <Label fx:id="paymentTitle" layoutX="84.0" layoutY="25.0" text="How would you like to pay?">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="tipsTitle" layoutX="61.0" layoutY="389.0" text="Tips">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <ListView fx:id="finalTotal" layoutX="61.0" layoutY="570.0" prefHeight="165.0" prefWidth="341.0" />
+      <Button fx:id="payButton" layoutX="233.0" layoutY="749.0" mnemonicParsing="false" onAction="#OnPayAction" text="Pay Now">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="cancelButton" layoutX="137.0" layoutY="749.0" mnemonicParsing="false" onAction="#onCancelAction" text="Cancel">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="cardDetailTitle" layoutX="62.0" layoutY="125.0" text="Card Details">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="choiceOfPayment" layoutX="64.0" layoutY="80.0" prefHeight="25.0" prefWidth="322.0" />
+      <Separator layoutX="63.0" layoutY="160.0" prefHeight="19.0" prefWidth="322.0" />
+      <Pane layoutX="37.0" layoutY="173.0" prefHeight="201.0" prefWidth="363.0">
+         <children>
+            <TextField fx:id="nameField" layoutX="22.0" layoutY="35.0" onAction="#onNameFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Name" />
+            <TextField fx:id="cardNumberField" layoutX="20.0" layoutY="102.0" onAction="#onCardNumFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Number" />
+            <TextField fx:id="threeDigitCardNumber" layoutX="232.0" layoutY="162.0" onAction="#onCVVFieldAction" prefHeight="25.0" prefWidth="110.0" promptText="e.g. 123" />
+            <Label layoutX="20.0" layoutY="8.0" text="Card Name:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="232.0" layoutY="140.0" text="CVV:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="73.0" text="Card Number:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="22.0" layoutY="140.0" text="Expiration Date:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="selectMonthExpiration" layoutX="20.0" layoutY="162.0" onAction="#onExpirationDateAction" prefHeight="25.0" prefWidth="80.0" promptText="MM" />
+            <ComboBox fx:id="selectYearExpiration" layoutX="122.0" layoutY="162.0" onAction="#onExpirationDateAction" prefHeight="25.0" prefWidth="80.0" promptText="YY" />
+            <Label layoutX="108.0" layoutY="160.0" text="/">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Separator layoutX="58.0" layoutY="417.0" prefHeight="19.0" prefWidth="347.0" />
+   </children>
+</AnchorPane>
