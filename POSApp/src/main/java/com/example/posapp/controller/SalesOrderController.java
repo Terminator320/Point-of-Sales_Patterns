@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 import static com.example.posapp.models.SalesOrder.addSale;
@@ -84,6 +86,19 @@ public class SalesOrderController {
         }
         totalPriceText.setText("$ " + Double.toString(totalPrice));
     }
+    
+    public double getSubtotalAsDouble() {
+        double total = 0;
+        for(SalesOrder order : orderTableView.getItems()) {
+            total += order.getQuantity() * order.getPrice();
+        }
+        return total;
+    }
+
+    public BigDecimal getSubtotal(){
+        return BigDecimal.valueOf(getSubtotalAsDouble());
+
+    }
 
     @FXML
     public void searchButtonClick(ActionEvent event) {
@@ -113,12 +128,14 @@ public class SalesOrderController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
-            //SalesOrderController controller = loader.getController(); //REPLACE THIS WITH YOUR CONTROLLER STEVE
-            //controller.loadOrder(activeOrder, menuItems); // ADD YOUR STUFF HERE STEVE
+            PaymentController paymentController = loader.getController(); //REPLACE THIS WITH YOUR CONTROLLER STEVE
 
             //Adds the sale to the database (not the completed transaction though)
-            double subtotal = Double.parseDouble(totalPriceText.getText());
+            //double subtotal = Double.parseDouble(totalPriceText.getText());
+            double subtotal = getSubtotalAsDouble();
             addSale(subtotal);
+
+            //paymentController.setSalesOrderTotal(this, getOrderID()); // ADD YOUR STUFF HERE STEVE
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

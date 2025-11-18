@@ -129,7 +129,7 @@ public class SalesOrder {
 
     //Adding to SALES_ORDER when 'checkout' button is clicked
     public static void addSale(double subtotal){
-        final String sql = "INSERT INTO sale_order (status,subtotal_cents) VALUES(Open,?)";
+        final String sql = "INSERT INTO sale_order (subtotal) VALUES(?)";
 
         try (Connection connection = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql)){

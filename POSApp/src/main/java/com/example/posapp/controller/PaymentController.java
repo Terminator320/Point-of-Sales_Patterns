@@ -47,17 +47,26 @@ public class PaymentController {
 
 
     private SalesOrderController mySalesOrder;
-    private BigDecimal subtotal = BigDecimal.valueOf(100);
+    private int orderID;
+    private BigDecimal subtotal = BigDecimal.ZERO;
     private BigDecimal tipAmount = BigDecimal.ZERO;
     private Payment.PaymentMethod selectPaymentMethod = Payment.PaymentMethod.CASH;
 
-    private int orderID;
 
 
     @FXML
     public void initialize() {
         setUpPaymentMethod();
         expirationDateChoice();
+        showTipAmountLabel();
+        setListOfCost();
+    }
+
+    public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID){
+        this.mySalesOrder = salesOrderController;
+        this.orderID = orderID;
+        this.subtotal = mySalesOrder.getSubtotal();
+
         showTipAmountLabel();
         setListOfCost();
     }
@@ -253,7 +262,7 @@ public class PaymentController {
     }
 
     private String formatMoney(BigDecimal money){
-        return String.format("$" + money);
+        return String.format("$%.2f", money);
     }
 
     private void showTipAmountLabel(){
