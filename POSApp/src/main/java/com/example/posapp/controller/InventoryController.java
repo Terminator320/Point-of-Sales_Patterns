@@ -12,12 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class InventoryController {
     @FXML private TableView<Inventory> inventoryListView;
@@ -33,6 +31,9 @@ public class InventoryController {
     @FXML
     public void initialize() {
         innitAndLoadInventory();
+        checkQTY();
+        updateStoke();
+        updateQTY();
     }
 
     private void reloadInventory(){
@@ -44,27 +45,27 @@ public class InventoryController {
         colLow.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         colLow.setOnEditCommit(event -> {
             Inventory item = event.getRowValue();
-            int oldStoke = item.getLowStokeThreeshold();
+            int oldStoke = item.getLowStokeThreshold();
             Integer newStoke = event.getNewValue();
 
             if(newStoke >= 0) {
-                item.setLowStokeThreeshold(newStoke);
+                item.setLowStokeThreshold(newStoke);
                 //update to db
                 try
                 {
-                    Inventory.editLowStoke(newStoke,item.getItemCode());
+                    Inventory.editLowStoke(newStoke,item.getInvId());
                 }
                 catch (Exception e) {
                     //if there is an error while updating the db go back to old value
-                    item.setLowStokeThreeshold(oldStoke);
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occured while trying to update the DB");
+                    item.setLowStokeThreshold(oldStoke);
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB");
                     alert.showAndWait();
                     //change to logger later
                     e.printStackTrace();
                 }
             }
             else {
-                item.setLowStokeThreeshold(oldStoke);
+                item.setLowStokeThreshold(oldStoke);
                 //logger
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Low Stoke Threshold can not be a negative number.");
                 alert.showAndWait();
@@ -85,12 +86,12 @@ public class InventoryController {
                 //update to db
                 try
                 {
-                    Inventory.editItemQTY(newQTY,item.getItemCode());
+                    Inventory.editItemQTY(newQTY,item.getInvId());
                 }
                 catch (Exception e) {
                     //if there is an error while updating the db go back to old value
                     item.setQty(oldQTY);
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occured while trying to update the DB");
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB");
                     alert.showAndWait();
                     //change to logger later
                     e.printStackTrace();
@@ -99,7 +100,7 @@ public class InventoryController {
             else {
                 item.setQty(oldQTY);
                 //logger
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Quanty can not be a negative number.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Quantity can not be a negative number.");
                 alert.showAndWait();
                 inventoryListView.refresh();
             }
@@ -117,7 +118,7 @@ public class InventoryController {
                     return;
                 }
 
-                if(item.getQty() < item.getLowStokeThreeshold()) {
+                if(item.getQty() < item.getLowStokeThreshold()) {
                     setStyle("-fx-background-color: #FFF300FF;");
                 }
                 else {
@@ -130,17 +131,14 @@ public class InventoryController {
     public void innitAndLoadInventory() {
         inventoryListView.setEditable(true);
 
-        colId.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        colId.setCellValueFactory(new PropertyValueFactory<>("invId"));
         colName.setCellValueFactory(new PropertyValueFactory<>("invName"));
         colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
-        colLow.setCellValueFactory(new PropertyValueFactory<>("lowStokeThreeshold"));
+        colLow.setCellValueFactory(new PropertyValueFactory<>("lowStokeThreshold"));
 
         ObservableList<Inventory> inventoryList = getInventory();
         inventoryListView.setItems(inventoryList);
 
-        updateStoke();
-        updateQTY();
-        checkQTY();
     }
 
     @FXML
@@ -165,7 +163,7 @@ public class InventoryController {
     }
 
 
-    //going back to main mneu
+    //going back to main menu
     @FXML
     private void backMainMenu(ActionEvent event) {
         try {

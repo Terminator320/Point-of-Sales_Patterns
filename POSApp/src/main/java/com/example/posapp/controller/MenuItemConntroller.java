@@ -24,7 +24,7 @@ public class MenuItemConntroller {
 
     @FXML private ListView<String> recitedView;
 
-    //meunId , MenuItem
+    //menuId , MenuItem
     private  Map<Integer, MenuItem> menuItems = new HashMap<>();
 
     private Map<Integer, Inventory> inventoryMap = new HashMap<>();
@@ -70,7 +70,7 @@ public class MenuItemConntroller {
         recitedView.setItems(receiptLines);
         //setting the map for the menu items with its inventory
         for (Inventory inv : Inventory.getAllInventory()) {
-            inventoryMap.put(inv.getItemCode(), inv);
+            inventoryMap.put(inv.getInvId(), inv);
         }
 
         //coffees

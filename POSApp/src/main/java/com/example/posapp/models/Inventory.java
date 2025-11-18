@@ -11,25 +11,20 @@ import java.sql.SQLException;
 
 
 public class Inventory {
-    private int invId,qty, lowStokeThreeshold,itemCode;
+    private int invId,qty, lowStokeThreshold;
     private String invName;
 
     public Inventory() {
 
     }
 
-    public Inventory(String invName,int qty, int lowStokeThreeshold, int itemCode) {
+    public Inventory(String invName,int qty, int lowStokeThreshold) {
         this.invName = invName;
         this.qty = qty;
-        this.lowStokeThreeshold = lowStokeThreeshold;
-        this.itemCode = itemCode;
+        this.lowStokeThreshold = lowStokeThreshold;
     }
 
-    public Inventory(String invName, int qty, int lowStokeThreeshold) {
-        this.invName = invName;
-        this.qty = qty;
-        this.lowStokeThreeshold = lowStokeThreeshold;
-    }
+
 
     public Inventory(int invId, String invName, int qty) {
         this.invId = invId;
@@ -37,11 +32,11 @@ public class Inventory {
         this.qty = qty;
     }
 
-    public Inventory(int itemCode, String invName, int qty, int lowStokeThreeshold) {
-        this.itemCode = itemCode;
+    public Inventory(int invId, String invName, int qty, int lowStokeThreshold) {
+        this.invId = invId;
         this.invName = invName;
         this.qty = qty;
-        this.lowStokeThreeshold = lowStokeThreeshold;
+        this.lowStokeThreshold = lowStokeThreshold;
     }
 
     public int getInvId() {
@@ -60,12 +55,12 @@ public class Inventory {
         this.qty = qty;
     }
 
-    public int getLowStokeThreeshold() {
-        return lowStokeThreeshold;
+    public int getLowStokeThreshold() {
+        return lowStokeThreshold;
     }
 
-    public void setLowStokeThreeshold(int lowStokeThreeshold) {
-        this.lowStokeThreeshold = lowStokeThreeshold;
+    public void setLowStokeThreshold(int lowStokeThreshold) {
+        this.lowStokeThreshold = lowStokeThreshold;
     }
 
     public String getInvName() {
@@ -76,57 +71,7 @@ public class Inventory {
         this.invName = invName;
     }
 
-    public int getItemCode() {
-        return this.itemCode;
-    }
-
-    public void setItemCode(int itemCode) {
-        this.itemCode = itemCode;
-    }
-
     //crud
-    //add (create)
-    public static void addItem(String invName, int qty, int lowStokeThreeshold, int itemCode ) {
-        final String sql = "INSERT INTO inventory (invName,qty,lowStokeThreeshold,itemCode) VALUES(?,?,?,?)";
-
-        try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-            pstmt.setString(1, invName);
-            pstmt.setInt(2, qty);
-            pstmt.setInt(3, lowStokeThreeshold);
-            pstmt.setInt(4, itemCode);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
-        }
-    }
-
-    //if item code exists to keep unique
-    public static boolean itemCodeExists(int itemCode) {
-        String sql = "SELECT COUNT(*) FROM inventory WHERE itemCode = ?";
-
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, itemCode);
-            ResultSet rs = pstmt.executeQuery();
-
-            //to check if its ture
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-
 
     //read
     public static ObservableList<Inventory> getAllInventory(){
@@ -140,10 +85,10 @@ public class Inventory {
             ResultSet resultSet = pstmt.executeQuery();
             while(resultSet.next()){
                 inventoryData.add(new Inventory(
-                        resultSet.getInt("itemCode"),
+                        resultSet.getInt("invId"),
                         resultSet.getString("invName"),
                         resultSet.getInt("qty"),
-                        resultSet.getInt("lowStokeThreeshold")
+                        resultSet.getInt("lowStokeThreshold")
                 ));
             }
         }
@@ -156,16 +101,15 @@ public class Inventory {
 
 
 
-
     //update (edit)
-    public static void editLowStoke(int lowStokeThreeshold,int itemCode) {
-        final String sql = "UPDATE inventory set lowStokeThreeshold = ? where itemCode = ?";
+    public static void editLowStoke(int lowStokeThreshold,int invId) {
+        final String sql = "UPDATE inventory set lowStokeThreshold = ? where invId = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
-            pstmt.setInt(1, lowStokeThreeshold);
-            pstmt.setInt(2, itemCode);
+            pstmt.setInt(1, lowStokeThreshold);
+            pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -174,14 +118,14 @@ public class Inventory {
         }
     }
 
-    public static void editItemQTY(int qty,int itemCode) {
-        final String sql = "UPDATE inventory set qty = ? where itemCode = ?";
+    public static void editItemQTY(int qty,int invId) {
+        final String sql = "UPDATE inventory set qty = ? where invId = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, qty);
-            pstmt.setInt(2, itemCode);
+            pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -191,25 +135,7 @@ public class Inventory {
     }
 
 
-
-    //if order more stoke update the quanty they have
-    public static void addQuantity(int itemCode, int amount){
-        final String sql = "UPDATE inventory set qty = ? where itemCode = ?";
-
-        try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-            pstmt.setInt(1, amount);
-            pstmt.setInt(2, itemCode);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
-        }
-    }
-
-    //removing that the end when order has been payed
+    //removing at the end when order has been paid
     public static void subtractQuantity(int itemCode, int amount){
         final String sql = "UPDATE inventory set qty = qty - ? where itemCode = ?";
 
@@ -225,24 +151,5 @@ public class Inventory {
             e.printStackTrace();
         }
     }
-
-
-
-    //delete
-    public static void deleteItem(int itemCode){
-        final String sql = "DELETE FROM inventory WHERE itemCode = ?";
-
-        try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-            pstmt.setInt(1, itemCode);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
-        }
-    }
-
 
 }
