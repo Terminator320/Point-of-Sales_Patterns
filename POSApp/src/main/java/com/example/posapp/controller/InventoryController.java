@@ -9,13 +9,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -41,8 +40,96 @@ public class InventoryController {
         inventoryListView.setItems(inventoryList);
     }
 
+    private void updateStoke(){
+        colLow.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colLow.setOnEditCommit(event -> {
+            Inventory item = event.getRowValue();
+            int oldStoke = item.getLowStokeThreeshold();
+            Integer newStoke = event.getNewValue();
+
+            if(newStoke >= 0) {
+                item.setLowStokeThreeshold(newStoke);
+                //update to db
+                try
+                {
+                    Inventory.editLowStoke(newStoke,item.getItemCode());
+                }
+                catch (Exception e) {
+                    //if there is an error while updating the db go back to old value
+                    item.setLowStokeThreeshold(oldStoke);
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occured while trying to update the DB");
+                    alert.showAndWait();
+                    //change to logger later
+                    e.printStackTrace();
+                }
+            }
+            else {
+                item.setLowStokeThreeshold(oldStoke);
+                //logger
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Low Stoke Threshold can not be a negative number.");
+                alert.showAndWait();
+                inventoryListView.refresh();
+            }
+        });
+    }
+
+    private void updateQTY(){
+        colQty.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colQty.setOnEditCommit(event -> {
+            Inventory item = event.getRowValue();
+            int oldQTY = item.getQty();
+            Integer newQTY = event.getNewValue();
+
+            if(newQTY >= 0) {
+                item.setQty(newQTY);
+                //update to db
+                try
+                {
+                    Inventory.editItemQTY(newQTY,item.getItemCode());
+                }
+                catch (Exception e) {
+                    //if there is an error while updating the db go back to old value
+                    item.setQty(oldQTY);
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occured while trying to update the DB");
+                    alert.showAndWait();
+                    //change to logger later
+                    e.printStackTrace();
+                }
+            }
+            else {
+                item.setQty(oldQTY);
+                //logger
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Quanty can not be a negative number.");
+                alert.showAndWait();
+                inventoryListView.refresh();
+            }
+        });
+    }
+
+    private void checkQTY(){
+        inventoryListView.setRowFactory(tv -> new TableRow<Inventory>() {
+            @Override
+            protected void updateItem(Inventory item , boolean em) {
+                super.updateItem(item,em);
+
+                if(em || item ==null) {
+                    setStyle("");
+                    return;
+                }
+
+                if(item.getQty() < item.getLowStokeThreeshold()) {
+                    setStyle("-fx-background-color: #FFF300FF;");
+                }
+                else {
+                    setStyle("");
+                }
+            }
+        });
+    }
     @FXML
     public void innitAndLoadInventory() {
+        inventoryListView.setEditable(true);
+
         colId.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
         colName.setCellValueFactory(new PropertyValueFactory<>("invName"));
         colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
@@ -50,6 +137,10 @@ public class InventoryController {
 
         ObservableList<Inventory> inventoryList = getInventory();
         inventoryListView.setItems(inventoryList);
+
+        updateStoke();
+        updateQTY();
+        checkQTY();
     }
 
     @FXML
@@ -71,75 +162,6 @@ public class InventoryController {
     public void clearSearch() {
         input_TF.clear();
         inventoryListView.setItems(getInventory());
-    }
-
-
-
-    //delete inventory
-    @FXML
-    public void deleteItem() {
-        Inventory inventory = inventoryListView.getSelectionModel().getSelectedItem();
-        if (inventory != null) {
-            //get the id
-            int itemCode = inventory.getItemCode();
-
-            //delete the item
-            Inventory.deleteItem(itemCode);
-            reloadInventory();
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            // Logger log = Logger.getLogger(InventoryController.class.getName());
-        }
-    }
-
-
-    //edit
-    //
-    @FXML
-    public void updateItem(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/editItem-view.fxml"));
-            Parent root = loader.load();
-
-            // Create a new window (Stage)
-            Stage popupStage = new Stage();
-            popupStage.setTitle("Editing Item");
-            popupStage.setScene(new Scene(root));
-
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-
-            popupStage.setOnHiding(e -> reloadInventory());
-            popupStage.show();
-
-        } catch (IOException e) {
-            //logger
-            e.printStackTrace();
-        }
-
-    }
-
-    //pop up
-    @FXML
-    public void addPopUp(ActionEvent event){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/popUpInventory.fxml"));
-            Parent root = loader.load();
-
-            // Create a new window (Stage)
-            Stage popupStage = new Stage();
-            popupStage.setTitle("Adding Inventory");
-            popupStage.setScene(new Scene(root));
-
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-
-            popupStage.setOnHiding(e -> reloadInventory());
-            popupStage.show();
-
-        } catch (IOException e) {
-            //logger
-            e.printStackTrace();
-        }
     }
 
 

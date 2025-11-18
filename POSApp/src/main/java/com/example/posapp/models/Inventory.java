@@ -158,14 +158,14 @@ public class Inventory {
 
 
     //update (edit)
-    public static void editLowStoke(int lowStokeThreeshold,int invId) {
-        final String sql = "UPDATE inventory set lowStokeThreeshold = ? where invId = ?";
+    public static void editLowStoke(int lowStokeThreeshold,int itemCode) {
+        final String sql = "UPDATE inventory set lowStokeThreeshold = ? where itemCode = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, lowStokeThreeshold);
-            pstmt.setInt(2, invId);
+            pstmt.setInt(2, itemCode);
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -174,14 +174,14 @@ public class Inventory {
         }
     }
 
-    public static void editItemQTY(int qty,int invId) {
-        final String sql = "UPDATE inventory set qty = ? where invId = ?";
+    public static void editItemQTY(int qty,int itemCode) {
+        final String sql = "UPDATE inventory set qty = ? where itemCode = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, qty);
-            pstmt.setInt(2, invId);
+            pstmt.setInt(2, itemCode);
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
