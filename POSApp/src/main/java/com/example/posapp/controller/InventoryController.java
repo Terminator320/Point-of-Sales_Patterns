@@ -1,6 +1,7 @@
 package com.example.posapp.controller;
 
 import com.example.posapp.models.Inventory;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,8 +26,6 @@ public class InventoryController {
     @FXML private TableColumn<Inventory, Integer> colLow;
 
     @FXML private TextField input_TF;
-
-
 
     @FXML
     public void initialize() {
@@ -72,6 +71,11 @@ public class InventoryController {
                 inventoryListView.refresh();
             }
         });
+
+        //clears selection AFTER edit
+        Platform.runLater(() ->
+                inventoryListView.getSelectionModel().clearSelection()
+        );
     }
 
     private void updateQTY(){
@@ -104,29 +108,47 @@ public class InventoryController {
                 alert.showAndWait();
                 inventoryListView.refresh();
             }
+
+            //clears selection AFTER edit
+            Platform.runLater(() ->
+                    inventoryListView.getSelectionModel().clearSelection()
+            );
         });
     }
 
     private void checkQTY(){
-        inventoryListView.setRowFactory(tv -> new TableRow<Inventory>() {
-            @Override
-            protected void updateItem(Inventory item , boolean em) {
-                super.updateItem(item,em);
+        inventoryListView.setRowFactory(tv -> {
+            TableRow<Inventory> row = new TableRow<>();
 
-                if(em || item ==null) {
-                    setStyle("");
-                    return;
-                }
+            row.itemProperty().addListener((obs, oldItem, newItem) ->
+                    updateRowStyle(row, newItem));
+            row.selectedProperty().addListener((obs, wasSelected, isSelected) ->
+                    updateRowStyle(row, row.getItem()));
 
-                if(item.getQty() < item.getLowStokeThreshold()) {
-                    setStyle("-fx-background-color: #FFF300FF;");
-                }
-                else {
-                    setStyle("");
-                }
-            }
+            return row;
         });
     }
+
+    private void updateRowStyle(TableRow<Inventory> row, Inventory item) {
+        if (item == null) {
+            row.setStyle("");
+            return;
+        }
+
+        if (row.isSelected()) {
+            row.setStyle("");
+            return;
+        }
+
+        if (item.getQty() == 0) {
+            row.setStyle("-fx-background-color: #fa0202;");
+        } else if (item.getQty() < item.getLowStokeThreshold()) {
+            row.setStyle("-fx-background-color: #FFF300FF;");
+        } else {
+            row.setStyle("");
+        }
+    }
+
     @FXML
     public void innitAndLoadInventory() {
         inventoryListView.setEditable(true);
@@ -138,7 +160,6 @@ public class InventoryController {
 
         ObservableList<Inventory> inventoryList = getInventory();
         inventoryListView.setItems(inventoryList);
-
     }
 
     @FXML

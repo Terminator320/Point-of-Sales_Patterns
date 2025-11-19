@@ -74,35 +74,35 @@ public class MenuItemConntroller {
         }
 
         //coffees
-        menuItems.put(1, new MenuItem(1, "Espresso",3, inventoryMap.get(1)));
-        menuItems.put(2, new MenuItem(2, "Latte",4.5, inventoryMap.get(2)));
-        menuItems.put(3, new MenuItem(3, "Cappuccino",4.25, inventoryMap.get(3)));
-        menuItems.put(4, new MenuItem(4, "Iced Americano",3.5, inventoryMap.get(4)));
-        menuItems.put(5, new MenuItem(17, "Iced Coffee",2.99, inventoryMap.get(16)));
-        menuItems.put(6, new MenuItem(16, "Greek Frappe",4, inventoryMap.get(17)));
+        menuItems.put(1, new MenuItem(1, "Espresso",3,1.8, inventoryMap.get(1)));
+        menuItems.put(2, new MenuItem(2, "Latte",4.5, 2.00,inventoryMap.get(2)));
+        menuItems.put(3, new MenuItem(3, "Cappuccino",4.25, 1.85,inventoryMap.get(3)));
+        menuItems.put(4, new MenuItem(4, "Iced Americano",3.5, 1.90,inventoryMap.get(4)));
+        menuItems.put(5, new MenuItem(17, "Iced Coffee",2.99, 1.25,inventoryMap.get(16)));
+        menuItems.put(6, new MenuItem(16, "Greek Frappe",4, 1.25,inventoryMap.get(17)));
 
         //teas
-        menuItems.put(7, new MenuItem(5, "Green Tea",3, inventoryMap.get(5)));
-        menuItems.put(8, new MenuItem(6, "Chai Latte",4, inventoryMap.get(6)));
-        menuItems.put(9,new MenuItem(18, "Black Tea",1.5, inventoryMap.get(18)));
-        menuItems.put(10,new MenuItem(19,"Oolong Tea",3,inventoryMap.get(19)));
-        menuItems.put(11,new MenuItem(20,"Peach Tea",2.5,inventoryMap.get(20)));
-        menuItems.put(12,new MenuItem(21,"Strawberry Tea",2.5,inventoryMap.get(21)));
+        menuItems.put(7, new MenuItem(5, "Green Tea",3, 1.5,inventoryMap.get(5)));
+        menuItems.put(8, new MenuItem(6, "Chai Latte",4, 2,inventoryMap.get(6)));
+        menuItems.put(9,new MenuItem(18, "Black Tea",1.5, 0.5,inventoryMap.get(18)));
+        menuItems.put(10,new MenuItem(19,"Oolong Tea",3,4.25,inventoryMap.get(19)));
+        menuItems.put(11,new MenuItem(20,"Peach Tea",2.5,0.5,inventoryMap.get(20)));
+        menuItems.put(12,new MenuItem(21,"Strawberry Tea",2.5,0.5,inventoryMap.get(21)));
 
         //food
-        menuItems.put(20, new MenuItem(7, "Croissant",2.75, inventoryMap.get(7)));
-        menuItems.put(21, new MenuItem(8, "Muffin",2.50, inventoryMap.get(8)));
-        menuItems.put(22, new MenuItem(9, "Cheese Bagel",3.25, inventoryMap.get(9)));
-        menuItems.put(23, new MenuItem(10, "BLT Sandwich",6.50, inventoryMap.get(10)));
-        menuItems.put(24, new MenuItem(11, "Grilled Cheese",5.50, inventoryMap.get(11)));
-        menuItems.put(25, new MenuItem(12, "Chicken Wrap",7.00, inventoryMap.get(12)));
+        menuItems.put(20, new MenuItem(7, "Croissant",2.75, 0.5,inventoryMap.get(7)));
+        menuItems.put(21, new MenuItem(8, "Muffin",2.50, 1.95,inventoryMap.get(8)));
+        menuItems.put(22, new MenuItem(9, "Cheese Bagel",3.25, 2.25,inventoryMap.get(9)));
+        menuItems.put(23, new MenuItem(10, "BLT Sandwich",6.50, 4.25,inventoryMap.get(10)));
+        menuItems.put(24, new MenuItem(11, "Grilled Cheese",5.50, 3.5,inventoryMap.get(11)));
+        menuItems.put(25, new MenuItem(12, "Chicken Wrap",7.00, 4.80,inventoryMap.get(12)));
 
 
         //smoothies
-        menuItems.put(30, new MenuItem(22,"Strawberry Smoothie",5.75, inventoryMap.get(22)));
-        menuItems.put(31, new MenuItem(13,"Berry Smoothie",5.75, inventoryMap.get(13)));
-        menuItems.put(32, new MenuItem(15,"Protein Shake",6, inventoryMap.get(15)));
-        menuItems.put(33,new MenuItem(14,"Mango Smoothie",5.75, inventoryMap.get(14)));
+        menuItems.put(30, new MenuItem(22,"Strawberry Smoothie",5.75, 2.30,inventoryMap.get(22)));
+        menuItems.put(31, new MenuItem(13,"Berry Smoothie",5.75, 3.75,inventoryMap.get(13)));
+        menuItems.put(32, new MenuItem(15,"Protein Shake",6, 4.00,inventoryMap.get(15)));
+        menuItems.put(33,new MenuItem(14,"Mango Smoothie",5.75, 3.75,inventoryMap.get(14)));
 
     }
 

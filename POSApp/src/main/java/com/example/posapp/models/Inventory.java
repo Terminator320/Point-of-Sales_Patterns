@@ -24,8 +24,6 @@ public class Inventory {
         this.lowStokeThreshold = lowStokeThreshold;
     }
 
-
-
     public Inventory(int invId, String invName, int qty) {
         this.invId = invId;
         this.invName = invName;
@@ -136,14 +134,14 @@ public class Inventory {
 
 
     //removing at the end when order has been paid
-    public static void subtractQuantity(int itemCode, int amount){
-        final String sql = "UPDATE inventory set qty = qty - ? where itemCode = ?";
+    public static void subtractQuantity(int invId, int amount){
+        final String sql = "UPDATE inventory set qty = qty - ? where invId = ?";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, amount);
-            pstmt.setInt(2, itemCode);
+            pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
