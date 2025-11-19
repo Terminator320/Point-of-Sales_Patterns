@@ -54,6 +54,7 @@ public class SalesOrderController {
             SalesOrder order = event.getRowValue();
             order.setQuantity(event.getNewValue());
             refreshSubTotal();
+
         });
     }
 
@@ -74,17 +75,19 @@ public class SalesOrderController {
 
         items = orderTableView.getItems();
 
-        totalPriceText.setText("$ " + Double.toString(totalPrice));
+        totalPriceText.setText("$ " + String.format("%.2f",  (totalPrice)));
     }
 
     public void refreshSubTotal() {
         double totalPrice = 0;
+        System.out.println(orderTableView.getItems().size());
         for(int i = 0 ; i < orderTableView.getItems().size() ; i++) {
             int quantity = orderTableView.getItems().get(i).getQuantity();
             double price = orderTableView.getItems().get(i).getPrice();
             totalPrice += quantity * price;
         }
-        totalPriceText.setText("$ " + Double.toString(totalPrice));
+        System.out.println(totalPrice);
+        totalPriceText.setText("$ " + String.format("%.2f",  (totalPrice)));
     }
     
     public double getSubtotalAsDouble() {
@@ -116,6 +119,7 @@ public class SalesOrderController {
     @FXML
     public void refreshButtonClick(ActionEvent event) {
         orderTableView.setItems(items);
+        searchText.clear();
     }
 
 

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="396.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="468.0" prefWidth="397.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
     <children>
         <Label alignment="CENTER" layoutX="14.0" layoutY="20.0" prefHeight="55.0" prefWidth="155.0" text="ORDER">
             <font>
@@ -25,8 +25,8 @@
                 <TableColumn fx:id="colPrice" minWidth="0.0" prefWidth="72.0" text="Price" />
             </columns>
         </TableView>
-      <Button fx:id="searchButton" layoutX="179.0" layoutY="20.0" mnemonicParsing="false" onAction="#searchButtonClick" prefHeight="25.0" prefWidth="58.0" text="Search" />
-      <Button fx:id="refreshButton" layoutX="179.0" layoutY="50.0" mnemonicParsing="false" onAction="#refreshButtonClick" prefHeight="25.0" prefWidth="58.0" text="Refresh" />
-      <TextField fx:id="searchText" layoutX="246.0" layoutY="20.0" prefHeight="25.0" prefWidth="133.0" promptText="Search by item name!" />
+      <Button fx:id="searchButton" layoutX="322.0" layoutY="20.0" mnemonicParsing="false" onAction="#searchButtonClick" prefHeight="25.0" prefWidth="58.0" text="Search" />
+      <Button fx:id="refreshButton" layoutX="322.0" layoutY="50.0" mnemonicParsing="false" onAction="#refreshButtonClick" prefHeight="25.0" prefWidth="58.0" text="Clear" />
+      <TextField fx:id="searchText" layoutX="176.0" layoutY="20.0" prefHeight="25.0" prefWidth="139.0" promptText="Search by item name!" />
     </children>
 </AnchorPane>
