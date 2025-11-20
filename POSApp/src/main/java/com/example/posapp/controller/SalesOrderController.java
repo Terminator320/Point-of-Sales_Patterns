@@ -86,13 +86,11 @@ public class SalesOrderController {
 
     public void refreshSubTotal() {
         double totalPrice = 0;
-        System.out.println(orderTableView.getItems().size());
         for(int i = 0 ; i < orderTableView.getItems().size() ; i++) {
             int quantity = orderTableView.getItems().get(i).getQuantity();
             double price = orderTableView.getItems().get(i).getPrice();
             totalPrice += quantity * price;
         }
-        System.out.println(totalPrice);
         totalPriceText.setText("$ " + String.format("%.2f",  (totalPrice)));
     }
     
