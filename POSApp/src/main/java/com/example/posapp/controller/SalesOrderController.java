@@ -1,5 +1,6 @@
 package com.example.posapp.controller;
 
+import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
 import com.example.posapp.models.MenuItem;
 import com.example.posapp.models.SalesOrder;
@@ -24,6 +25,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import static com.example.posapp.models.SalesOrder.addSale;
 
@@ -35,6 +40,8 @@ public class SalesOrderController {
     @FXML private TableColumn<SalesOrder, Double> colPrice;
     @FXML private TextField searchText;
     private ObservableList<SalesOrder> items;
+
+    private static final Logger LOGGER = LogConfig.getLogger(SalesOrderController.class.getName());
 
 
     public void initialize() {
@@ -54,7 +61,6 @@ public class SalesOrderController {
             SalesOrder order = event.getRowValue();
             order.setQuantity(event.getNewValue());
             refreshSubTotal();
-
         });
     }
 
@@ -100,7 +106,6 @@ public class SalesOrderController {
 
     public BigDecimal getSubtotal(){
         return BigDecimal.valueOf(getSubtotalAsDouble());
-
     }
 
     @FXML
@@ -146,9 +151,8 @@ public class SalesOrderController {
             stage.setScene(newScene);
             stage.setTitle("Payment");
         }
-        catch (IOException e) {
-            //check top logger
-            e.printStackTrace();
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
         }
     }
 }

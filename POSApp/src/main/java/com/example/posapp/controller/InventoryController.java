@@ -1,5 +1,6 @@
 package com.example.posapp.controller;
 
+import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -17,6 +18,10 @@ import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.Logger;
 
 public class InventoryController {
     @FXML private TableView<Inventory> inventoryListView;
@@ -26,6 +31,9 @@ public class InventoryController {
     @FXML private TableColumn<Inventory, Integer> colLow;
 
     @FXML private TextField input_TF;
+
+    private static final Logger LOGGER = LogConfig.getLogger(InventoryController.class.getName());
+
 
     @FXML
     public void initialize() {
@@ -47,6 +55,9 @@ public class InventoryController {
             int oldStoke = item.getLowStokeThreshold();
             Integer newStoke = event.getNewValue();
 
+            if(newStoke == null || newStoke < 0 || newStoke != oldStoke){
+
+            }
             if(newStoke >= 0) {
                 item.setLowStokeThreshold(newStoke);
                 //update to db
@@ -57,15 +68,16 @@ public class InventoryController {
                 catch (Exception e) {
                     //if there is an error while updating the db go back to old value
                     item.setLowStokeThreshold(oldStoke);
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB");
+                    LOGGER.log(Level.SEVERE, "Error updating low stoke threshold the database.");
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB.");
                     alert.showAndWait();
-                    //change to logger later
-                    e.printStackTrace();
                 }
             }
             else {
                 item.setLowStokeThreshold(oldStoke);
                 //logger
+                LOGGER.log(Level.SEVERE, "Error updating low stoke threshold the database.");
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Low Stoke Threshold can not be a negative number.");
                 alert.showAndWait();
                 inventoryListView.refresh();
@@ -85,28 +97,33 @@ public class InventoryController {
             int oldQTY = item.getQty();
             Integer newQTY = event.getNewValue();
 
-            if(newQTY >= 0) {
-                item.setQty(newQTY);
-                //update to db
-                try
-                {
-                    Inventory.editItemQTY(newQTY,item.getInvId());
-                }
-                catch (Exception e) {
-                    //if there is an error while updating the db go back to old value
-                    item.setQty(oldQTY);
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB");
-                    alert.showAndWait();
-                    //change to logger later
-                    e.printStackTrace();
-                }
-            }
-            else {
+            //if user inputted negative or null value
+            if (newQTY == null || newQTY < 0 || newQTY != oldQTY) {
                 item.setQty(oldQTY);
-                //logger
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Quantity can not be a negative number.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Quantity can not be a negative number or empty or same value.");
                 alert.showAndWait();
+                LOGGER.log(Level.WARNING, "User inputted a negative number or empty value or the same value.");
+
                 inventoryListView.refresh();
+                return;
+            }
+
+            //if value is valid set new qty and update db
+            item.setQty(newQTY);
+
+            //update to db
+            try {
+                Inventory.editItemQTY(newQTY, item.getInvId());
+            } catch (Exception e) {
+                //if there is an error while updating the db go back to old value
+                item.setQty(oldQTY);
+                inventoryListView.refresh();
+
+                Alert alert = new Alert(Alert.AlertType.ERROR, "An error has occurred while trying to update the DB");
+                alert.showAndWait();
+
+
+                LOGGER.log(Level.SEVERE, "Error updating quantity the database.");
             }
 
             //clears selection AFTER edit
@@ -114,6 +131,7 @@ public class InventoryController {
                     inventoryListView.getSelectionModel().clearSelection()
             );
         });
+
     }
 
     private void checkQTY(){
@@ -199,9 +217,8 @@ public class InventoryController {
             stage.setScene(newScene);
             stage.setTitle("Menu");
         }
-        catch (IOException e) {
-            //check top looger
-            e.printStackTrace();
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error loading back to the Main Menu.");
         }
     }
 

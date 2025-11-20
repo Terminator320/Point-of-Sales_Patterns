@@ -1,10 +1,17 @@
 package com.example.posapp.models;
 
+import com.example.posapp.LogConfig;
+import com.example.posapp.controller.SalesOrderController;
 import database.ConnectionManager;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class SalesOrder {
     private int order_id;
@@ -19,6 +26,8 @@ public class SalesOrder {
     private String itemName;
     private int quantity;
     private double price;
+
+    private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
     public SalesOrder(String itemName, int quantity, double price) {
         this.itemName = itemName;
@@ -138,10 +147,8 @@ public class SalesOrder {
             preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
+           LOGGER.log(Level.SEVERE, "Error while adding Sale to SalesOrder");
         }
-
     }
 }
 

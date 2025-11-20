@@ -1,5 +1,6 @@
 package com.example.posapp.models;
 
+import com.example.posapp.LogConfig;
 import database.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,12 +10,16 @@ import java.math.RoundingMode;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Payment {
 
     public enum PaymentMethod{
         CASH, CREDIT, DEBIT
     }
+
+    private static final Logger LOGGER = LogConfig.getLogger(Payment.class.getName());
 
     //ATTRIBUTES
     private int paymentID;
@@ -140,8 +145,8 @@ public class Payment {
                 }
             }
             return false;
-        }catch(SQLException e){
-            e.printStackTrace();
+        }catch(Exception e){
+            LOGGER.log(Level.SEVERE, "Database Error inserting payment record.");
             return false;
         }
     }
@@ -165,8 +170,8 @@ public class Payment {
                         ));
             }
         }
-        catch (SQLException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE,"Error loading data from payment.");
         }
         return paymentData;
     }

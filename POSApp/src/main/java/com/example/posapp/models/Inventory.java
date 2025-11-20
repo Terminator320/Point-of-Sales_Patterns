@@ -1,22 +1,29 @@
 package com.example.posapp.models;
 
+import com.example.posapp.LogConfig;
 import database.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 public class Inventory {
-    private int invId,qty, lowStokeThreshold;
+    private int invId, qty, lowStokeThreshold;
     private String invName;
 
-    public Inventory() {
+    private static final Logger LOGGER = LogConfig.getLogger(Inventory.class.getName());
 
-    }
+
 
     public Inventory(String invName,int qty, int lowStokeThreshold) {
         this.invName = invName;
@@ -91,8 +98,7 @@ public class Inventory {
             }
         }
         catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Database error while fetching inventory");
         }
         return inventoryData;
     }
@@ -110,9 +116,8 @@ public class Inventory {
             pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
-        catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
+        catch (Exception e) {
+           LOGGER.log(Level.SEVERE, "Database error while editing low stoke threshold");
         }
     }
 
@@ -127,8 +132,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
+          LOGGER.log(Level.SEVERE, "Database error while editing item quantity");
         }
     }
 
@@ -144,9 +148,8 @@ public class Inventory {
             pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
-        catch (SQLException e) {
-            //change to logger later
-            e.printStackTrace();
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Database error while ");
         }
     }
 

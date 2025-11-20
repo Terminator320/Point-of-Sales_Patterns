@@ -1,5 +1,6 @@
 package com.example.posapp.controller;
 
+import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +18,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import com.example.posapp.models.MenuItem;
 
 
@@ -65,6 +71,10 @@ public class MenuItemConntroller {
     public ObservableList<String> getReceiptLines() {
         return receiptLines;
     }
+
+    private static final Logger LOGGER = LogConfig.getLogger(MenuItemConntroller.class.getName());
+
+
 
     public void initialize() {
         recitedView.setItems(receiptLines);
@@ -280,9 +290,8 @@ public class MenuItemConntroller {
             stage.setScene(newScene);
             stage.setTitle("Sales-Order Report");
         }
-        catch (IOException e) {
-            //check top logger
-            e.printStackTrace();
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error loading sales order view");
         }
     }
 

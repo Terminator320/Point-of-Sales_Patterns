@@ -16,6 +16,8 @@ public class HelloApplication extends Application {
         stage.setTitle("Menu View");
 
         stage.show();
+
+
     }
 
     public static void main(String[] args) {
