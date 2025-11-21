@@ -4,6 +4,8 @@ module com.example.posapp {
     requires java.sql;
     requires javafx.base;
     requires javafx.graphics;
+//    requires com.example.posapp;
+    requires java.logging;
 
 
     opens com.example.posapp to javafx.fxml;

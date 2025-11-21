@@ -1,9 +1,13 @@
 package com.example.posapp.controller;
 
+import com.example.posapp.LogConfig;
 import com.example.posapp.models.Payment;
-import com.example.posapp.models.SalesOrder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
@@ -12,6 +16,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class PaymentController {
 
@@ -44,6 +51,8 @@ public class PaymentController {
 
     //DISPLAY FINAL TOTAL AMOUNT
     @FXML private ListView<String> finalTotal;
+
+    private static final Logger LOGGER = LogConfig.getLogger(PaymentController.class.getName());
 
 
     private SalesOrderController mySalesOrder;
@@ -319,8 +328,22 @@ public class PaymentController {
     //ACTION BUTTONS FOR CREATING/CANCELLING A PAYMENT
     @FXML
     protected void onCancelAction(ActionEvent event) {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+        try {
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
+            Parent newRoot = loader.load();
+            Scene newScene = new Scene(newRoot);
+
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Main menu");
+            stage.show();
+        }
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
+        }
     }
 
     @FXML

@@ -8,25 +8,28 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ToggleGroup?>
 <AnchorPane prefHeight="804.0" prefWidth="460.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.PaymentController">
    <children>
        <fx:define>
            <ToggleGroup fx:id="tipGroup" />
        </fx:define>
-       <HBox layoutX="54.0" layoutY="440.0" prefHeight="118.0" prefWidth="356.0">
+       <HBox layoutX="54.0" layoutY="440.0" prefHeight="129.0" prefWidth="356.0" style="-fx-background-color: lightgrey; -fx-background-radius: 20; -fx-padding: 5;">
            <children>
                <AnchorPane prefHeight="116.0" prefWidth="89.0">
                    <children>
-                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%" toggleGroup="$tipGroup">
+                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%">
                      <font>
                         <Font size="13.0" />
                      </font>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="tipGroup" />
+                     </toggleGroup>
                      </RadioButton>
                        <Label fx:id="amount10PercentTip" layoutX="28.0" layoutY="49.0" text="Label">
                      <font>
@@ -73,7 +76,7 @@
                         <Font size="13.0" />
                      </font></RadioButton>
 
-                       <TextField fx:id="customTipField" disable="true" layoutX="5.0" layoutY="42.0" onAction="#onCustomTipAction" prefWidth="70.0" promptText="\$">
+                       <TextField fx:id="customTipField" disable="true" layoutX="5.0" layoutY="42.0" onAction="#onCustomTipAction" prefWidth="70.0" promptText="\$" style="-fx-background-color: white; -fx-background-radius: 20px;">
                      <font>
                         <Font size="13.0" />
                      </font></TextField>
@@ -91,13 +94,13 @@
          <font>
             <Font size="24.0" />
          </font></Label>
-      <ListView fx:id="finalTotal" layoutX="61.0" layoutY="570.0" prefHeight="165.0" prefWidth="341.0" />
-      <Button fx:id="payButton" layoutX="233.0" layoutY="749.0" mnemonicParsing="false" onAction="#OnPayAction" text="Pay Now">
+      <ListView fx:id="finalTotal" layoutX="61.0" layoutY="588.0" prefHeight="147.0" prefWidth="341.0" style="-fx-background-radius: 20px;" />
+      <Button fx:id="payButton" layoutX="233.0" layoutY="749.0" mnemonicParsing="false" onAction="#OnPayAction" style="-fx-background-color: blue; -fx-text-fill: white; -fx-background-radius: 200px; -fx-padding: 5 15;" text="Pay Now">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="cancelButton" layoutX="137.0" layoutY="749.0" mnemonicParsing="false" onAction="#onCancelAction" text="Cancel">
+      <Button fx:id="cancelButton" layoutX="137.0" layoutY="749.0" mnemonicParsing="false" onAction="#onCancelAction" style="-fx-background-radius: 20; -fx-padding: 5 15;" text="Cancel">
          <font>
             <Font size="18.0" />
          </font>
@@ -107,13 +110,13 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceOfPayment" layoutX="64.0" layoutY="80.0" prefHeight="25.0" prefWidth="322.0" />
+      <ChoiceBox fx:id="choiceOfPayment" layoutX="64.0" layoutY="80.0" prefHeight="25.0" prefWidth="322.0" style="-fx-background-color: transparent; -fx-border-radius: 200px; -fx-border-style: solid; -fx-background-insets: 0 0 0 0, 0, 1, 2;" />
       <Separator layoutX="63.0" layoutY="160.0" prefHeight="19.0" prefWidth="322.0" />
       <Pane layoutX="37.0" layoutY="173.0" prefHeight="201.0" prefWidth="363.0">
          <children>
-            <TextField fx:id="nameField" layoutX="22.0" layoutY="35.0" onAction="#onNameFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Name" />
-            <TextField fx:id="cardNumberField" layoutX="20.0" layoutY="102.0" onAction="#onCardNumFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Number" />
-            <TextField fx:id="threeDigitCardNumber" layoutX="232.0" layoutY="162.0" onAction="#onCVVFieldAction" prefHeight="25.0" prefWidth="110.0" promptText="e.g. 123" />
+            <TextField fx:id="nameField" layoutX="22.0" layoutY="35.0" onAction="#onNameFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Name" style="-fx-padding: 5 0 5 15px; -fx-background-color: transparent; -fx-border-color: lightgrey; -fx-border-radius: 300px;" />
+            <TextField fx:id="cardNumberField" layoutX="20.0" layoutY="102.0" onAction="#onCardNumFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Number" style="-fx-padding: 5 0 5 15px; -fx-background-color: transparent; -fx-border-color: lightgrey; -fx-border-radius: 300px;" />
+            <TextField fx:id="threeDigitCardNumber" layoutX="232.0" layoutY="162.0" onAction="#onCVVFieldAction" prefHeight="25.0" prefWidth="110.0" promptText="e.g. 123" style="-fx-padding: 5 0 5 15px; -fx-background-color: transparent; -fx-border-color: lightgrey; -fx-border-radius: 300px;" />
             <Label layoutX="20.0" layoutY="8.0" text="Card Name:">
                <font>
                   <Font size="14.0" />
@@ -134,8 +137,8 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox fx:id="selectMonthExpiration" layoutX="20.0" layoutY="162.0" onAction="#onExpirationDateAction" prefHeight="25.0" prefWidth="80.0" promptText="MM" />
-            <ComboBox fx:id="selectYearExpiration" layoutX="122.0" layoutY="162.0" onAction="#onExpirationDateAction" prefHeight="25.0" prefWidth="80.0" promptText="YY" />
+            <ComboBox fx:id="selectMonthExpiration" layoutX="20.0" layoutY="162.0" onAction="#onExpirationDateAction" prefHeight="25.0" prefWidth="80.0" promptText="MM" style="-fx-background-radius: 10px;" />
+            <ComboBox fx:id="selectYearExpiration" layoutX="122.0" layoutY="162.0" onAction="#onExpirationDateAction" prefHeight="25.0" prefWidth="80.0" promptText="YY" style="-fx-background-radius: 10px;" />
             <Label layoutX="108.0" layoutY="160.0" text="/">
                <font>
                   <Font size="16.0" />
