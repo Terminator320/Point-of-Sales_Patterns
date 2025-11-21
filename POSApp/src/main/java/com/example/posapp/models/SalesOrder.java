@@ -18,10 +18,10 @@ public class SalesOrder {
     private String status;
     private String created_at;
     private String finalized_at;
-    private int subtotal_cents;
-    private int tax_total_cents;
-    private int discount_cents;
-    private int total_cents;
+    private double subtotal;
+    private double tax_total;
+    private double discount_total;
+    private double total;
 
     private String itemName;
     private int quantity;
@@ -35,15 +35,15 @@ public class SalesOrder {
         this.price = price;
     }
 
-    public SalesOrder(int order_id, String status, String created_at, String finalized_at, int subtotal_cents, int tax_total_cents, int discount_cents, int total_cents) {
+    public SalesOrder(int order_id, String status, String created_at, String finalized_at, double subtotal, double tax_total, double discount_total, double total) {
         this.order_id = order_id;
         this.status = status;
         this.created_at = created_at;
         this.finalized_at = finalized_at;
-        this.subtotal_cents = subtotal_cents;
-        this.tax_total_cents = tax_total_cents;
-        this.discount_cents = discount_cents;
-        this.total_cents = total_cents;
+        this.subtotal = subtotal;
+        this.tax_total = tax_total;
+        this.discount_total = discount_total;
+        this.total = total;
     }
 
     public String getItemName() {
@@ -102,36 +102,36 @@ public class SalesOrder {
         this.finalized_at = finalized_at;
     }
 
-    public int getSubtotal_cents() {
-        return subtotal_cents;
+    public double getSubtotal() {
+        return subtotal;
     }
 
-    public void setSubtotal_cents(int subtotal_cents) {
-        this.subtotal_cents = subtotal_cents;
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 
-    public int getTax_total_cents() {
-        return tax_total_cents;
+    public double getTax_total() {
+        return tax_total;
     }
 
-    public void setTax_total_cents(int tax_total_cents) {
-        this.tax_total_cents = tax_total_cents;
+    public void setTax_total(double tax_total) {
+        this.tax_total = tax_total;
     }
 
-    public int getDiscount_cents() {
-        return discount_cents;
+    public double getDiscount() {
+        return discount_total;
     }
 
-    public void setDiscount_cents(int discount_cents) {
-        this.discount_cents = discount_cents;
+    public void setDiscount(double discount_total) {
+        this.discount_total = discount_total;
     }
 
-    public int getTotal_cents() {
-        return total_cents;
+    public double getTotal() {
+        return total;
     }
 
-    public void setTotal_cents(int total_cents) {
-            this.total_cents = total_cents;
+    public void setTotal(double total) {
+            this.total = total;
         }
 
     //CRUD
@@ -148,6 +148,40 @@ public class SalesOrder {
         }
         catch (SQLException e) {
            LOGGER.log(Level.SEVERE, "Error while adding Sale to SalesOrder");
+        }
+    }
+
+    public static void finalizeSale(int order_id, String status, String finalized_at, double tax_total, double discount_total, double total){
+        final String sql = "UPDATE sale_order SET status = ?, finalized_at = ?, tax_total = ?, discount_total = ?, total = ? WHERE order_id = ?;";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setString(1, status);
+            preparedStatement.setString(2, finalized_at);
+            preparedStatement.setDouble(3, tax_total);
+            preparedStatement.setDouble(4, discount_total);
+            preparedStatement.setDouble(5, total);
+            preparedStatement.setInt(6, order_id);
+
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error while updating Sale in SalesOrder");
+        }
+    }
+
+    public static void cancelledOrder(int order_id){
+        final String sql = "DELETE FROM sale_order WHERE order_id = ?;";
+
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+
+            preparedStatement.setInt(1, order_id);
+
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error while deleting a sale in SalesOrder");
         }
     }
 }

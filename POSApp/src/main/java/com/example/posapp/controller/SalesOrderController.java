@@ -81,6 +81,7 @@ public class SalesOrderController {
 
         items = orderTableView.getItems();
 
+
         totalPriceText.setText("$ " + String.format("%.2f",  (totalPrice)));
     }
 
