@@ -25,25 +25,25 @@ public class Payment {
     private int paymentID;
     private int orderID;
     private PaymentMethod methodPayment;//cash, credit, debit
-    private BigDecimal tips;
+    private double tips;
     private LocalDateTime paymentDate;
 
     //CONSTRUCTORS
-    public Payment(int paymentID, int orderID, PaymentMethod methodPayment, BigDecimal tips, LocalDateTime paymentDate) {
+    public Payment(int paymentID, int orderID, PaymentMethod methodPayment, double tips, LocalDateTime paymentDate) {
         this.paymentID = paymentID;
         this.orderID = orderID;
         this.methodPayment = methodPayment;
 
         //2 = two digit after decimal point
         //RoundingMode.HALF_UP = round nearest point
-        this.tips = tips.setScale(2, RoundingMode.HALF_UP);
+        this.tips = tips;
         this.paymentDate = paymentDate;
     }
 
-    public Payment(int orderID, PaymentMethod methodPayment, BigDecimal tips, LocalDateTime paymentDate) {
+    public Payment(int orderID, PaymentMethod methodPayment, double tips, LocalDateTime paymentDate) {
         this.orderID = orderID;
         this.methodPayment = methodPayment;
-        this.tips = tips.setScale(2, RoundingMode.HALF_UP);;
+        this.tips = tips;
         this.paymentDate = paymentDate;
     }
 
@@ -69,11 +69,11 @@ public class Payment {
         this.methodPayment = methodPayment;
     }
 
-    public BigDecimal getTips(){
+    public double getTips(){
         return tips;
     }
-    public void setTips(BigDecimal tips){
-        this.tips = tips.setScale(2, RoundingMode.HALF_UP);;
+    public void setTips(double tips){
+        this.tips = tips;
     }
 
     public LocalDateTime getPaymentDate(){
@@ -84,7 +84,7 @@ public class Payment {
     }
 
     public String formatTips() {
-        return "$" + tips.setScale(2, RoundingMode.HALF_UP).toString();
+        return String.format("$%.2f", tips);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class Payment {
 
             pstmt.setInt(1, this.orderID);
             pstmt.setString(2, this.methodPayment.name());
-            pstmt.setBigDecimal(3, this.tips);
+            pstmt.setDouble(3, this.tips);
             pstmt.setTimestamp(4, Timestamp.valueOf(this.paymentDate));
 
 
@@ -165,7 +165,7 @@ public class Payment {
                         resultSet.getInt("payment_ID"),
                         resultSet.getInt("order_ID"),
                         PaymentMethod.valueOf(resultSet.getString("method_payment")),
-                        resultSet.getBigDecimal("tips"),
+                        resultSet.getDouble("tips"),
                         resultSet.getTimestamp("payment_date").toLocalDateTime()
                         ));
             }
@@ -186,7 +186,7 @@ public class Payment {
 
             pstmt.setInt(1, this.orderID);
             pstmt.setString(2, this.methodPayment.name());
-            pstmt.setBigDecimal(3, this.tips);
+            pstmt.setDouble(3, this.tips);
             pstmt.setInt(4, this.paymentID);
 
             return  pstmt.executeUpdate() > 0;

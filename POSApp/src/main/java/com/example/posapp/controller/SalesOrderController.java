@@ -103,9 +103,9 @@ public class SalesOrderController {
         return total;
     }
 
-    public BigDecimal getSubtotal(){
-        return BigDecimal.valueOf(getSubtotalAsDouble());
-    }
+    //public BigDecimal getSubtotal(){
+//        return BigDecimal.valueOf(getSubtotalAsDouble());
+//    }
 
     @FXML
     public void searchButtonClick(ActionEvent event) {
@@ -141,9 +141,9 @@ public class SalesOrderController {
             //Adds the sale to the database (not the completed transaction though)
             //double subtotal = Double.parseDouble(totalPriceText.getText());
             double subtotal = getSubtotalAsDouble();
-            addSale(subtotal);
+            int orderID = addSale(subtotal);
 
-            //paymentController.setSalesOrderTotal(this, getOrderID()); // ADD YOUR STUFF HERE STEVE
+            paymentController.setSalesOrderTotal(this, orderID); // ADD YOUR STUFF HERE STEVE
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

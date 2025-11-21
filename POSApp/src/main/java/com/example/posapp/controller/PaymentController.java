@@ -2,6 +2,7 @@ package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Payment;
+import com.example.posapp.models.SalesOrder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,11 +14,14 @@ import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.example.posapp.models.SalesOrder.*;
 
 
 public class PaymentController {
@@ -57,10 +61,9 @@ public class PaymentController {
 
     private SalesOrderController mySalesOrder;
     private int orderID;
-    private BigDecimal subtotal = BigDecimal.ZERO;
-    private BigDecimal tipAmount = BigDecimal.ZERO;
+    private double subtotal = 0;
+    private double tipAmount = 0;
     private Payment.PaymentMethod selectPaymentMethod = Payment.PaymentMethod.CASH;
-
 
 
     @FXML
@@ -74,7 +77,7 @@ public class PaymentController {
     public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID){
         this.mySalesOrder = salesOrderController;
         this.orderID = orderID;
-        this.subtotal = mySalesOrder.getSubtotal();
+        this.subtotal = mySalesOrder.getSubtotalAsDouble();
 
         showTipAmountLabel();
         setListOfCost();
@@ -164,7 +167,7 @@ public class PaymentController {
     }
 
     private boolean isDateValid(){
-        if(!isDateEmpty()){
+        if(isDateEmpty()){
             return false;
         }
         int month = Integer.parseInt(selectMonthExpiration.getValue());
@@ -172,12 +175,12 @@ public class PaymentController {
 
         YearMonth expirationYearMonth = YearMonth.of(year, month);
         YearMonth currentYearMonth = YearMonth.now();
-        return !expirationYearMonth.isBefore(currentYearMonth);
+        return expirationYearMonth.isBefore(currentYearMonth);
     }
 
     private boolean isDateEmpty(){
-        return selectMonthExpiration.getValue() != null
-                && selectYearExpiration.getValue() != null;
+        return selectMonthExpiration.getValue() == null
+                || selectYearExpiration.getValue() == null;
     }
 
     private void expirationDateChoice(){
@@ -224,8 +227,8 @@ public class PaymentController {
     @FXML
     protected void onExpirationDateAction(ActionEvent event){
         if(selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
-            if (isDateEmpty()) {
-                if (!isDateValid()) {
+            if (!isDateEmpty()) {
+                if (isDateValid()) {
                     showInvalidInformation("Invalid card date. Card already expired.");
                 }
             }
@@ -237,15 +240,15 @@ public class PaymentController {
     @FXML
     protected void getTipPercentage(ActionEvent actionEvent) {
         if(radioButton10percent.isSelected()){
-            tipAmount = calculateTip(new BigDecimal("0.10"));
+            tipAmount = calculateTip(0.10);
             customTipField.setDisable(true);
             customTipField.clear();
         }else if (radioButton15percent.isSelected()){
-            tipAmount = calculateTip(new BigDecimal("0.15"));
+            tipAmount = calculateTip(0.15);
             customTipField.setDisable(true);
             customTipField.clear();
         } else if (radioButton20percent.isSelected()) {
-            tipAmount = calculateTip(new BigDecimal("0.20"));
+            tipAmount = calculateTip(0.20);
             customTipField.setDisable(true);
             customTipField.clear();
         }else if (radioButtonCustom.isSelected()){
@@ -253,7 +256,7 @@ public class PaymentController {
             customTipField.setDisable(false);
             customTipField.requestFocus();
         }else{
-            tipAmount = BigDecimal.ZERO;
+            tipAmount = 0;
             customTipField.setDisable(true);
             customTipField.clear();
         }
@@ -266,18 +269,18 @@ public class PaymentController {
         setListOfCost();
     }
 
-    private BigDecimal calculateTip(BigDecimal percentage){
-        return subtotal.multiply(percentage).setScale(2, RoundingMode.HALF_UP);
+    private double calculateTip(double percentage){
+        return subtotal * percentage;
     }
 
-    private String formatMoney(BigDecimal money){
+    private String formatMoney(double money){
         return String.format("$%.2f", money);
     }
 
     private void showTipAmountLabel(){
-        BigDecimal tip10 = calculateTip(new BigDecimal("0.10"));
-        BigDecimal tip15 = calculateTip(new BigDecimal("0.15"));
-        BigDecimal tip20 = calculateTip(new BigDecimal("0.20"));
+        double tip10 = calculateTip(0.10);
+        double tip15 = calculateTip(0.15);
+        double tip20 = calculateTip(0.20);
 
         amount10PercentTip.setText(formatMoney(tip10));
         amount15PercentTip.setText(formatMoney(tip15));
@@ -288,12 +291,12 @@ public class PaymentController {
         try {
             String text = customTipField.getText();
             if (!text.isEmpty()) {
-                tipAmount = new BigDecimal(text).setScale(2, RoundingMode.HALF_UP);
+                tipAmount = Double.parseDouble(text);
             } else {
-                tipAmount = BigDecimal.ZERO;
+                tipAmount = 0;
             }
         } catch (NumberFormatException e) {
-            tipAmount = BigDecimal.ZERO;
+            tipAmount = 0;
             showInvalidInformation("Invalid tip amount. Please enter a valid number.");
             customTipField.clear();
         }
@@ -301,13 +304,13 @@ public class PaymentController {
 
 
     //LIST SHOWING PAYMENT DETAILS SUCH AS SUBTOTAL, TIPS, TAXES, AND TOTAL
-    private BigDecimal calculateTotal(){
-        BigDecimal taxes = calculateTaxes();
-        return subtotal.add(tipAmount).add(taxes);
+    private double calculateTotal(){
+        double taxes = calculateTaxes();
+        return subtotal + taxes + tipAmount;
     }
 
-    private BigDecimal calculateTaxes(){
-        return subtotal.multiply(new BigDecimal("0.15"));
+    private double calculateTaxes(){
+        return subtotal * 0.15;
     }
 
     private void setListOfCost() {
@@ -334,12 +337,13 @@ public class PaymentController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
-
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Main menu");
             stage.show();
+
+            cancelledOrder(orderID);
         }
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
@@ -349,6 +353,34 @@ public class PaymentController {
     @FXML
     protected void OnPayAction(ActionEvent event) {
 
+        if(choiceOfPayment.getValue() == null){
+            showErrorInformation("Please select a payment method");
+            return;
+        }
+
+        if(choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
+            if (isFieldEmpty(nameField) || isFieldEmpty(cardNumberField) || isFieldEmpty(threeDigitCardNumber) || isDateEmpty()) {
+                showErrorInformation("one or more is empty. Please fill out all fields.");
+                return;
+            }
+        }
+
+        if(isDateValid()){
+            showErrorInformation("Date is expired. Cannot proceed with payment");
+            return;
+        }
+
+        Payment createAPayment = createPaymentInfo();
+        boolean successfulPayment = processPayment(createAPayment);
+
+        if (successfulPayment) {
+            showSuccessInformation("Payment Successful. Thank you for your purchase!");
+            SalesOrder.finalizeSale(orderID, "CLOSED", String.valueOf(LocalDateTime.now()), subtotal, calculateTaxes(), calculateTotal());//, calculateTaxes(),  calculateTotal());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+        }else{
+            showErrorInformation("Payment failed");
+        }
     }
 
     private Payment createPaymentInfo(){

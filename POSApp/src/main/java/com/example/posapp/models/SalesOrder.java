@@ -5,9 +5,7 @@ import com.example.posapp.controller.SalesOrderController;
 import database.ConnectionManager;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,14 +33,13 @@ public class SalesOrder {
         this.price = price;
     }
 
-    public SalesOrder(int order_id, String status, String created_at, String finalized_at, double subtotal, double tax_total, double discount_total, double total) {
+    public SalesOrder(int order_id, String status, String created_at, String finalized_at, double subtotal, double tax_total, double total) {
         this.order_id = order_id;
         this.status = status;
         this.created_at = created_at;
         this.finalized_at = finalized_at;
         this.subtotal = subtotal;
         this.tax_total = tax_total;
-        this.discount_total = discount_total;
         this.total = total;
     }
 
@@ -137,29 +134,38 @@ public class SalesOrder {
     //CRUD
 
     //Adding to SALES_ORDER when 'checkout' button is clicked
-    public static void addSale(double subtotal){
+    public static int addSale(double subtotal){
         final String sql = "INSERT INTO sale_order (subtotal) VALUES(?)";
 
         try (Connection connection = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
             preparedStatement.setDouble(1,subtotal);
-            preparedStatement.executeUpdate();
+
+            int insertRow = preparedStatement.executeUpdate();
+
+            if(insertRow > 0){
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if(resultSet.next()){
+                    return resultSet.getInt(1);//return orderID
+                }
+            }
         }
         catch (SQLException e) {
-           LOGGER.log(Level.SEVERE, "Error while adding Sale to SalesOrder");
+            LOGGER.log(Level.SEVERE, "Error while adding Sale to SalesOrder");
         }
+        return -1;//get orderID failed
     }
 
-    public static void finalizeSale(int order_id, String status, String finalized_at, double tax_total, double discount_total, double total){
-        final String sql = "UPDATE sale_order SET status = ?, finalized_at = ?, tax_total = ?, discount_total = ?, total = ? WHERE order_id = ?;";
+    public static void finalizeSale(int order_id, String status, String finalized_at, double subtotal, double tax_total, double total){// double total
+        final String sql = "UPDATE sale_order SET status = ?, finalized_at = ?, subtotal = ?, tax_total = ?, total = ? WHERE order_id = ?;";//total = ?
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, status);
             preparedStatement.setString(2, finalized_at);
-            preparedStatement.setDouble(3, tax_total);
-            preparedStatement.setDouble(4, discount_total);
+            preparedStatement.setDouble(3, subtotal);
+            preparedStatement.setDouble(4, tax_total);
             preparedStatement.setDouble(5, total);
             preparedStatement.setInt(6, order_id);
 
