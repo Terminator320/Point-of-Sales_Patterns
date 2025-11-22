@@ -12,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
-import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -27,52 +26,50 @@ import java.util.stream.Collectors;
 
 public class SalesConntroller {
 
+    //monthly line chart
     @FXML private LineChart<String, Number> monthlyProfitLineChart;
 
-    @FXML private BarChart<String, Number> weeklyProfitBarChart;
 
+    //pir chart for overall
     @FXML private PieChart profitLossPieChart;
 
+    //map to use in bar chart and line chart
     private Map<LocalDate, Double> profitPerDay;
 
-    private Map<LocalDate, Double> revenuePerDay;
-    private Map<LocalDate, Double> costPerDay;
+
+
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesConntroller.class.getName());
 
-    public void initialize() {
+    public synchronized void initialize() {
         //Load sales from DB
         List<Sales> sales = Sales.getAllSales();
 
         //change later when we figure out threads for this
         // Build profitPerDay map
         profitPerDay = new HashMap<>();
-        revenuePerDay = new HashMap<>();
-        costPerDay = new HashMap<>();
+
 
         for (Sales s : sales) {
             LocalDate date = s.getDate();
+
+            //change this to use thread when we do that
             double profit = s.getRevenue() - s.getCost();
             profitPerDay.merge(s.getDate(), profit, Double::sum);
-            revenuePerDay.merge(date, s.getRevenue(), Double::sum);
-            costPerDay.merge(date, s.getCost(), Double::sum);
         }
 
-        // 3. Fill both charts
-        loadMonthlyLineChart();
-        loadLast7DaysBarChart();
 
+        loadMonthlyLineChart();
 
         //test value
         double totalProfitMonth = 3400;
         double totalLossMonth = -1200;
 
         loadProfitLossPie(totalProfitMonth, totalLossMonth);
-
     }
 
 
-    public void loadProfitLossPie(double totalProfit, double totalLoss) {
+    public synchronized void loadProfitLossPie(double totalProfit, double totalLoss) {
         // convert negative loss to positive for display
         double lossAbsolute = Math.abs(totalLoss);
 
@@ -95,75 +92,33 @@ public class SalesConntroller {
 
 
     private void loadMonthlyLineChart() {
-        if (revenuePerDay.isEmpty()) {
+        if (profitPerDay.isEmpty()) {
             monthlyProfitLineChart.getData().clear();
             return;
         }
-
         // latest date in data
-        LocalDate latest = Collections.max(revenuePerDay.keySet());
+        LocalDate latest = Collections.max(profitPerDay.keySet());
         LocalDate start = latest.minusDays(30);
 
-        // Sort dates
-        List<LocalDate> sortedDays = revenuePerDay.keySet().stream()
+        List<LocalDate> sortedDays = profitPerDay.keySet().stream()
                 .filter(date -> !date.isBefore(start) && !date.isAfter(latest))
                 .sorted()
                 .collect(Collectors.toList());
 
-        XYChart.Series<String, Number> revenueSeries = new XYChart.Series<>();
-        revenueSeries.setName("Revenue");
-
-        XYChart.Series<String, Number> costSeries = new XYChart.Series<>();
-        costSeries.setName("Cost");
-
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Profit per day");
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d");
         for (LocalDate day : sortedDays) {
-            String label = day.format(fmt);
-
-            double revenue = revenuePerDay.getOrDefault(day, 0.0);
-            double cost = costPerDay.getOrDefault(day, 0.0);
-
-            revenueSeries.getData().add(new XYChart.Data<>(label, revenue));
-            costSeries.getData().add(new XYChart.Data<>(label, cost));
-        }
-
-        monthlyProfitLineChart.getData().clear();
-        monthlyProfitLineChart.getData().addAll(revenueSeries, costSeries);
-    }
-
-
-
-    private void loadLast7DaysBarChart() {
-        if (profitPerDay.isEmpty()) {
-            weeklyProfitBarChart.getData().clear();
-            return;
-        }
-
-        // latest date in data
-        LocalDate latest = Collections.max(profitPerDay.keySet());
-        LocalDate start = latest.minusDays(6);
-
-        // Collect dates in range and sort
-        List<LocalDate> last7Days = profitPerDay.keySet().stream()
-                .filter(d -> !d.isBefore(start) && !d.isAfter(latest))
-                .sorted()
-                .collect(Collectors.toList());
-
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Last 7 days profit");
-
-        for (LocalDate day : last7Days) {
             double profit = profitPerDay.get(day);
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d");
             String label = day.format(fmt);
             series.getData().add(new XYChart.Data<>(label, profit));
         }
 
-        weeklyProfitBarChart.getData().clear();
-        weeklyProfitBarChart.getData().add(series);
-    }
+        monthlyProfitLineChart.getData().clear();
+        monthlyProfitLineChart.getData().add(series);
 
+    }
 
     @FXML
     private void back(ActionEvent event) {

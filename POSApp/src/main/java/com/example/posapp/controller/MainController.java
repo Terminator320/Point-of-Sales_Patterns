@@ -52,7 +52,7 @@ public class MainController {
             stage.setTitle("Inventory");
         }
         catch (Exception e) {
-         LOGGER.log(Level.SEVERE, "Error going to inventory");
+         LOGGER.log(Level.SEVERE, "Error going to inventory.");
         }
     }
 
@@ -71,7 +71,7 @@ public class MainController {
             stage.setTitle("Sales");
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error going to sales view.",e);
+            LOGGER.log(Level.SEVERE, "Error going to sales view.");
         }
     }
 }

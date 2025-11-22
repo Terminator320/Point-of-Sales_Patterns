@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -8,29 +7,19 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="613.0" prefWidth="1660.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesConntroller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesConntroller">
    <children>
 
-       <LineChart fx:id="monthlyProfitLineChart" layoutX="20.0" layoutY="40.0" prefHeight="250" prefWidth="860" title="Monthly Profit">
+       <LineChart fx:id="monthlyProfitLineChart" layoutX="20.0" layoutY="40.0" prefHeight="294.0" prefWidth="782.0" title="Monthly Profit">
            <xAxis>
                <CategoryAxis fx:id="monthlyXAxis" label="Day" />
            </xAxis>
            <yAxis>
-               <NumberAxis fx:id="monthlyYAxis" label="Profit" />
+               <NumberAxis fx:id="monthlyYAxis" label="Profit" side="LEFT" />
            </yAxis>
        </LineChart>
 
-   
-       <BarChart fx:id="weeklyProfitBarChart" layoutX="20.0" layoutY="320.0" prefHeight="250" prefWidth="860" title="Last 7 Days Profit">
-           <xAxis>
-               <CategoryAxis fx:id="weeklyXAxis" label="Day" />
-           </xAxis>
-           <yAxis>
-               <NumberAxis fx:id="weeklyYAxis" label="Profit" />
-           </yAxis>
-       </BarChart>
-
-       <PieChart fx:id="profitLossPieChart" layoutX="1130.0" layoutY="114.0" prefHeight="300" prefWidth="400" title="Profit vs Loss" />
-      <Button layoutX="1504.0" layoutY="494.0" mnemonicParsing="false" onAction="#back" text="Button" />
+       <PieChart fx:id="profitLossPieChart" layoutX="888.0" layoutY="16.0" prefHeight="300" prefWidth="400" title="Profit vs Loss" />
+      <Button layoutX="30.0" layoutY="374.0" mnemonicParsing="false" onAction="#back" text="Button" />
    </children>
 </AnchorPane>

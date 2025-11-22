@@ -3,9 +3,7 @@ package com.example.posapp.models;
 import com.example.posapp.LogConfig;
 import database.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +16,7 @@ public class Sales {
     LocalDate date;
     private double revenue;
     private double cost;
+    private int sale_Id;
 
     private static final Logger LOGGER = LogConfig.getLogger(Sales.class.getName());
 
@@ -25,6 +24,14 @@ public class Sales {
         this.revenue = revenue;
         this.cost = cost;
         this.date = date;
+    }
+
+    public int getSale_Id() {
+        return sale_Id;
+    }
+
+    public void setSale_Id(int sale_Id) {
+        this.sale_Id = sale_Id;
     }
 
     public LocalDate getDate() {
@@ -87,6 +94,35 @@ public class Sales {
             LOGGER.log(Level.SEVERE, "Error while getting sales from database.");
         }
         return list;
+    }
+
+    //create
+      public boolean insertSale(){
+        final String insertSQL = "INSERT INTO sales (revenue, cost, sale_date) VALUES (?, ?, ?)";
+
+        try(Connection connection = ConnectionManager.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)){
+
+            pstmt.setDouble(1, this.revenue);
+            pstmt.setDouble(2, this.cost);
+            pstmt.setDate(3, Date.valueOf((this.date)));
+
+            int insertRow = pstmt.executeUpdate();
+            //check if row was inserted successfully
+            if(insertRow > 0){
+                //Get ResultSet containing the auto-generated payment_ID from current insertion
+                ResultSet resultSet = pstmt.getGeneratedKeys();
+                //move to first row and check if exist
+                if(resultSet.next()){
+                    this.sale_Id = resultSet.getInt(1);//get generated payment_ID
+                    return true;
+                }
+            }
+            return false;
+        }catch(Exception e){
+            LOGGER.log(Level.SEVERE, "Database Error inserting payment record.");
+            return false;
+        }
     }
 }
 
