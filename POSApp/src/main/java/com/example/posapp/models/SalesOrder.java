@@ -24,6 +24,7 @@ public class SalesOrder {
     private String itemName;
     private int quantity;
     private double price;
+    private double costPrice;
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 

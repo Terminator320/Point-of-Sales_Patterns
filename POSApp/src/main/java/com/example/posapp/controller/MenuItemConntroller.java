@@ -95,7 +95,7 @@ public class MenuItemConntroller {
         menuItems.put(7, new MenuItem(5, "Green Tea",3, 1.5,inventoryMap.get(5)));
         menuItems.put(8, new MenuItem(6, "Chai Latte",4, 2,inventoryMap.get(6)));
         menuItems.put(9,new MenuItem(18, "Black Tea",1.5, 0.5,inventoryMap.get(18)));
-        menuItems.put(10,new MenuItem(19,"Oolong Tea",3,4.25,inventoryMap.get(19)));
+        menuItems.put(10,new MenuItem(19,"Oolong Tea",3,0.5,inventoryMap.get(19)));
         menuItems.put(11,new MenuItem(20,"Peach Tea",2.5,0.5,inventoryMap.get(20)));
         menuItems.put(12,new MenuItem(21,"Strawberry Tea",2.5,0.5,inventoryMap.get(21)));
 

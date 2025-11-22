@@ -20,7 +20,7 @@
             <Font name="Georgia Bold" size="36.0" />
          </font>
       </Label>
-      <Button layoutX="118.0" layoutY="175.0" mnemonicParsing="false" prefHeight="67.0" prefWidth="135.0" style="-fx-background-color: #8fdbff;" text="Profit" textAlignment="CENTER" textFill="WHITE">
+      <Button layoutX="118.0" layoutY="175.0" mnemonicParsing="false" onAction="#sales" prefHeight="67.0" prefWidth="135.0" style="-fx-background-color: #8fdbff;" text="Profit" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Georgia Bold" size="21.0" />
          </font></Button>

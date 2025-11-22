@@ -17,9 +17,6 @@ public class MainController {
 
     private static final Logger LOGGER = LogConfig.getLogger(MainController.class.getName());
 
-
-
-
     @FXML
     private void newOrder(ActionEvent event) {
         try {
@@ -56,6 +53,25 @@ public class MainController {
         }
         catch (Exception e) {
          LOGGER.log(Level.SEVERE, "Error going to inventory");
+        }
+    }
+
+    @FXML
+    private void sales(ActionEvent event) {
+        try {
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-view.fxml"));
+            Parent newRoot = loader.load();
+
+            Scene newScene = new Scene(newRoot);
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Sales");
+        }
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error going to sales view.",e);
         }
     }
 }

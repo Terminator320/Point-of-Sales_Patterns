@@ -55,7 +55,7 @@ public class InventoryController {
             int oldStoke = item.getLowStokeThreshold();
             Integer newStoke = event.getNewValue();
 
-            if(newStoke == null || newStoke < 0 || newStoke != oldStoke){
+            if(newStoke == null || newStoke < 0 || newStoke == oldStoke){
 
             }
             if(newStoke >= 0) {
@@ -98,7 +98,7 @@ public class InventoryController {
             Integer newQTY = event.getNewValue();
 
             //if user inputted negative or null value
-            if (newQTY == null || newQTY < 0 || newQTY != oldQTY) {
+            if (newQTY == null || newQTY < 0 || newQTY == oldQTY) {
                 item.setQty(oldQTY);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Quantity can not be a negative number or empty or same value.");
                 alert.showAndWait();
