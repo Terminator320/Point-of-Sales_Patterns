@@ -1,0 +1,25 @@
+#profitPane {
+    -fx-background-image: url("../backgroundImg/dark-wood.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.chart-title {
+    -fx-text-fill: white;
+}
+
+.chart-legend-item {
+    -fx-text-fill: white;
+}
+
+.axis-label {
+    -fx-text-fill: white;
+}
+.axis .tick-label {
+    -fx-text-fill: white;
+}
+
+.chart-pie-label {
+    -fx-text-fill: white;
+}

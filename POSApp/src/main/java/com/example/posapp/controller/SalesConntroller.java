@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -32,6 +33,13 @@ public class SalesConntroller {
 
     //pir chart for overall
     @FXML private PieChart profitLossPieChart;
+
+
+    @FXML private Label netProfitLbl;
+    @FXML private Label profitLbl;
+    @FXML private Label costLbl;
+    @FXML private Label topDayOfMonthLbl;
+
 
     //map to use in bar chart and line chart
     private Map<LocalDate, Double> profitPerDay;
@@ -62,31 +70,38 @@ public class SalesConntroller {
         loadMonthlyLineChart();
 
         //test value
-        double totalProfitMonth = 3400;
-        double totalLossMonth = -1200;
+        double totalNetProfit = 3400;
+        double totalLoss = -1200;
+        double totalProfit = totalNetProfit + totalLoss;
 
-        loadProfitLossPie(totalProfitMonth, totalLossMonth);
+        loadProfitLossPie(totalNetProfit, totalLoss ,totalProfit);
     }
 
 
-    public synchronized void loadProfitLossPie(double totalProfit, double totalLoss) {
+    public synchronized void loadProfitLossPie(double totalNetProfit, double totalLoss,double totalProfit) {
         // convert negative loss to positive for display
         double lossAbsolute = Math.abs(totalLoss);
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                new PieChart.Data("Profit", totalProfit),
+                new PieChart.Data("Net Profit", totalProfit),
                 new PieChart.Data("Loss", lossAbsolute)
         );
 
         profitLossPieChart.setData(pieData);
 
         for (PieChart.Data d : profitLossPieChart.getData()) {
-            if (d.getName().equals("Profit")) {
+            if (d.getName().equals("Net Profit")) {
                 d.getNode().setStyle("-fx-pie-color: #2ecc71;"); // green
             } else {
                 d.getNode().setStyle("-fx-pie-color: #e74c3c;"); // red
             }
         }
+
+        //setting label
+        netProfitLbl.setText("Net Profit: $" + totalNetProfit);
+        costLbl.setText("Cost: $" + totalLoss);
+        profitLbl.setText("Profit: $" + totalProfit);
+
     }
 
 
