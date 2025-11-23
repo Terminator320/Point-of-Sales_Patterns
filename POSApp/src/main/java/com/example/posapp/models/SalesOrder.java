@@ -21,12 +21,18 @@ public class SalesOrder {
     private double discount_total;
     private double total;
 
+    private int id;
     private String itemName;
     private int quantity;
     private double price;
     private double costPrice;
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
+
+    public SalesOrder(int id,int quantity) {
+        this.id = id;
+        this.quantity = quantity;
+    }
 
     public SalesOrder(String itemName, int quantity, double price) {
         this.itemName = itemName;
@@ -42,6 +48,14 @@ public class SalesOrder {
         this.subtotal = subtotal;
         this.tax_total = tax_total;
         this.total = total;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getItemName() {
@@ -189,6 +203,22 @@ public class SalesOrder {
         }
         catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error while deleting a sale in SalesOrder");
+        }
+    }
+
+    public static void updateQuantityItems(int id, int quantity){
+        final String sql = "UPDATE popular_items SET popular_items_quantity = ? + popular_items_quantity WHERE popular_items_id = ?;";
+
+        try (Connection connection = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error while updating the quantities in PopularItems");
         }
     }
 }

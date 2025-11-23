@@ -24,12 +24,14 @@ import javafx.util.converter.IntegerStringConverter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import static com.example.posapp.controller.PaymentController.loadPopItems;
 import static com.example.posapp.models.SalesOrder.addSale;
 
 public class SalesOrderController {
@@ -40,6 +42,12 @@ public class SalesOrderController {
     @FXML private TableColumn<SalesOrder, Double> colPrice;
     @FXML private TextField searchText;
     private ObservableList<SalesOrder> items;
+    private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
+
+
+    public HashMap<Integer, SalesOrder> getPopularItemsSaleMap() {
+        return popularItemsSaleMap;
+    }
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrderController.class.getName());
 
@@ -66,12 +74,20 @@ public class SalesOrderController {
 
     public void loadOrder(Map<Integer, Integer> activeOrder, Map<Integer, MenuItem> menuItems) {
         double totalPrice = 0;
+        int i = 0;
 
         for (Map.Entry<Integer, Integer> entry : activeOrder.entrySet()) {
             MenuItem item = menuItems.get(entry.getKey());
+
             String name = item.getName();
             int quantity = entry.getValue();
             double price = item.getPrice();
+            int id = item.getId();
+
+            SalesOrder popularItemSale = new SalesOrder(id, quantity);
+            popularItemsSaleMap.put(i, popularItemSale);
+            i++;
+
 
             SalesOrder so = new SalesOrder(name, quantity, price);
             orderTableView.getItems().add(so);
@@ -126,7 +142,23 @@ public class SalesOrderController {
         searchText.clear();
     }
 
+    @FXML
+    public void cancelOrder(ActionEvent event) {
+        try {
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
+            Parent newRoot = loader.load();
+            Scene newScene = new Scene(newRoot);
 
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Main");
+        }
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while going back to the main");
+        }
+    }
 
     @FXML
     public void checkOutClick(ActionEvent event) {
@@ -136,14 +168,15 @@ public class SalesOrderController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
-            PaymentController paymentController = loader.getController(); //REPLACE THIS WITH YOUR CONTROLLER STEVE
+            PaymentController paymentController = loader.getController();
+            paymentController.setSalesOrderController(this);
 
             //Adds the sale to the database (not the completed transaction though)
             //double subtotal = Double.parseDouble(totalPriceText.getText());
             double subtotal = getSubtotalAsDouble();
             int orderID = addSale(subtotal);
 
-            paymentController.setSalesOrderTotal(this, orderID); // ADD YOUR STUFF HERE STEVE
+            paymentController.setSalesOrderTotal(this, orderID);
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

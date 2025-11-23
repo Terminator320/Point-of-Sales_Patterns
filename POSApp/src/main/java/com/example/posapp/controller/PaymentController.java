@@ -18,6 +18,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,6 +67,11 @@ public class PaymentController {
     private double tipAmount = 0;
     private Payment.PaymentMethod selectPaymentMethod = Payment.PaymentMethod.CASH;
 
+    private SalesOrderController salesOrderController;
+
+    public void setSalesOrderController(SalesOrderController controller) {
+        this.salesOrderController = controller;
+    }
 
     @FXML
     public void initialize() {
@@ -72,6 +79,14 @@ public class PaymentController {
         expirationDateChoice();
         showTipAmountLabel();
         setListOfCost();
+    }
+
+    public static void loadPopItems(HashMap<Integer, SalesOrder> items) {
+        for (Map.Entry<Integer, SalesOrder> item : items.entrySet()) {
+            int id = item.getValue().getId();
+            int quantity = item.getValue().getQuantity();
+            updateQuantityItems(id, quantity);
+        }
     }
 
     public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID){
@@ -376,6 +391,10 @@ public class PaymentController {
         if (successfulPayment) {
             showSuccessInformation("Payment Successful. Thank you for your purchase!");
             SalesOrder.finalizeSale(orderID, "CLOSED", String.valueOf(LocalDateTime.now()), subtotal, calculateTaxes(), calculateTotal());//, calculateTaxes(),  calculateTotal());
+
+            HashMap<Integer, SalesOrder> map = salesOrderController.getPopularItemsSaleMap();
+            loadPopItems(map);
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
         }else{
