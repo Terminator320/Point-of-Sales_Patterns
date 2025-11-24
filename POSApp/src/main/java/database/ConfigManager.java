@@ -1,7 +1,8 @@
 package database;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -17,7 +18,7 @@ import java.sql.SQLException;
 
 public class ConfigManager {
     public static Connection  getConnection() throws SQLException, ParserConfigurationException, IOException, SAXException {
-        String fileName = "C:\\Users\\2480396\\Desktop\\Point-of-Sales_Patterns\\POSApp\\src\\main\\java\\config.xml";
+        String fileName = "POSApp\\src\\main\\resources\\com\\example\\posapp\\config.xml";
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -29,18 +30,22 @@ public class ConfigManager {
         Document document = builder.parse(new File(fileName));
         document.getDocumentElement().normalize();
 
-        NodeList database = document.getElementsByTagName("database");
 
-        Node url = database.item(0);
-        Node user = database.item(1);
-        Node password = database.item(2);
+        Element databaseElement = (Element) document.getElementsByTagName("database").item(0);
 
-        System.out.println(url.getTextContent().trim());
-        System.out.println(user.getTextContent().trim());
+        String urlString = databaseElement
+                .getElementsByTagName("url").item(0)
+                .getTextContent().trim();
 
-        String urlString = url.getTextContent().trim();
-        String username = user.getTextContent().trim();
-        String passwordString = password.getTextContent().trim();
+        String username = databaseElement
+                .getElementsByTagName("user").item(0)
+                .getTextContent().trim();
+
+        String passwordString = databaseElement
+                .getElementsByTagName("password").item(0)
+                .getTextContent().trim();
+
+
 
         Connection connection = DriverManager.getConnection(urlString, username, passwordString);
         return connection;

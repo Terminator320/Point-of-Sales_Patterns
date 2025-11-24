@@ -116,7 +116,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch (Exception e) {
-           LOGGER.log(Level.SEVERE, "Database error while editing low stoke threshold");
+           LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /nDatabase error while editing low stoke threshold");
         }
     }
 
@@ -131,7 +131,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch ( Exception e) {
-            LOGGER.log(Level.SEVERE, "Database error while editing item quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /nDatabase error while editing item quantity");
         }
     }
 
