@@ -1,15 +1,14 @@
 package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
-import com.example.posapp.controller.SalesOrderController;
-import database.ConnectionManager;
+import database.ConfigManager;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class SalesOrder {
     private int order_id;
@@ -152,7 +151,7 @@ public class SalesOrder {
     public static int addSale(double subtotal){
         final String sql = "INSERT INTO sale_order (subtotal) VALUES(?)";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
             preparedStatement.setDouble(1,subtotal);
@@ -168,6 +167,12 @@ public class SalesOrder {
         }
         catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error while adding Sale to SalesOrder");
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
         }
         return -1;//get orderID failed
     }
@@ -175,7 +180,7 @@ public class SalesOrder {
     public static void finalizeSale(int order_id, String status, String finalized_at, double subtotal, double tax_total, double total){// double total
         final String sql = "UPDATE sale_order SET status = ?, finalized_at = ?, subtotal = ?, tax_total = ?, total = ? WHERE order_id = ?;";//total = ?
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, status);
             preparedStatement.setString(2, finalized_at);
@@ -188,13 +193,19 @@ public class SalesOrder {
         }
         catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error while updating Sale in SalesOrder");
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public static void cancelledOrder(int order_id){
         final String sql = "DELETE FROM sale_order WHERE order_id = ?;";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)){
 
             preparedStatement.setInt(1, order_id);
@@ -203,14 +214,20 @@ public class SalesOrder {
         }
         catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error while deleting a sale in SalesOrder");
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public static void updateQuantityItems(int id, int quantity){
         final String sql = "UPDATE popular_items SET popular_items_quantity = ? + popular_items_quantity WHERE popular_items_id = ?;";
 
-        try (Connection connection = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
 
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, id);
@@ -219,6 +236,12 @@ public class SalesOrder {
         }
         catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error while updating the quantities in PopularItems");
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
         }
     }
 }

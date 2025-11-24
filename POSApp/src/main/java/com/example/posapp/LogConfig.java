@@ -19,7 +19,7 @@ public class LogConfig {
             FileHandler fh = new FileHandler("POSApp/src/logfile.log", true);
             fh.setFormatter(new SimpleFormatter());
             log.addHandler(fh);
-            log.setLevel(Level.SEVERE);
+            log.setLevel(Level.ALL);
             log.setUseParentHandlers(false);
         } catch (IOException e) {
             throw new RuntimeException(e);

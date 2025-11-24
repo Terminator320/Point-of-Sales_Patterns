@@ -1,13 +1,12 @@
 package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
-import database.ConnectionManager;
+import database.ConfigManager;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,7 +75,7 @@ public class Sales {
 
         final String sql = "SELECT revenue, cost, sale_date FROM sales";
 
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = ConfigManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -100,7 +99,7 @@ public class Sales {
       public boolean insertSale(){
         final String insertSQL = "INSERT INTO sales (revenue, cost, sale_date) VALUES (?, ?, ?)";
 
-        try(Connection connection = ConnectionManager.getConnection();
+        try(Connection connection = ConfigManager.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)){
 
             pstmt.setDouble(1, this.revenue);

@@ -1,12 +1,13 @@
 package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
-import database.ConnectionManager;
+import database.ConfigManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.xml.sax.SAXException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -123,7 +124,7 @@ public class Payment {
     public boolean insertPayment(){
         final String insertSQL = "INSERT INTO payment (order_ID, method_payment, tips, payment_date) VALUES (?, ?, ?, ?)";
 
-        try(Connection connection = ConnectionManager.getConnection();
+        try(Connection connection = ConfigManager.getConnection();
             //statement for returning payment_ID after insertion
             PreparedStatement pstmt = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)){
 
@@ -156,7 +157,7 @@ public class Payment {
         ObservableList<Payment> paymentData = FXCollections.observableArrayList();
         final String sql = "SELECT * FROM payment";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             ResultSet resultSet = pstmt.executeQuery();
@@ -181,7 +182,7 @@ public class Payment {
         final String insertSQL = "UPDATE payment SET order_ID = ?, method_payment = ?, " +
                                     "tips = ? WHERE payment_ID = ?";
 
-        try(Connection connection = ConnectionManager.getConnection();
+        try(Connection connection = ConfigManager.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(insertSQL)){
 
             pstmt.setInt(1, this.orderID);
@@ -192,6 +193,12 @@ public class Payment {
             return  pstmt.executeUpdate() > 0;
         }catch(SQLException e){
             e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -200,13 +207,19 @@ public class Payment {
     public boolean deletePayment(){
         final String insertSQL = "DELETE FROM payment WHERE payment_ID = ?";
 
-        try(Connection connection = ConnectionManager.getConnection();
+        try(Connection connection = ConfigManager.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(insertSQL)){
 
             pstmt.setInt(1, this.paymentID);
             return  pstmt.executeUpdate() > 0;
         }catch(SQLException e){
             e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }

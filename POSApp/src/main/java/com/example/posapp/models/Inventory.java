@@ -1,20 +1,19 @@
 package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
-import database.ConnectionManager;
+import database.ConfigManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.xml.sax.SAXException;
 
-import java.io.File;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 
 public class Inventory {
@@ -84,7 +83,7 @@ public class Inventory {
         //get the statement
         final String sql = "SELECT * FROM inventory";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             ResultSet resultSet = pstmt.executeQuery();
@@ -97,8 +96,8 @@ public class Inventory {
                 ));
             }
         }
-        catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Database error while fetching inventory");
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while fetching inventory");
         }
         return inventoryData;
     }
@@ -109,7 +108,7 @@ public class Inventory {
     public static void editLowStoke(int lowStokeThreshold,int invId) {
         final String sql = "UPDATE inventory set lowStokeThreshold = ? where invId = ?";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, lowStokeThreshold);
@@ -124,15 +123,15 @@ public class Inventory {
     public static void editItemQTY(int qty,int invId) {
         final String sql = "UPDATE inventory set qty = ? where invId = ?";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, qty);
             pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
-        catch (SQLException e) {
-          LOGGER.log(Level.SEVERE, "Database error while editing item quantity");
+        catch ( Exception e) {
+            LOGGER.log(Level.SEVERE, "Database error while editing item quantity");
         }
     }
 
@@ -141,7 +140,7 @@ public class Inventory {
     public static void subtractQuantity(int invId, int amount){
         final String sql = "UPDATE inventory set qty = qty - ? where invId = ?";
 
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setInt(1, amount);
@@ -149,7 +148,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Database error while ");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while ");
         }
     }
 
