@@ -165,14 +165,8 @@ public class SalesOrder {
                 }
             }
         }
-        catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error while adding Sale to SalesOrder");
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
+        catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
         }
         return -1;//get orderID failed
     }
@@ -191,14 +185,8 @@ public class SalesOrder {
 
             preparedStatement.executeUpdate();
         }
-        catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error while updating Sale in SalesOrder");
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
+        catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while updating Sale in SalesOrder");
         }
     }
 
@@ -212,14 +200,8 @@ public class SalesOrder {
 
             preparedStatement.executeUpdate();
         }
-        catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error while deleting a sale in SalesOrder");
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
+        catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while deleting a sale in SalesOrder");
         }
     }
 
@@ -234,14 +216,8 @@ public class SalesOrder {
 
             preparedStatement.executeUpdate();
         }
-        catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error while updating the quantities in PopularItems");
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
+        catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while updating the quantities in PopularItems");
         }
     }
 }

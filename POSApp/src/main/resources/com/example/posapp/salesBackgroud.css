@@ -1,6 +1,5 @@
-
 #profitPane {
-    -fx-background-image: url("backgroundImg/dark-wood.jpg");
+    -fx-background-image: url("\backgroundImg/dark-wood.jpg");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center;

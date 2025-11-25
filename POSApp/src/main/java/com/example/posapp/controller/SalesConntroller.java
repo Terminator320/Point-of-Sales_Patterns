@@ -13,6 +13,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -94,6 +97,16 @@ public class SalesConntroller {
                 d.getNode().setStyle("-fx-pie-color: #2ecc71;"); // green
             } else {
                 d.getNode().setStyle("-fx-pie-color: #e74c3c;"); // red
+            }
+        }
+
+        //label for the labels
+        for (Node n : profitLossPieChart.lookupAll(".chart-pie-label")) {
+            if (n instanceof Labeled label) {
+                label.setTextFill(Color.WHITE);
+            }
+            if (n instanceof Text text) {
+                text.setFill(Color.WHITE);
             }
         }
 
