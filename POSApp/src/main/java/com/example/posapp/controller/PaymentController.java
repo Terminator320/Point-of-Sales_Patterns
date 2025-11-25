@@ -1,8 +1,11 @@
 package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
+import com.example.posapp.PaymentFactory.PaymentFactoryClass;
+import com.example.posapp.PaymentFactory.PaymentProcessing;
 import com.example.posapp.models.Payment;
 import com.example.posapp.models.SalesOrder;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -58,6 +59,7 @@ public class PaymentController {
     //DISPLAY FINAL TOTAL AMOUNT
     @FXML private ListView<String> finalTotal;
 
+    //LOGGER FILE
     private static final Logger LOGGER = LogConfig.getLogger(PaymentController.class.getName());
 
 
@@ -89,6 +91,7 @@ public class PaymentController {
         }
     }
 
+    //
     public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID){
         this.mySalesOrder = salesOrderController;
         this.orderID = orderID;
@@ -99,6 +102,7 @@ public class PaymentController {
     }
 
     //METHOD PAYMENT
+    //populate ChoiceBox with available payment methods
     private void setUpPaymentMethod(){
         for(Payment.PaymentMethod paymentMethod : Payment.PaymentMethod.values()){
             choiceOfPayment.getItems().addAll(paymentMethod);
@@ -108,6 +112,7 @@ public class PaymentController {
         handlePaymentMethod();
     }
 
+    //helper method to clear all payment input fields
     private void clearAllField(){
         nameField.clear();
         cardNumberField.clear();
@@ -116,6 +121,28 @@ public class PaymentController {
         selectYearExpiration.getSelectionModel().clearSelection();
     }
 
+    //helper method to enable/disable user card information fields based on their
+    //selected payment method
+    private void setCardInfoVisibility(boolean visible){
+        double opacityLvl = visible ? 1.0 : 0.5;
+
+        nameField.setOpacity(opacityLvl);
+        nameField.setDisable(!visible);
+
+        cardNumberField.setOpacity(opacityLvl);
+        cardNumberField.setDisable(!visible);
+
+        threeDigitCardNumber.setOpacity(opacityLvl);
+        threeDigitCardNumber.setDisable(!visible);
+
+        selectMonthExpiration.setOpacity(opacityLvl);
+        selectMonthExpiration.setDisable(!visible);
+
+        selectYearExpiration.setOpacity(opacityLvl);
+        selectYearExpiration.setDisable(!visible);
+    }
+
+    //Handle UI based on selected payment method
     private void handlePaymentMethod(){
         Payment.PaymentMethod methodSelected = choiceOfPayment.getValue();
 
@@ -143,44 +170,30 @@ public class PaymentController {
         }
     }
 
-    private void setCardInfoVisibility(boolean visible){
-        double opacityLvl = visible ? 1.0 : 0.5;
-
-        nameField.setOpacity(opacityLvl);
-        nameField.setDisable(!visible);
-
-        cardNumberField.setOpacity(opacityLvl);
-        cardNumberField.setDisable(!visible);
-
-        threeDigitCardNumber.setOpacity(opacityLvl);
-        threeDigitCardNumber.setDisable(!visible);
-
-        selectMonthExpiration.setOpacity(opacityLvl);
-        selectMonthExpiration.setDisable(!visible);
-
-        selectYearExpiration.setOpacity(opacityLvl);
-        selectYearExpiration.setDisable(!visible);
-    }
-
 
     //USER INFORMATION
+    //check if a text field is empty
     private boolean isFieldEmpty(TextField text){
         return text.getText().isEmpty();
     }
 
+    //check if the card number contains 16 digits
     private boolean isCardNumValid(String cardNum){
         String removeSpaces = cardNum.replaceAll("\\s+", "");
         return removeSpaces.matches("\\d{16}");
     }
 
+    //check if card name contains letters and spaces
     private boolean isCardNameValid(String cardName){
         return cardName.matches("[a-zA-Z ]+");
     }
 
+    //check if the CVV contains 3 digits
     private boolean isCVVValid(String cvv){
         return cvv.matches("\\d{3}");
     }
 
+    //check if expiration date is not already expired
     private boolean isDateValid(){
         if(isDateEmpty()){
             return false;
@@ -190,14 +203,16 @@ public class PaymentController {
 
         YearMonth expirationYearMonth = YearMonth.of(year, month);
         YearMonth currentYearMonth = YearMonth.now();
-        return expirationYearMonth.isBefore(currentYearMonth);
+        return expirationYearMonth.equals(currentYearMonth) || expirationYearMonth.isAfter(currentYearMonth);
     }
 
+    //check if month and year is not selected
     private boolean isDateEmpty(){
         return selectMonthExpiration.getValue() == null
                 || selectYearExpiration.getValue() == null;
     }
 
+    //populate ComboBox with months (1-12) and years (current year up to 15 years in the future)
     private void expirationDateChoice(){
         for (int i = 1; i <= 12; i++) {
             selectMonthExpiration.getItems().add(String.format("%02d", i));
@@ -208,6 +223,7 @@ public class PaymentController {
             selectYearExpiration.getItems().add(String.valueOf(i));
         }
     }
+
 
     @FXML
     protected void onNameFieldAction(ActionEvent event){
@@ -375,7 +391,7 @@ public class PaymentController {
 
         if(choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
             if (isFieldEmpty(nameField) || isFieldEmpty(cardNumberField) || isFieldEmpty(threeDigitCardNumber) || isDateEmpty()) {
-                showErrorInformation("one or more is empty. Please fill out all fields.");
+                showErrorInformation("At least one field is empty. Please fill out all fields.");
                 return;
             }
         }
@@ -389,11 +405,20 @@ public class PaymentController {
         boolean successfulPayment = processPayment(createAPayment);
 
         if (successfulPayment) {
-            showSuccessInformation("Payment Successful. Thank you for your purchase!");
-            SalesOrder.finalizeSale(orderID, "CLOSED", String.valueOf(LocalDateTime.now()), subtotal, calculateTaxes(), calculateTotal());//, calculateTaxes(),  calculateTotal());
+
+            //for factory
+            PaymentProcessing paymentFactory = PaymentFactoryClass.createPayment(choiceOfPayment.getValue());
+            String msg = paymentFactory.processPayment();
+
+            showProcessingInfo(msg);
+
+            //update the sales order
+            SalesOrder.finalizeSale(orderID, "CLOSED", String.valueOf(LocalDateTime.now()), subtotal, calculateTaxes(), calculateTotal());
 
             HashMap<Integer, SalesOrder> map = salesOrderController.getPopularItemsSaleMap();
             loadPopItems(map);
+
+            //subtractQuantity();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
@@ -422,15 +447,15 @@ public class PaymentController {
         myAlert.setTitle(alertTitle);
         myAlert.setHeaderText(null);
         myAlert.setContentText(alertMessage);
-        myAlert.showAndWait();
+        myAlert.show();
     }
 
     private void showConfirmation(String message){
         alertInformation(Alert.AlertType.CONFIRMATION, "Cancel Payment", message);
     }
 
-    private void showSuccessInformation(String message){
-        alertInformation(Alert.AlertType.INFORMATION, "Successful Payment", message);
+    private void showSuccessInformation(){
+        alertInformation(Alert.AlertType.INFORMATION, "Successful Payment", "Payment Successful. Thank you for your purchase!");
     }
 
     private void showErrorInformation(String message) {
@@ -439,5 +464,23 @@ public class PaymentController {
 
     private void showInvalidInformation(String message){
         alertInformation(Alert.AlertType.WARNING, "Invalid Input", message);
+    }
+
+    private void showProcessingInfo(String message){
+
+        Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
+        processingAlert.setTitle("Payment process");
+        processingAlert.setHeaderText(null);
+        processingAlert.setContentText(message);
+        processingAlert.show();
+
+        // Wait 1 second, then close this and show success
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(event2 -> {
+            processingAlert.close();
+
+            showSuccessInformation();
+        });
+        delay.play();
     }
 }
