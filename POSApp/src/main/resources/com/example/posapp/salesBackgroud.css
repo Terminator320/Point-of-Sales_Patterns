@@ -1,4 +1,4 @@
-/* Background */
+
 #profitPane {
     -fx-background-image: url("backgroundImg/dark-wood.jpg");
     -fx-background-repeat: no-repeat;
@@ -6,13 +6,13 @@
     -fx-background-position: center;
 }
 
-/* Line color */
+
 .chart-series-line {
     -fx-stroke: #ff8800;
     -fx-stroke-width: 3px;
 }
 
-/* Data point color */
+
 .chart-line-symbol {
     -fx-background-color: #ff8800, white;
     -fx-background-radius: 5px;

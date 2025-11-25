@@ -1,0 +1,29 @@
+#welcomePane{
+    -fx-background-image: url("backgroundImg/dark-wood.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-family: Georgia, serif;
+    -fx-text-alignment: center;
+}
+
+.button{
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: white;
+    -fx-font-size: 21px;
+    -fx-font-family: Georgia, serif;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#ffd27f, #ff9e1a);
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(#ff8a00, #d86b00);
+}
