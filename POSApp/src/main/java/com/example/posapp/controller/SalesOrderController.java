@@ -3,6 +3,7 @@ package com.example.posapp.controller;
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
 import com.example.posapp.models.MenuItem;
+import com.example.posapp.models.Sales;
 import com.example.posapp.models.SalesOrder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +22,7 @@ import javafx.util.converter.IntegerStringConverter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.FileHandler;
@@ -40,6 +42,7 @@ public class SalesOrderController {
     @FXML private TextField searchText;
     private ObservableList<SalesOrder> items;
     private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
+    private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
 
 
     public HashMap<Integer, SalesOrder> getPopularItemsSaleMap() {
@@ -71,6 +74,7 @@ public class SalesOrderController {
 
     public void loadOrder(Map<Integer, Integer> activeOrder, Map<Integer, MenuItem> menuItems) {
         double totalPrice = 0;
+        double totalCostPrice = 0;
         int i = 0;
 
         for (Map.Entry<Integer, Integer> entry : activeOrder.entrySet()) {
@@ -79,6 +83,7 @@ public class SalesOrderController {
             String name = item.getName();
             int quantity = entry.getValue();
             double price = item.getPrice();
+            double costPrice = item.getCostPrice();
             int id = item.getId();
 
             SalesOrder popularItemSale = new SalesOrder(id, quantity);
@@ -86,7 +91,8 @@ public class SalesOrderController {
             i++;
 
 
-            SalesOrder so = new SalesOrder(name, quantity, price);
+            SalesOrder so = new SalesOrder(name, quantity, price, costPrice);
+            listOfOrders.add(so);
             orderTableView.getItems().add(so);
 
             totalPrice += quantity * price;
@@ -116,9 +122,14 @@ public class SalesOrderController {
         return total;
     }
 
-    //public BigDecimal getSubtotal(){
-//        return BigDecimal.valueOf(getSubtotalAsDouble());
-//    }
+    public double getTotalCostPrice() {
+        double totalCostPrice = 0;
+        for(SalesOrder order : listOfOrders) {
+             totalCostPrice += order.getQuantity() * order.getCostPrice();
+        }
+        return totalCostPrice;
+    }
+
 
     @FXML
     public void searchButtonClick(ActionEvent event) {
@@ -173,7 +184,9 @@ public class SalesOrderController {
             //Adds the sale to the database (not the completed transaction though)
             //double subtotal = Double.parseDouble(totalPriceText.getText());
             double subtotal = getSubtotalAsDouble();
-            int orderID = addSale(subtotal);
+            double totalCostPrice = getTotalCostPrice();
+
+            int orderID = addSale(subtotal, totalCostPrice);
 
             paymentController.setSalesOrderTotal(this, orderID);
 

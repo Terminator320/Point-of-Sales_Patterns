@@ -66,6 +66,8 @@ public class SalesConntroller {
 
             //change this to use thread when we do that
             double profit = s.getRevenue() - s.getCost();
+
+
             profitPerDay.merge(s.getDate(), profit, Double::sum);
         }
 

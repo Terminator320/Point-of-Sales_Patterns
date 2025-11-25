@@ -28,15 +28,23 @@ public class SalesOrder {
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
-    public SalesOrder(int id,int quantity) {
+    public SalesOrder(double costPrice, double subtotal) {
+        this.costPrice = costPrice;
+        this.subtotal = subtotal;
+    }
+
+
+
+    public SalesOrder(int id, int quantity) {
         this.id = id;
         this.quantity = quantity;
     }
 
-    public SalesOrder(String itemName, int quantity, double price) {
+    public SalesOrder(String itemName, int quantity, double price, double costPrice) {
         this.itemName = itemName;
         this.quantity = quantity;
         this.price = price;
+        this.costPrice = costPrice;
     }
 
     public SalesOrder(int order_id, String status, String created_at, String finalized_at, double subtotal, double tax_total, double total) {
@@ -47,6 +55,14 @@ public class SalesOrder {
         this.subtotal = subtotal;
         this.tax_total = tax_total;
         this.total = total;
+    }
+
+    public double getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(double costPrice) {
+        this.costPrice = costPrice;
     }
 
     public int getId() {
@@ -147,14 +163,49 @@ public class SalesOrder {
 
     //CRUD
 
-    //Adding to SALES_ORDER when 'checkout' button is clicked
-    public static int addSale(double subtotal){
-        final String sql = "INSERT INTO sale_order (subtotal) VALUES(?)";
+    public static SalesOrder getALLSales(){
+        final String sql = "SELECT subtotal, totalCostPrice from sale_order";
+        SalesOrder s = null;
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                s = new SalesOrder(resultSet.getDouble("subtotal"),resultSet.getDouble("totalCostPrice"));
+            }
+
+        }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
+        }
+        return s;
+    }
+
+    public static SalesOrder getCostTotal(){
+        final String sql = "SELECT totalCostPrice from sale_order";
+        SalesOrder s = null;
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                s = new SalesOrder(resultSet.getDouble("subtotal"),resultSet.getDouble("totalCostPrice"));
+            }
+
+        }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
+        }
+        return s;
+    }
+
+        //Adding to SALES_ORDER when 'checkout' button is clicked
+    public static int addSale(double subtotal, double totalCostPrice){
+        final String sql = "INSERT INTO sale_order (subtotal, totalCostPrice) VALUES(?,?)";
 
         try (Connection connection = ConfigManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
             preparedStatement.setDouble(1,subtotal);
+            preparedStatement.setDouble(2, totalCostPrice);
 
             int insertRow = preparedStatement.executeUpdate();
 
@@ -220,5 +271,7 @@ public class SalesOrder {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while updating the quantities in PopularItems");
         }
     }
+
+
 }
 
