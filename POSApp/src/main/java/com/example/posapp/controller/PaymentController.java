@@ -259,7 +259,7 @@ public class PaymentController {
     protected void onExpirationDateAction(ActionEvent event){
         if(selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isDateEmpty()) {
-                if (isDateValid()) {
+                if (!isDateValid()) {
                     showInvalidInformation("Invalid card date. Card already expired.");
                 }
             }
@@ -396,7 +396,7 @@ public class PaymentController {
             }
         }
 
-        if(isDateValid()){
+        if(!isDateValid()){
             showErrorInformation("Date is expired. Cannot proceed with payment");
             return;
         }
