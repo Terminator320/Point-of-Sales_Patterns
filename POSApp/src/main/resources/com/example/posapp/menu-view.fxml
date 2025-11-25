@@ -10,10 +10,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1040.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.MenuItemConntroller">
+<AnchorPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1040.0" stylesheets="@menuBackground.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.MenuItemConntroller">
    <children>
-      <ListView fx:id="recitedView" layoutX="29.0" layoutY="34.0" prefHeight="549.0" prefWidth="232.0" style="-fx-border-color: black;" />
-      <Label layoutX="424.0" layoutY="17.0" text="Coffees" textAlignment="CENTER">
+      <ListView fx:id="recitedView" layoutX="29.0" layoutY="34.0" prefHeight="549.0" prefWidth="232.0" stylesheets="@menuBackground.css" />
+      <Label layoutX="424.0" layoutY="17.0" text="Coffees" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
@@ -28,90 +28,93 @@
          </children>
       </AnchorPane>
       <Separator layoutX="272.0" layoutY="34.0" orientation="VERTICAL" prefHeight="599.0" prefWidth="21.0" />
-      <Button layoutX="302.0" layoutY="134.0" mnemonicParsing="false" onAction="#espressoClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Espresso">
+      <Button layoutX="302.0" layoutY="134.0" mnemonicParsing="false" onAction="#espressoClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Espresso">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button layoutX="421.0" layoutY="134.0" mnemonicParsing="false" onAction="#latteClick" prefHeight="25.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Latte">
+      <Button layoutX="421.0" layoutY="134.0" mnemonicParsing="false" onAction="#latteClick" prefHeight="25.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Latte">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="300.0" layoutY="236.0" mnemonicParsing="false" onAction="#frappeClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Greek Frappe">
+      <Button layoutX="300.0" layoutY="236.0" mnemonicParsing="false" onAction="#frappeClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Greek Frappe">
          <font>
             <Font size="11.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="421.0" layoutY="236.0" mnemonicParsing="false" onAction="#iceAmeriClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Iced Americano">
-         <font>
-            <Font size="9.0" />
-         </font>
+      <Button layoutX="421.0" layoutY="236.0" mnemonicParsing="false" onAction="#iceAmeriClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Iced Americano">
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></Button>
-      <Label layoutX="444.0" layoutY="321.0" text="Tea" textAlignment="CENTER">
+         </cursor>
+         <font>
+            <Font size="10.0" />
+         </font></Button>
+      <Label layoutX="444.0" layoutY="321.0" text="Tea" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button layoutX="308.0" layoutY="435.0" mnemonicParsing="false" onAction="#greenTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Green Tea">
+      <Button layoutX="308.0" layoutY="435.0" mnemonicParsing="false" onAction="#greenTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Green Tea">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="540.0" layoutY="537.0" mnemonicParsing="false" onAction="#chaiLatteTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Chai Latte Tea" textAlignment="CENTER">
+      <Button layoutX="540.0" layoutY="537.0" mnemonicParsing="false" onAction="#chaiLatteTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Chai Latte Tea" textAlignment="CENTER">
          <font>
             <Font size="10.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="308.0" layoutY="537.0" mnemonicParsing="false" onAction="#peachTeaClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Peach Tea">
+      <Button layoutX="308.0" layoutY="537.0" mnemonicParsing="false" onAction="#peachTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Peach Tea">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="425.0" layoutY="537.0" mnemonicParsing="false" onAction="#starwberryTeaClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Strawberry Tea">
+      <Button layoutX="425.0" layoutY="537.0" mnemonicParsing="false" onAction="#starwberryTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Strawberry Tea">
          <font>
             <Font size="9.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="538.0" layoutY="435.0" mnemonicParsing="false" onAction="#oolongTeaClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Oolong Tea">
+      <Button layoutX="538.0" layoutY="435.0" mnemonicParsing="false" onAction="#oolongTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Oolong Tea">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="425.0" layoutY="435.0" mnemonicParsing="false" onAction="#blackTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Black Tea">
+      <Button layoutX="425.0" layoutY="435.0" mnemonicParsing="false" onAction="#blackTeaClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Black Tea">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="534.0" layoutY="134.0" mnemonicParsing="false" onAction="#cappuccinoClick" prefHeight="25.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Cappuccino">
+      <Button layoutX="534.0" layoutY="134.0" mnemonicParsing="false" onAction="#cappuccinoClick" prefHeight="25.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Cappuccino">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="534.0" layoutY="236.0" mnemonicParsing="false" onAction="#iceCoffeeClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Ice Coffee">
+      <Button layoutX="534.0" layoutY="236.0" mnemonicParsing="false" onAction="#iceCoffeeClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Ice Coffee">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Label layoutX="788.0" layoutY="17.0" text="Smoothies" textAlignment="CENTER">
+      <Label layoutX="788.0" layoutY="17.0" text="Smoothies" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button layoutX="739.0" layoutY="134.0" mnemonicParsing="false" onAction="#starwberrySmoClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Strawberry">
+      <Button layoutX="739.0" layoutY="134.0" mnemonicParsing="false" onAction="#starwberrySmoClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Strawberry">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="867.0" layoutY="134.0" mnemonicParsing="false" onAction="#mangoSmClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Mango">
+      <Button layoutX="867.0" layoutY="134.0" mnemonicParsing="false" onAction="#mangoSmClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Mango">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="740.0" layoutY="236.0" mnemonicParsing="false" onAction="#mixedBerrySmClick" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Mixed Berry">
+      <Button layoutX="740.0" layoutY="236.0" mnemonicParsing="false" onAction="#mixedBerrySmClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Mixed Berry">
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></Button>
-      <Button layoutX="869.0" layoutY="236.0" mnemonicParsing="false" onAction="#proteinShakenClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Protein Shaken">
+         </cursor>
+         <font>
+            <Font size="9.0" />
+         </font></Button>
+      <Button layoutX="869.0" layoutY="236.0" mnemonicParsing="false" onAction="#proteinShakenClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Protein Shake">
          <font>
             <Font size="9.0" />
          </font>
@@ -119,47 +122,47 @@
             <Cursor fx:constant="HAND" />
          </cursor></Button>
       <Separator layoutX="646.0" layoutY="73.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="6.0" />
-      <Label layoutX="817.0" layoutY="321.0" text="Food" textAlignment="CENTER">
+      <Label layoutX="817.0" layoutY="321.0" text="Food" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button layoutX="679.0" layoutY="435.0" mnemonicParsing="false" onAction="#croissantClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Croissant">
+      <Button layoutX="679.0" layoutY="435.0" mnemonicParsing="false" onAction="#croissantClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Croissant">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="802.0" layoutY="537.0" mnemonicParsing="false" onAction="#btlSandwichClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="BLT Sandwich" textAlignment="CENTER">
-         <font>
-            <Font size="11.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></Button>
-      <Button layoutX="922.0" layoutY="537.0" mnemonicParsing="false" onAction="#grilledCheeseClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Grilled Cheese">
+      <Button layoutX="802.0" layoutY="537.0" mnemonicParsing="false" onAction="#btlSandwichClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="BLT Sandwich" textAlignment="CENTER">
          <font>
             <Font size="10.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button contentDisplay="CENTER" layoutX="679.0" layoutY="537.0" mnemonicParsing="false" onAction="#cheeseBagelClick" prefHeight="27.0" prefWidth="83.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Cream Cheese Bagel" textAlignment="CENTER" textOverrun="LEADING_WORD_ELLIPSIS">
+      <Button layoutX="922.0" layoutY="537.0" mnemonicParsing="false" onAction="#grilledCheeseClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Grilled Cheese">
          <font>
-            <Font size="7.0" />
+            <Font size="10.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="802.0" layoutY="435.0" mnemonicParsing="false" onAction="#muffinClick" prefHeight="25.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Muffin">
+      <Button contentDisplay="CENTER" layoutX="679.0" layoutY="537.0" mnemonicParsing="false" onAction="#cheeseBagelClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Cream Cheese Bagel" textAlignment="CENTER" textOverrun="LEADING_WORD_ELLIPSIS">
+         <font>
+            <Font size="8.0" />
+         </font>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="866.0" layoutY="585.0" mnemonicParsing="false" onAction="#proceedClick" prefHeight="52.0" prefWidth="148.0" style="-fx-border-color: black;" text="Proceed" />
+      <Button layoutX="802.0" layoutY="435.0" mnemonicParsing="false" onAction="#muffinClick" prefHeight="25.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Muffin">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button fx:id="proceedButton" layoutX="866.0" layoutY="585.0" mnemonicParsing="false" onAction="#proceedClick" prefHeight="52.0" prefWidth="148.0" stylesheets="@menuBackground.css" text="Proceed" />
       <Separator layoutX="649.0" layoutY="379.0" orientation="VERTICAL" prefHeight="200.0" />
-      <Button layoutX="29.0" layoutY="596.0" mnemonicParsing="false" onAction="#removeItemClick" prefHeight="45.0" prefWidth="232.0" style="-fx-border-color: black;" text="Remove Item">
+      <Button fx:id="removeButton" layoutX="29.0" layoutY="596.0" mnemonicParsing="false" onAction="#removeItemClick" prefHeight="45.0" prefWidth="232.0" stylesheets="@menuBackground.css" text="Remove Item">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="921.0" layoutY="435.0" mnemonicParsing="false" onAction="#chickenWrapClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-color: black; -fx-region-background: white; -fx-border-radius: 7;" text="Chicken Wrap">
+      <Button layoutX="921.0" layoutY="435.0" mnemonicParsing="false" onAction="#chickenWrapClick" prefHeight="27.0" prefWidth="84.0" style="-fx-border-radius: 7;" stylesheets="@menuBackground.css" text="Chicken Wrap">
          <font>
             <Font size="11.0" />
          </font>

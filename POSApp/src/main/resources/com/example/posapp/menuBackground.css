@@ -1,0 +1,71 @@
+#menuPane {
+    -fx-background-image: url("backgroundImg/dark-wood.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.button{
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: Georgia, serif;
+    -fx-background-radius: 20px;
+    -fx-font-size: 8px;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#ffd27f, #ff9e1a);
+    -fx-font-family: "Georgia";
+    -fx-font-size: 8px;
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(#ff8a00, #d86b00);
+    -fx-font-family: "Georgia";
+    -fx-font-size: 8px;
+}
+
+#proceedButton {
+    -fx-font-size: 15px;
+}
+
+#proceedButton:pressed {
+    -fx-font-size: 15px;
+}
+
+#proceedButton:hover {
+    -fx-font-size: 15px;
+}
+
+#removeButton {
+    -fx-font-size: 15px;
+}
+
+#removeButton:pressed {
+    -fx-font-size: 15px;
+}
+
+#removeButton:hover {
+    -fx-font-size: 15px;
+}
+
+
+
+#recitedView {
+    -fx-background-color: #000000;
+    -fx-text-fill: #ffffff;
+    -fx-control-inner-background: black;
+    -fx-border-color: transparent;
+}
+
+#recitedView .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: Georgia, serif;
+    -fx-alignment: CENTER;
+}
+
+#recitedView .list-cell:selected {
+    -fx-background-color: #ff8a00; /* highlight color */
+    -fx-text-fill: #000000;
+}
