@@ -19,3 +19,16 @@
 .button:pressed {
     -fx-background-color: linear-gradient(#ff8a00, #d86b00);
 }
+
+#input_TF{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-color: #ff8a00;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.text-field .prompt-text {
+    -fx-fill: #ffffff;
+}
