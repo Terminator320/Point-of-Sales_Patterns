@@ -5,14 +5,19 @@ import com.example.posapp.PaymentFactory.PaymentFactoryClass;
 import com.example.posapp.PaymentFactory.PaymentProcessing;
 import com.example.posapp.models.Payment;
 import com.example.posapp.models.SalesOrder;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -30,34 +35,54 @@ import static com.example.posapp.models.SalesOrder.*;
 public class PaymentController {
 
     //METHOD PAYMENT SECTION
-    @FXML private ChoiceBox<Payment.PaymentMethod> choiceOfPayment;
+    @FXML
+    private ChoiceBox<Payment.PaymentMethod> choiceOfPayment;
 
     //USER INFORMATION SECTION
-    @FXML private TextField nameField;
-    @FXML private TextField cardNumberField;
-    @FXML private TextField threeDigitCardNumber;
-    @FXML private ComboBox<String> selectMonthExpiration;
-    @FXML private ComboBox<String> selectYearExpiration;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField cardNumberField;
+    @FXML
+    private TextField threeDigitCardNumber;
+    @FXML
+    private ComboBox<String> selectMonthExpiration;
+    @FXML
+    private ComboBox<String> selectYearExpiration;
 
     //TIP SECTION
-    @FXML private Label amount10PercentTip;
-    @FXML private Label amount15PercentTip;
-    @FXML private Label amount20PercentTip;
-    @FXML private Label amountCustomTip;
-    @FXML private ToggleGroup tipGroup;
-    @FXML private TextField customTipField;
-    @FXML private RadioButton radioButton10percent;
-    @FXML private RadioButton radioButton15percent;
-    @FXML private RadioButton radioButton20percent;
-    @FXML private RadioButton radioButtonCustom;
-    @FXML private RadioButton noTip;
+    @FXML
+    private Label amount10PercentTip;
+    @FXML
+    private Label amount15PercentTip;
+    @FXML
+    private Label amount20PercentTip;
+    @FXML
+    private Label amountCustomTip;
+    @FXML
+    private ToggleGroup tipGroup;
+    @FXML
+    private TextField customTipField;
+    @FXML
+    private RadioButton radioButton10percent;
+    @FXML
+    private RadioButton radioButton15percent;
+    @FXML
+    private RadioButton radioButton20percent;
+    @FXML
+    private RadioButton radioButtonCustom;
+    @FXML
+    private RadioButton noTip;
 
     //CHECKOUT PAYMENT OR CANCEL PAYMENT
-    @FXML private Button payButton;
-    @FXML private Button cancelButton;
+    @FXML
+    private Button payButton;
+    @FXML
+    private Button cancelButton;
 
     //DISPLAY FINAL TOTAL AMOUNT
-    @FXML private ListView<String> finalTotal;
+    @FXML
+    private ListView<String> finalTotal;
 
     //LOGGER FILE
     private static final Logger LOGGER = LogConfig.getLogger(PaymentController.class.getName());
@@ -80,6 +105,7 @@ public class PaymentController {
         setUpPaymentMethod();
         expirationDateChoice();
         showTipAmountLabel();
+        noTip.setSelected(true);
         setListOfCost();
     }
 
@@ -92,7 +118,7 @@ public class PaymentController {
     }
 
     //
-    public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID){
+    public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID) {
         this.mySalesOrder = salesOrderController;
         this.orderID = orderID;
         this.subtotal = mySalesOrder.getSubtotalAsDouble();
@@ -103,8 +129,8 @@ public class PaymentController {
 
     //METHOD PAYMENT
     //populate ChoiceBox with available payment methods
-    private void setUpPaymentMethod(){
-        for(Payment.PaymentMethod paymentMethod : Payment.PaymentMethod.values()){
+    private void setUpPaymentMethod() {
+        for (Payment.PaymentMethod paymentMethod : Payment.PaymentMethod.values()) {
             choiceOfPayment.getItems().addAll(paymentMethod);
         }
         choiceOfPayment.setValue(null);
@@ -113,7 +139,7 @@ public class PaymentController {
     }
 
     //helper method to clear all payment input fields
-    private void clearAllField(){
+    private void clearAllField() {
         nameField.clear();
         cardNumberField.clear();
         threeDigitCardNumber.clear();
@@ -123,7 +149,7 @@ public class PaymentController {
 
     //helper method to enable/disable user card information fields based on their
     //selected payment method
-    private void setCardInfoVisibility(boolean visible){
+    private void setCardInfoVisibility(boolean visible) {
         double opacityLvl = visible ? 1.0 : 0.5;
 
         nameField.setOpacity(opacityLvl);
@@ -143,7 +169,7 @@ public class PaymentController {
     }
 
     //Handle UI based on selected payment method
-    private void handlePaymentMethod(){
+    private void handlePaymentMethod() {
         Payment.PaymentMethod methodSelected = choiceOfPayment.getValue();
 
         if (methodSelected == null) {
@@ -151,7 +177,7 @@ public class PaymentController {
             return;
         }
 
-        switch (methodSelected){
+        switch (methodSelected) {
             case CREDIT:
                 selectPaymentMethod = Payment.PaymentMethod.CREDIT;
                 setCardInfoVisibility(true);
@@ -173,31 +199,32 @@ public class PaymentController {
 
     //USER INFORMATION
     //check if a text field is empty
-    private boolean isFieldEmpty(TextField text){
+    private boolean isFieldEmpty(TextField text) {
         return text.getText().isEmpty();
     }
 
     //check if the card number contains 16 digits
-    private boolean isCardNumValid(String cardNum){
+    private boolean isCardNumValid(String cardNum) {
         String removeSpaces = cardNum.replaceAll("\\s+", "");
         return removeSpaces.matches("\\d{16}");
     }
 
     //check if card name contains letters and spaces
-    private boolean isCardNameValid(String cardName){
+    private boolean isCardNameValid(String cardName) {
         return cardName.matches("[a-zA-Z ]+");
     }
 
     //check if the CVV contains 3 digits
-    private boolean isCVVValid(String cvv){
+    private boolean isCVVValid(String cvv) {
         return cvv.matches("\\d{3}");
     }
 
     //check if expiration date is not already expired
-    private boolean isDateValid(){
-        if(isDateEmpty()){
+    private boolean isDateValid() {
+        if (isDateEmpty()) {
             return false;
         }
+
         int month = Integer.parseInt(selectMonthExpiration.getValue());
         int year = Integer.parseInt(selectYearExpiration.getValue());
 
@@ -207,27 +234,26 @@ public class PaymentController {
     }
 
     //check if month and year is not selected
-    private boolean isDateEmpty(){
+    private boolean isDateEmpty() {
         return selectMonthExpiration.getValue() == null
                 || selectYearExpiration.getValue() == null;
     }
 
     //populate ComboBox with months (1-12) and years (current year up to 15 years in the future)
-    private void expirationDateChoice(){
+    private void expirationDateChoice() {
         for (int i = 1; i <= 12; i++) {
             selectMonthExpiration.getItems().add(String.format("%02d", i));
         }
 
         int year = LocalDate.now().getYear();
-        for(int i = year; i < year + 15; i++) {
+        for (int i = year; i < year + 15; i++) {
             selectYearExpiration.getItems().add(String.valueOf(i));
         }
     }
 
-
     @FXML
-    protected void onNameFieldAction(ActionEvent event){
-        if(selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
+    protected void onNameFieldAction(ActionEvent event) {
+        if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isCardNameValid(nameField.getText())) {
                 showInvalidInformation("Invalid name. Must only contain alphabets.");
                 nameField.clear();
@@ -236,8 +262,8 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onCardNumFieldAction(ActionEvent event){
-        if(selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
+    protected void onCardNumFieldAction(ActionEvent event) {
+        if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isCardNumValid(cardNumberField.getText())) {
                 showInvalidInformation("Invalid card number. Please enter a valid card number (16 digits).");
                 cardNumberField.clear();
@@ -246,8 +272,8 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onCVVFieldAction(ActionEvent event){
-        if(selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
+    protected void onCVVFieldAction(ActionEvent event) {
+        if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isCVVValid(threeDigitCardNumber.getText())) {
                 showInvalidInformation("Invalid CVV. Please make sure it only contains 3 digits.");
                 threeDigitCardNumber.clear();
@@ -256,8 +282,8 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onExpirationDateAction(ActionEvent event){
-        if(selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
+    protected void onExpirationDateAction(ActionEvent event) {
+        if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isDateEmpty()) {
                 if (!isDateValid()) {
                     showInvalidInformation("Invalid card date. Card already expired.");
@@ -270,11 +296,11 @@ public class PaymentController {
     //TIPS SECTION
     @FXML
     protected void getTipPercentage(ActionEvent actionEvent) {
-        if(radioButton10percent.isSelected()){
+        if (radioButton10percent.isSelected()) {
             tipAmount = calculateTip(0.10);
             customTipField.setDisable(true);
             customTipField.clear();
-        }else if (radioButton15percent.isSelected()){
+        } else if (radioButton15percent.isSelected()) {
             tipAmount = calculateTip(0.15);
             customTipField.setDisable(true);
             customTipField.clear();
@@ -282,11 +308,12 @@ public class PaymentController {
             tipAmount = calculateTip(0.20);
             customTipField.setDisable(true);
             customTipField.clear();
-        }else if (radioButtonCustom.isSelected()){
+        } else if (radioButtonCustom.isSelected()) {
+            tipAmount = 0;
             isCustomAmountValid();
             customTipField.setDisable(false);
             customTipField.requestFocus();
-        }else{
+        } else {
             tipAmount = 0;
             customTipField.setDisable(true);
             customTipField.clear();
@@ -295,20 +322,23 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onCustomTipAction(ActionEvent event){
+    protected void onCustomTipFieldAction(ActionEvent event) {
         isCustomAmountValid();
         setListOfCost();
     }
 
-    private double calculateTip(double percentage){
+    //helper method to calculate tip amount based on subtotal
+    private double calculateTip(double percentage) {
         return subtotal * percentage;
     }
 
-    private String formatMoney(double money){
+    //helper method to format money precision to 2 decimal places
+    private String formatMoney(double money) {
         return String.format("$%.2f", money);
     }
 
-    private void showTipAmountLabel(){
+    //helper method to show tip amount based on the subtotal
+    private void showTipAmountLabel() {
         double tip10 = calculateTip(0.10);
         double tip15 = calculateTip(0.15);
         double tip20 = calculateTip(0.20);
@@ -318,14 +348,19 @@ public class PaymentController {
         amount20PercentTip.setText(formatMoney(tip20));
     }
 
-    private void isCustomAmountValid(){
+    private void isCustomAmountValid() {
         try {
-            String text = customTipField.getText();
-            if (!text.isEmpty()) {
-                tipAmount = Double.parseDouble(text);
-            } else {
+            String tipField = customTipField.getText();
+            if (tipField.isEmpty()) {
                 tipAmount = 0;
+                return;
             }
+            double tip = Double.parseDouble(tipField);
+            if (tip < 0) {
+                throw new NumberFormatException();
+            }
+            tipAmount = tip;
+
         } catch (NumberFormatException e) {
             tipAmount = 0;
             showInvalidInformation("Invalid tip amount. Please enter a valid number.");
@@ -335,12 +370,12 @@ public class PaymentController {
 
 
     //LIST SHOWING PAYMENT DETAILS SUCH AS SUBTOTAL, TIPS, TAXES, AND TOTAL
-    private double calculateTotal(){
+    private double calculateTotal() {
         double taxes = calculateTaxes();
         return subtotal + taxes + tipAmount;
     }
 
-    private double calculateTaxes(){
+    private double calculateTaxes() {
         return subtotal * 0.15;
     }
 
@@ -375,8 +410,7 @@ public class PaymentController {
             stage.show();
 
             cancelledOrder(orderID);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
         }
     }
@@ -384,22 +418,22 @@ public class PaymentController {
     @FXML
     protected void OnPayAction(ActionEvent event) {
 
-        if(choiceOfPayment.getValue() == null){
+        if (choiceOfPayment.getValue() == null) {
             showErrorInformation("Please select a payment method");
             return;
         }
 
-        if(choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
+        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
             if (isFieldEmpty(nameField) || isFieldEmpty(cardNumberField) || isFieldEmpty(threeDigitCardNumber) || isDateEmpty()) {
                 showErrorInformation("At least one field is empty. Please fill out all fields.");
                 return;
             }
+            if (!isDateValid()) {
+                showErrorInformation("Date is expired. Cannot proceed with payment");
+                return;
+            }
         }
 
-        if(!isDateValid()){
-            showErrorInformation("Date is expired. Cannot proceed with payment");
-            return;
-        }
 
         Payment createAPayment = createPaymentInfo();
         boolean successfulPayment = processPayment(createAPayment);
@@ -422,12 +456,12 @@ public class PaymentController {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
-        }else{
+        } else {
             showErrorInformation("Payment failed");
         }
     }
 
-    private Payment createPaymentInfo(){
+    private Payment createPaymentInfo() {
         return new Payment(
                 orderID,
                 choiceOfPayment.getValue(),
@@ -436,13 +470,13 @@ public class PaymentController {
         );
     }
 
-    private boolean processPayment(Payment payment){
+    private boolean processPayment(Payment payment) {
         return payment.insertPayment();
     }
 
 
     //ALERTS SECTION
-    private void alertInformation(Alert.AlertType type, String alertTitle, String alertMessage){
+    private void alertInformation(Alert.AlertType type, String alertTitle, String alertMessage) {
         Alert myAlert = new Alert(type);
         myAlert.setTitle(alertTitle);
         myAlert.setHeaderText(null);
@@ -450,11 +484,11 @@ public class PaymentController {
         myAlert.show();
     }
 
-    private void showConfirmation(String message){
+    private void showConfirmation(String message) {
         alertInformation(Alert.AlertType.CONFIRMATION, "Cancel Payment", message);
     }
 
-    private void showSuccessInformation(){
+    private void showSuccessInformation() {
         alertInformation(Alert.AlertType.INFORMATION, "Successful Payment", "Payment Successful. Thank you for your purchase!");
     }
 
@@ -462,7 +496,7 @@ public class PaymentController {
         alertInformation(Alert.AlertType.ERROR, "Payment Error", message);
     }
 
-    private void showInvalidInformation(String message){
+    private void showInvalidInformation(String message) {
         alertInformation(Alert.AlertType.WARNING, "Invalid Input", message);
     }
 
@@ -471,6 +505,7 @@ public class PaymentController {
         Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
         processingAlert.setTitle("Payment process");
         processingAlert.setHeaderText(null);
+//        processingAlert.getButtonTypes().clear();
         processingAlert.setContentText(message);
         processingAlert.show();
 

@@ -23,13 +23,10 @@
            <children>
                <AnchorPane prefHeight="116.0" prefWidth="89.0">
                    <children>
-                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%">
+                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%" toggleGroup="$tipGroup">
                      <font>
                         <Font size="13.0" />
                      </font>
-                     <toggleGroup>
-                        <ToggleGroup fx:id="tipGroup" />
-                     </toggleGroup>
                      </RadioButton>
                        <Label fx:id="amount10PercentTip" layoutX="28.0" layoutY="49.0" text="Label">
                      <font>
@@ -76,7 +73,7 @@
                         <Font size="13.0" />
                      </font></RadioButton>
 
-                       <TextField fx:id="customTipField" disable="true" layoutX="5.0" layoutY="42.0" onAction="#onCustomTipAction" prefWidth="70.0" promptText="\$" style="-fx-background-color: white; -fx-background-radius: 20px;">
+                       <TextField fx:id="customTipField" disable="true" layoutX="5.0" layoutY="42.0" onAction="#onCustomTipFieldAction" prefWidth="70.0" promptText="\$" style="-fx-background-color: white; -fx-background-radius: 20px;">
                      <font>
                         <Font size="13.0" />
                      </font></TextField>
