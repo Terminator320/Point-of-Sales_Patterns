@@ -1,25 +1,46 @@
+/* Background */
 #profitPane {
-    -fx-background-image: url("../backgroundImg/dark-wood.jpg");
+    -fx-background-image: url("backgroundImg/dark-wood.jpg");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center;
 }
 
+/* Line color */
+.chart-series-line {
+    -fx-stroke: #ff8800;
+    -fx-stroke-width: 3px;
+}
+
+/* Data point color */
+.chart-line-symbol {
+    -fx-background-color: #ff8800, white;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Legend text */
+.chart-legend-item .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Chart title */
 .chart-title {
     -fx-text-fill: white;
 }
 
-.chart-legend-item {
-    -fx-text-fill: white;
+/* Grid lines */
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: rgba(246, 148, 2, 0.25);
 }
+
 
 .axis-label {
     -fx-text-fill: white;
 }
-.axis .tick-label {
-    -fx-text-fill: white;
-}
 
-.chart-pie-label {
+.axis .tick-label {
     -fx-text-fill: white;
 }
