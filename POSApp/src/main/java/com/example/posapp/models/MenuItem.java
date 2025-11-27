@@ -1,6 +1,15 @@
 package com.example.posapp.models;
 
+import database.ConfigManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class MenuItem {
     private int id;
@@ -69,4 +78,31 @@ public class MenuItem {
     }
 
     //crud
+
+    public static ObservableList<MenuItem> getMenuItems() {
+        ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
+        //get the statement
+        final String sql = "SELECT * FROM menu_item";
+
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)){
+
+            ResultSet resultSet = pstmt.executeQuery();
+            while(resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double price = resultSet.getDouble("price");
+                double costPrice = resultSet.getDouble("costPrice");
+                int inventoryId = resultSet.getInt("inv_id");
+
+
+                menuItems.add(new MenuItem(id,name,price,costPrice, (Inventory) Inventory.getInvbyInvId(inventoryId)));
+            }
+        }
+        catch (Exception e) {
+            //LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while fetching inventory");
+        }
+        return menuItems;
+    }
+
 }
