@@ -44,7 +44,9 @@ public class SalesOrderController {
     private ObservableList<SalesOrder> items;
     private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
     private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
-    private ArrayList<MenuItem> inventoryList = new ArrayList<>();
+
+    // Track how much inventory we subtracted per inventoryId
+    private final Map<Integer, Integer> inventoryChanges = new HashMap<>();
 
 
     public HashMap<Integer, SalesOrder> getPopularItemsSaleMap() {
@@ -103,6 +105,9 @@ public class SalesOrderController {
 
 
             Inventory.subtractQuantity(inventoryId, quantity);
+
+            // Track what we subtracted so we can undo if payment is cancelled
+            inventoryChanges.merge(inventoryId, quantity, Integer::sum);
 
         }
 
@@ -163,6 +168,7 @@ public class SalesOrderController {
     @FXML
     public void cancelOrder(ActionEvent event) {
         try {
+            restoreInventoryForCurrentOrder();
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
@@ -175,6 +181,21 @@ public class SalesOrderController {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while going back to the main");
         }
+    }
+
+
+    //used for cancel and restore the qty
+    public void restoreInventoryForCurrentOrder() {
+        for (Map.Entry<Integer, Integer> entry : inventoryChanges.entrySet()) {
+            int inventoryId = entry.getKey();
+            int qty = entry.getValue();
+            Inventory.addQuantity(inventoryId, qty);
+        }
+        inventoryChanges.clear();
+    }
+
+    public void clearInventoryChanges() {
+        inventoryChanges.clear();
     }
 
     @FXML

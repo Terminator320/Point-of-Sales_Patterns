@@ -164,4 +164,19 @@ public class Inventory {
         }
     }
 
+    public static void addQuantity(int invId, int amount) {
+        final String sql = "UPDATE inventory set qty = qty + ? where invId = ?";
+
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, invId);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nDatabase error while adding back item quantity");
+        }
+    }
+
+
 }

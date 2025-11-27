@@ -393,6 +393,11 @@ public class PaymentController {
     @FXML
     protected void onCancelAction(ActionEvent event) {
         try {
+
+            if (salesOrderController != null) {
+                salesOrderController.restoreInventoryForCurrentOrder();
+            }
+
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
@@ -429,6 +434,9 @@ public class PaymentController {
             }
         }
 
+        if (salesOrderController != null) {
+            salesOrderController.clearInventoryChanges();
+        }
 
         Payment createAPayment = createPaymentInfo();
         boolean successfulPayment = processPayment(createAPayment);
@@ -446,8 +454,6 @@ public class PaymentController {
 
             HashMap<Integer, SalesOrder> map = salesOrderController.getPopularItemsSaleMap();
             loadPopItems(map);
-
-            //subtractQuantity();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();

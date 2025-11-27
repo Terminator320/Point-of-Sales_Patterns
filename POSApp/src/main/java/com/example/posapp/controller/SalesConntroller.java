@@ -1,7 +1,6 @@
 package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
-import com.example.posapp.models.Sales;
 import com.example.posapp.models.SalesOrder;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,18 +18,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import com.example.posapp.multithreadingprofitcalculator.ProfitCalculator;
-import com.example.posapp.multithreadingprofitcalculator.ProfitCalculatorOperation;
-import com.example.posapp.models.SalesOrder;
+
 import com.example.posapp.multithreadingprofitcalculator.ProfitCalculator;
 import com.example.posapp.multithreadingprofitcalculator.ProfitCalculatorOperation;
 

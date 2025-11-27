@@ -313,7 +313,6 @@ public class MenuItemConntroller {
     }
 
 
-
     @FXML
     public void removeItemClick(ActionEvent event) {
         removeSelectedItem();
