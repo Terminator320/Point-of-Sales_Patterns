@@ -49,6 +49,10 @@
     -fx-font-size: 15px;
 }
 
+#returnButton {
+    -fx-font-size: 15px;
+}
+
 
 
 #recitedView {

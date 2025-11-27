@@ -54,7 +54,7 @@ public class CalSemaThread extends Thread{
             ProfitCalculator.profit    += localProfit;
 
         } catch (InterruptedException e){
-            LOGGER.log(Level.SEVERE, e.getCause() + "Error loading sales order view");
+            LOGGER.log(Level.SEVERE, e.getCause() + "Error while multithreading thread");
         }
         finally {
             semaphore.release();

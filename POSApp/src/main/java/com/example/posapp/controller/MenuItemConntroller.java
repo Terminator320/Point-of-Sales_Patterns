@@ -291,9 +291,30 @@ public class MenuItemConntroller {
             stage.setTitle("Sales-Order Report");
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error loading sales order view");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() +"/nError loading sales order view");
         }
     }
+
+    @FXML
+    public void returnClick(ActionEvent event) {
+        try {
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
+            Parent newRoot = loader.load();
+
+            Scene newScene = new Scene(newRoot);
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Menu");
+        }
+        catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError loading back to the Main Menu.");
+        }
+    }
+
+
 
     @FXML
     public void removeItemClick(ActionEvent event) {
