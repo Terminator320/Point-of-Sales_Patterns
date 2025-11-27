@@ -1,5 +1,13 @@
 package com.example.posapp.multithreadingprofitcalculator;
 
 public class ProfitCalculator {
-    static double profit,costTotal,total;
+    public static double profit;
+    public static double costTotal;
+    public static double total;
+
+    public static void reset() {
+        profit = 0;
+        costTotal = 0;
+        total = 0;
+    }
 }

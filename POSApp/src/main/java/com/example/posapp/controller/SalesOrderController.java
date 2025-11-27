@@ -40,6 +40,9 @@ public class SalesOrderController {
     @FXML private TableColumn<SalesOrder, Integer> colQuantity;
     @FXML private TableColumn<SalesOrder, Double> colPrice;
     @FXML private TextField searchText;
+
+
+
     private ObservableList<SalesOrder> items;
     private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
     private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
@@ -125,7 +128,7 @@ public class SalesOrderController {
     public double getTotalCostPrice() {
         double totalCostPrice = 0;
         for(SalesOrder order : listOfOrders) {
-             totalCostPrice += order.getQuantity() * order.getCostPrice();
+             totalCostPrice += order.getQuantity() * order.getTotalCostPrice();
         }
         return totalCostPrice;
     }

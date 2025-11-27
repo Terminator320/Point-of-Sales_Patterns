@@ -2,6 +2,7 @@ package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Sales;
+import com.example.posapp.models.SalesOrder;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,69 +28,71 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import com.example.posapp.multithreadingprofitcalculator.ProfitCalculator;
+import com.example.posapp.multithreadingprofitcalculator.ProfitCalculatorOperation;
+import com.example.posapp.models.SalesOrder;
+import com.example.posapp.multithreadingprofitcalculator.ProfitCalculator;
+import com.example.posapp.multithreadingprofitcalculator.ProfitCalculatorOperation;
 
 public class SalesConntroller {
-
-    //monthly line chart
-    @FXML private LineChart<String, Number> monthlyProfitLineChart;
-
 
     //pir chart for overall
     @FXML private PieChart profitLossPieChart;
 
-
     @FXML private Label netProfitLbl;
     @FXML private Label profitLbl;
     @FXML private Label costLbl;
-    @FXML private Label topDayOfMonthLbl;
-
-
-    //map to use in bar chart and line chart
-    private Map<LocalDate, Double> profitPerDay;
-
 
 
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesConntroller.class.getName());
 
     public synchronized void initialize() {
-        //Load sales from DB
-        List<Sales> sales = Sales.getAllSales();
-
-        //change later when we figure out threads for this
-        // Build profitPerDay map
-        profitPerDay = new HashMap<>();
 
 
-        for (Sales s : sales) {
-            LocalDate date = s.getDate();
-
-            //change this to use thread when we do that
-            double profit = s.getRevenue() - s.getCost();
-
-
-            profitPerDay.merge(s.getDate(), profit, Double::sum);
-        }
-
-
-        loadMonthlyLineChart();
-
-        //test value
-        double totalNetProfit = 3400;
-        double totalLoss = -1200;
-        double totalProfit = totalNetProfit + totalLoss;
-
-        loadProfitLossPie(totalNetProfit, totalLoss ,totalProfit);
+        calculateProfitAsync();
     }
 
+    private void calculateProfitAsync() {
+        Thread worker = new Thread(() -> {
+            try {
+                // Load all orders once
+                List<SalesOrder> orders = SalesOrder.getALLSales();
 
-    public synchronized void loadProfitLossPie(double totalNetProfit, double totalLoss,double totalProfit) {
+                // Threads will fill ProfitCalculator.*
+                ProfitCalculatorOperation.calculate(orders);
+
+                double totalRevenue = ProfitCalculator.total;
+                double totalCost    = ProfitCalculator.costTotal;
+                double netProfit    = ProfitCalculator.profit;
+
+                //double totalLossParam   = Math.abs(totalCost);  // negative for your pie
+                //double totalProfitSlice = netProfit;
+
+
+                //method in java where its like thread where it waits until the other tasks are done to start
+                Platform.runLater(() -> {
+                    loadProfitLossPie(netProfit, totalCost, totalRevenue);
+                });
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, "Error calculating profit and chart data", e);
+            }
+        });
+
+        //runs in the background.
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    public synchronized void loadProfitLossPie(double totalNetProfit, double totalCost, double totalRevenue) {
         // convert negative loss to positive for display
-        double lossAbsolute = Math.abs(totalLoss);
+        //double lossAbsolute = Math.abs(totalLoss);
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                new PieChart.Data("Net Profit", totalProfit),
-                new PieChart.Data("Loss", lossAbsolute)
+                new PieChart.Data("Net Profit", totalNetProfit),
+                new PieChart.Data("Loss", totalCost)
         );
 
         profitLossPieChart.setData(pieData);
@@ -113,42 +116,11 @@ public class SalesConntroller {
         }
 
         //setting label
-        netProfitLbl.setText("Net Profit: $" + totalNetProfit);
-        costLbl.setText("Cost: $" + totalLoss);
-        profitLbl.setText("Profit: $" + totalProfit);
-
+        netProfitLbl.setText("Net Profit: $" + totalRevenue);
+        costLbl.setText("Cost: $" + totalCost);
+        profitLbl.setText("Profit: $" + totalNetProfit);
     }
 
-
-
-    private void loadMonthlyLineChart() {
-        if (profitPerDay.isEmpty()) {
-            monthlyProfitLineChart.getData().clear();
-            return;
-        }
-        // latest date in data
-        LocalDate latest = Collections.max(profitPerDay.keySet());
-        LocalDate start = latest.minusDays(30);
-
-        List<LocalDate> sortedDays = profitPerDay.keySet().stream()
-                .filter(date -> !date.isBefore(start) && !date.isAfter(latest))
-                .sorted()
-                .collect(Collectors.toList());
-
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Profit per day");
-
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d");
-        for (LocalDate day : sortedDays) {
-            double profit = profitPerDay.get(day);
-            String label = day.format(fmt);
-            series.getData().add(new XYChart.Data<>(label, profit));
-        }
-
-        monthlyProfitLineChart.getData().clear();
-        monthlyProfitLineChart.getData().add(series);
-
-    }
 
     @FXML
     private void back(ActionEvent event) {

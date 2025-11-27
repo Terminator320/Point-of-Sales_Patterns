@@ -2,11 +2,15 @@ package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
 import database.ConfigManager;
+import javafx.scene.shape.StrokeLineCap;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,20 +21,23 @@ public class SalesOrder {
     private String finalized_at;
     private double subtotal;
     private double tax_total;
-    private double discount_total;
     private double total;
 
     private int id;
     private String itemName;
     private int quantity;
     private double price;
-    private double costPrice;
+    private double totalCostPrice;
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
-    public SalesOrder(double costPrice, double subtotal) {
-        this.costPrice = costPrice;
+
+    public SalesOrder() {}
+
+    public SalesOrder(double totalCostPrice, double subtotal,String created_at) {
+        this.totalCostPrice = totalCostPrice;
         this.subtotal = subtotal;
+        this.created_at = created_at;
     }
 
 
@@ -40,11 +47,11 @@ public class SalesOrder {
         this.quantity = quantity;
     }
 
-    public SalesOrder(String itemName, int quantity, double price, double costPrice) {
+    public SalesOrder(String itemName, int quantity, double price, double totalCostPrice) {
         this.itemName = itemName;
         this.quantity = quantity;
         this.price = price;
-        this.costPrice = costPrice;
+        this.totalCostPrice = totalCostPrice;
     }
 
     public SalesOrder(int order_id, String status, String created_at, String finalized_at, double subtotal, double tax_total, double total) {
@@ -57,12 +64,12 @@ public class SalesOrder {
         this.total = total;
     }
 
-    public double getCostPrice() {
-        return costPrice;
+    public double getTotalCostPrice() {
+        return this.totalCostPrice;
     }
 
-    public void setCostPrice(double costPrice) {
-        this.costPrice = costPrice;
+    public void setTotalCostPrice(double totalCostPrice) {
+        this.totalCostPrice = totalCostPrice;
     }
 
     public int getId() {
@@ -145,13 +152,6 @@ public class SalesOrder {
         this.tax_total = tax_total;
     }
 
-    public double getDiscount() {
-        return discount_total;
-    }
-
-    public void setDiscount(double discount_total) {
-        this.discount_total = discount_total;
-    }
 
     public double getTotal() {
         return total;
@@ -163,41 +163,47 @@ public class SalesOrder {
 
     //CRUD
 
-    public static SalesOrder getALLSales(){
-        final String sql = "SELECT subtotal, totalCostPrice from sale_order";
-        SalesOrder s = null;
+    public static List<SalesOrder> getALLSales(){
+        List<SalesOrder> list = new ArrayList<>();
+
+
+        final String sql = "SELECT subtotal, totalCostPrice FROM sale_order";
+
         try (Connection connection = ConfigManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                s = new SalesOrder(resultSet.getDouble("subtotal"),resultSet.getDouble("totalCostPrice"));
+            while(resultSet.next()) {
+                SalesOrder so = new SalesOrder();
+                so.setSubtotal(resultSet.getDouble("subtotal"));
+                so.setTotalCostPrice(resultSet.getDouble("totalCostPrice"));
+                list.add(so);
             }
 
         }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
         }
-        return s;
+        return list;
     }
 
-    public static SalesOrder getCostTotal(){
-        final String sql = "SELECT totalCostPrice from sale_order";
-        SalesOrder s = null;
-        try (Connection connection = ConfigManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//    public static double getCostTotal(){
+//        final String sql = "SELECT totalCostPrice from sale_order";
+//
+//        try (Connection connection = ConfigManager.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            while(resultSet.next()){
+//                s = new SalesOrder(resultSet.getDouble("subtotal"),resultSet.getDouble("totalCostPrice"));
+//            }
+//
+//        }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+//            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
+//        }
+//        return s;
+//    }
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                s = new SalesOrder(resultSet.getDouble("subtotal"),resultSet.getDouble("totalCostPrice"));
-            }
-
-        }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
-        }
-        return s;
-    }
-
-        //Adding to SALES_ORDER when 'checkout' button is clicked
+    //Adding to SALES_ORDER when 'checkout' button is clicked
     public static int addSale(double subtotal, double totalCostPrice){
         final String sql = "INSERT INTO sale_order (subtotal, totalCostPrice) VALUES(?,?)";
 
@@ -221,6 +227,7 @@ public class SalesOrder {
         }
         return -1;//get orderID failed
     }
+
 
     public static void finalizeSale(int order_id, String status, String finalized_at, double subtotal, double tax_total, double total){// double total
         final String sql = "UPDATE sale_order SET status = ?, finalized_at = ?, subtotal = ?, tax_total = ?, total = ? WHERE order_id = ?;";//total = ?
