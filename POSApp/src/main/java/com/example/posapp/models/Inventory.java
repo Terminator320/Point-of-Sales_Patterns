@@ -102,14 +102,16 @@ public class Inventory {
         return inventoryData;
     }
 
-    public static ObservableList<Inventory> getInvbyInvId(int invId){
-        ObservableList<Inventory> inventoryData = null;
-        for(Inventory item : getAllInventory()){
-            if(item.getInvId() == invId){
-                inventoryData.add(item);
+    public static Inventory getOne(int invId){
+
+        Inventory item = null;
+        for(int i = 0; i < getAllInventory().size(); i++){
+            if(getAllInventory().get(i).getInvId() == invId){
+                item = getAllInventory().get(i);
             }
         }
-        return inventoryData;
+
+        return item;
     }
 
 

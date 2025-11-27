@@ -5,19 +5,14 @@ import com.example.posapp.PaymentFactory.PaymentFactoryClass;
 import com.example.posapp.PaymentFactory.PaymentProcessing;
 import com.example.posapp.models.Payment;
 import com.example.posapp.models.SalesOrder;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -111,7 +106,7 @@ public class PaymentController {
 
     public static void loadPopItems(HashMap<Integer, SalesOrder> items) {
         for (Map.Entry<Integer, SalesOrder> item : items.entrySet()) {
-            int id = item.getValue().getId();
+            int id = item.getValue().getMenu_id();
             int quantity = item.getValue().getQuantity();
             updateQuantityItems(id, quantity);
         }

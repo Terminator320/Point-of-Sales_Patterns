@@ -7,37 +7,40 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Level;
 
 public class MenuItem {
-    private int id;
+    private int menuItemId;
     private String name;
     private double price,costPrice;
+    private int quantity;
     private Inventory inventory;
 
-    public MenuItem(int id, String name, double price, double costPrice, Inventory inventory) {
-        this.id = id;
+    public MenuItem(int menuItemId, String name, double price, double costPrice, Inventory inventory) {
+        this.menuItemId = menuItemId;
         this.name = name;
         this.price = price;
         this.costPrice = costPrice;
         this.inventory = inventory;
     }
 
-    public MenuItem(int id, String name, double price, double costPrice) {
-        this.id = id;
+    public MenuItem( Inventory inventory, int quantity) {
+        this.inventory = inventory;
+        this.quantity = quantity;
+    }
+
+    public MenuItem(int menuItemId, String name, double price, double costPrice) {
+        this.menuItemId = menuItemId;
         this.name = name;
         this.price = price;
         this.costPrice = costPrice;
     }
 
-    public int getId() {
-        return id;
+    public int getMenuItemId() {
+        return menuItemId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMenuItemId(int menuItemId) {
+        this.menuItemId = menuItemId;
     }
 
     public String getName() {
@@ -62,6 +65,14 @@ public class MenuItem {
 
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -96,7 +107,7 @@ public class MenuItem {
                 int inventoryId = resultSet.getInt("inv_id");
 
 
-                menuItems.add(new MenuItem(id,name,price,costPrice, (Inventory) Inventory.getInvbyInvId(inventoryId)));
+                menuItems.add(new MenuItem(id,name,price,costPrice, Inventory.getOne(inventoryId)));
             }
         }
         catch (Exception e) {

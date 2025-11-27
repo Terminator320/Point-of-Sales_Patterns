@@ -3,7 +3,6 @@ package com.example.posapp.controller;
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
 import com.example.posapp.models.MenuItem;
-import com.example.posapp.models.Sales;
 import com.example.posapp.models.SalesOrder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,33 +18,33 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
-import static com.example.posapp.controller.PaymentController.loadPopItems;
 import static com.example.posapp.models.SalesOrder.addSale;
 
 public class SalesOrderController {
-    @FXML private TextField totalPriceText;
-    @FXML private TableView<SalesOrder> orderTableView;
-    @FXML private TableColumn<SalesOrder, String> colItemName;
-    @FXML private TableColumn<SalesOrder, Integer> colQuantity;
-    @FXML private TableColumn<SalesOrder, Double> colPrice;
-    @FXML private TextField searchText;
-
+    @FXML
+    private TextField totalPriceText;
+    @FXML
+    private TableView<SalesOrder> orderTableView;
+    @FXML
+    private TableColumn<SalesOrder, String> colItemName;
+    @FXML
+    private TableColumn<SalesOrder, Integer> colQuantity;
+    @FXML
+    private TableColumn<SalesOrder, Double> colPrice;
+    @FXML
+    private TextField searchText;
 
 
     private ObservableList<SalesOrder> items;
     private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
     private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
+    private ArrayList<MenuItem> inventoryList = new ArrayList<>();
 
 
     public HashMap<Integer, SalesOrder> getPopularItemsSaleMap() {
@@ -87,9 +86,11 @@ public class SalesOrderController {
             int quantity = entry.getValue();
             double price = item.getPrice();
             double costPrice = item.getCostPrice();
-            int id = item.getId();
+            int menuItemId = item.getMenuItemId();
+            int inventoryId = item.getInventory().getInvId();
 
-            SalesOrder popularItemSale = new SalesOrder(id, quantity);
+
+            SalesOrder popularItemSale = new SalesOrder(menuItemId, quantity);
             popularItemsSaleMap.put(i, popularItemSale);
             i++;
 
@@ -99,27 +100,32 @@ public class SalesOrderController {
             orderTableView.getItems().add(so);
 
             totalPrice += quantity * price;
+
+
+            Inventory.subtractQuantity(inventoryId, quantity);
+
         }
 
         items = orderTableView.getItems();
 
 
-        totalPriceText.setText("$ " + String.format("%.2f",  (totalPrice)));
+        totalPriceText.setText("$ " + String.format("%.2f", (totalPrice)));
     }
 
+    
     public void refreshSubTotal() {
         double totalPrice = 0;
-        for(int i = 0 ; i < orderTableView.getItems().size() ; i++) {
+        for (int i = 0; i < orderTableView.getItems().size(); i++) {
             int quantity = orderTableView.getItems().get(i).getQuantity();
             double price = orderTableView.getItems().get(i).getPrice();
             totalPrice += quantity * price;
         }
-        totalPriceText.setText("$ " + String.format("%.2f",  (totalPrice)));
+        totalPriceText.setText("$ " + String.format("%.2f", (totalPrice)));
     }
-    
+
     public double getSubtotalAsDouble() {
         double total = 0;
-        for(SalesOrder order : orderTableView.getItems()) {
+        for (SalesOrder order : orderTableView.getItems()) {
             total += order.getQuantity() * order.getPrice();
         }
         return total;
@@ -127,8 +133,8 @@ public class SalesOrderController {
 
     public double getTotalCostPrice() {
         double totalCostPrice = 0;
-        for(SalesOrder order : listOfOrders) {
-             totalCostPrice += order.getQuantity() * order.getTotalCostPrice();
+        for (SalesOrder order : listOfOrders) {
+            totalCostPrice += order.getQuantity() * order.getTotalCostPrice();
         }
         return totalCostPrice;
     }
@@ -147,6 +153,7 @@ public class SalesOrderController {
         }
         orderTableView.setItems(filteredSalesOrderList);
     }
+
     @FXML
     public void refreshButtonClick(ActionEvent event) {
         orderTableView.setItems(items);
@@ -165,8 +172,7 @@ public class SalesOrderController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Main");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while going back to the main");
         }
     }
@@ -193,14 +199,18 @@ public class SalesOrderController {
 
             paymentController.setSalesOrderTotal(this, orderID);
 
+         //   revomeInventory();
+
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Payment");
-        }
-        catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getCause() + e.getMessage() + " \nError while trying to proceed to payment view.");
         }
     }
+
+
+
 }
 

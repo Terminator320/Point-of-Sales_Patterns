@@ -2,13 +2,11 @@ package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
 import database.ConfigManager;
-import javafx.scene.shape.StrokeLineCap;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,11 +21,13 @@ public class SalesOrder {
     private double tax_total;
     private double total;
 
-    private int id;
+    private int menu_id;
     private String itemName;
     private int quantity;
     private double price;
     private double totalCostPrice;
+
+
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
@@ -42,8 +42,8 @@ public class SalesOrder {
 
 
 
-    public SalesOrder(int id, int quantity) {
-        this.id = id;
+    public SalesOrder(int menu_id, int quantity) {
+        this.menu_id = menu_id;
         this.quantity = quantity;
     }
 
@@ -64,6 +64,8 @@ public class SalesOrder {
         this.total = total;
     }
 
+
+
     public double getTotalCostPrice() {
         return this.totalCostPrice;
     }
@@ -72,12 +74,12 @@ public class SalesOrder {
         this.totalCostPrice = totalCostPrice;
     }
 
-    public int getId() {
-        return id;
+    public int getMenu_id() {
+        return menu_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMenu_id(int menu_id) {
+        this.menu_id = menu_id;
     }
 
     public String getItemName() {
@@ -161,6 +163,8 @@ public class SalesOrder {
             this.total = total;
         }
 
+
+
     //CRUD
 
     public static List<SalesOrder> getALLSales(){
@@ -186,22 +190,6 @@ public class SalesOrder {
         return list;
     }
 
-//    public static double getCostTotal(){
-//        final String sql = "SELECT totalCostPrice from sale_order";
-//
-//        try (Connection connection = ConfigManager.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while(resultSet.next()){
-//                s = new SalesOrder(resultSet.getDouble("subtotal"),resultSet.getDouble("totalCostPrice"));
-//            }
-//
-//        }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-//            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
-//        }
-//        return s;
-//    }
 
     //Adding to SALES_ORDER when 'checkout' button is clicked
     public static int addSale(double subtotal, double totalCostPrice){
