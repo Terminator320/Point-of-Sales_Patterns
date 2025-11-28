@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 
 import javafx.stage.Stage;
@@ -275,18 +276,24 @@ public class MenuItemConntroller {
     @FXML
     public void proceedClick(ActionEvent event) {
         try {
-            // Load the FXML file for the second scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-order.fxml"));
-            Parent newRoot = loader.load();
-            Scene newScene = new Scene(newRoot);
 
-            SalesOrderController controller = loader.getController();
-            controller.loadOrder(activeOrder, menuItems);
+            if(activeOrder.isEmpty()){
+                invalidMenuOrder("Proceeding to Payment","You can't continue without adding an item!");
+            }
+            else{
+                // Load the FXML file for the second scene
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-order.fxml"));
+                Parent newRoot = loader.load();
+                Scene newScene = new Scene(newRoot);
 
-            // Get the current stage (e.g., from a component's scene and window)
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(newScene);
-            stage.setTitle("Sales-Order Report");
+                SalesOrderController controller = loader.getController();
+                controller.loadOrder(activeOrder, menuItems);
+
+                // Get the current stage (e.g., from a component's scene and window)
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(newScene);
+                stage.setTitle("Sales-Order Report");
+            }
         }
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() +"/nError loading sales order view");
@@ -316,5 +323,13 @@ public class MenuItemConntroller {
     @FXML
     public void removeItemClick(ActionEvent event) {
         removeSelectedItem();
+    }
+
+    public void invalidMenuOrder(String title,String msg){
+        Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
+        processingAlert.setTitle(title);
+        processingAlert.setHeaderText(null);
+        processingAlert.setContentText(msg);
+        processingAlert.show();
     }
 }

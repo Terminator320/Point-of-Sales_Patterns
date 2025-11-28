@@ -1,6 +1,7 @@
 package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
+import com.example.posapp.models.PopularItems;
 import com.example.posapp.models.SalesOrder;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,16 +15,22 @@ import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.example.posapp.multithreadingprofitcalculator.ProfitCalculator;
 import com.example.posapp.multithreadingprofitcalculator.ProfitCalculatorOperation;
+
+import static com.example.posapp.models.PopularItems.popularItemsFinder;
 
 public class SalesConntroller {
 
@@ -34,15 +41,35 @@ public class SalesConntroller {
     @FXML private Label profitLbl;
     @FXML private Label costLbl;
 
+    @FXML private TableView<PopularItems> popularListView;
+    @FXML private TableColumn<PopularItems, Integer> itemQuantity;
+    @FXML private TableColumn<PopularItems, String> itemName;
 
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesConntroller.class.getName());
 
     public synchronized void initialize() {
-
-
         calculateProfitAsync();
+        loadPopularTable();
     }
+
+
+    private void loadPopularTable() {
+        HashMap<String, Integer> items = popularItemsFinder();
+        ObservableList<PopularItems> popularItems = FXCollections.observableArrayList();
+
+        items.forEach((name , quantity) -> {
+            popularItems.add(new PopularItems(name,quantity));
+        });
+
+        itemName.setCellValueFactory(new PropertyValueFactory<>("popular_items_name"));
+        itemQuantity.setCellValueFactory(new PropertyValueFactory<>("popular_items_quantity"));
+
+
+        popularListView.setItems(popularItems);
+    }
+
+
 
     private void calculateProfitAsync() {
         Thread worker = new Thread(() -> {

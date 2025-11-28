@@ -72,6 +72,7 @@ public class MainController {
         }
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error going to sales view.");
+            e.printStackTrace();
         }
     }
 }

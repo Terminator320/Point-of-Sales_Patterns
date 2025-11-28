@@ -2,6 +2,7 @@ package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
+import com.example.posapp.models.PopularItems;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,10 +19,13 @@ import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.Logger;
+
+import static com.example.posapp.models.PopularItems.popularItemsFinder;
 
 public class InventoryController {
     @FXML private TableView<Inventory> inventoryListView;
@@ -29,6 +33,8 @@ public class InventoryController {
     @FXML private TableColumn<Inventory, String> colName;
     @FXML private TableColumn<Inventory, Integer> colQty;
     @FXML private TableColumn<Inventory, Integer> colLow;
+
+
 
     @FXML private TextField input_TF;
 

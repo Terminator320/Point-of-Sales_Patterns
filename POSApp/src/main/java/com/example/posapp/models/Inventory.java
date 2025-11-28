@@ -4,14 +4,12 @@ import com.example.posapp.LogConfig;
 import database.ConfigManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -177,6 +175,5 @@ public class Inventory {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nDatabase error while adding back item quantity");
         }
     }
-
 
 }
