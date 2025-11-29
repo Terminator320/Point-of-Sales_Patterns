@@ -56,15 +56,19 @@ public class SalesConntroller {
 
     private void loadPopularTable() {
         HashMap<String, Integer> items = popularItemsFinder();
+
         ObservableList<PopularItems> popularItems = FXCollections.observableArrayList();
 
         items.forEach((name , quantity) -> {
             popularItems.add(new PopularItems(name,quantity));
         });
 
+
         itemName.setCellValueFactory(new PropertyValueFactory<>("popular_items_name"));
         itemQuantity.setCellValueFactory(new PropertyValueFactory<>("popular_items_quantity"));
 
+        itemName.setReorderable(false);
+        itemQuantity.setReorderable(false);
 
         popularListView.setItems(popularItems);
     }
@@ -134,9 +138,9 @@ public class SalesConntroller {
         }
 
         //setting label
-        netProfitLbl.setText("Net Profit: $" + totalRevenue);
-        costLbl.setText("Cost: $" + totalCost);
-        profitLbl.setText("Profit: $" + totalNetProfit);
+        netProfitLbl.setText("Net Profit: $" + String.format("%.2f", totalRevenue));
+        costLbl.setText("Cost: $" + String.format("%.2f", totalCost));
+        profitLbl.setText("Profit: $" + String.format("%.2f", totalNetProfit));
     }
 
 

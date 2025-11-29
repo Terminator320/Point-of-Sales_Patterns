@@ -31,37 +31,43 @@
     -fx-text-fill: #ffffff;
 }
 
-#orderTableView {
-    -fx-background-color: #000000;
-    -fx-border-color: #000000;
-    -fx-text-fill: white;
+#orderTableView{
+    -fx-background-color: #141414;
+    -fx-control-inner-background: transparent;
+    -fx-table-cell-border-color: #303030;
 }
 
-#orderTableView .column-header {
-    -fx-background-color: #ffa500;
+.table-view .column-header-background {
+    -fx-background-color: #262626;
+    -fx-background-radius: 10 10 0 0;
 }
 
-#orderTableView .column-header .label {
-    -fx-text-fill: white;
+.table-view .column-header .label {
+    -fx-text-fill: #ffb347;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
 }
 
-#colQuantity,
-#colItemName,
-#colPrice {
-    -fx-background-color: #000000;
+.table-row-cell {
+    -fx-background-color: transparent;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #3c3c3c;
-    -fx-border-width: 0.2px;
+    -fx-font-size: 13px;
 }
 
-/*
-
-#orderTableView:selected {
-    -fx-background-color: #d6970c;
-    -fx-text-fill: black;
+.table-row-cell:odd {
+    -fx-background-color: rgba(255,255,255,0.03);
 }
 
- */
+.table-row-cell:selected {
+    -fx-background-color: rgba(51, 163, 204, 0.4);
+    -fx-text-fill: #ffffff;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+
 
 
 

@@ -68,6 +68,10 @@ public class SalesOrderController {
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        colItemName.setReorderable(false);
+        colQuantity.setReorderable(false);
+        colPrice.setReorderable(false);
+
         colQuantity.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         colQuantity.setOnEditCommit(event -> {
             SalesOrder order = event.getRowValue();

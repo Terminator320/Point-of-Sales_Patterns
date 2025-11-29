@@ -1,0 +1,33 @@
+#paymentPane {
+    -fx-background-image: url("\backgroundImg/dark-wood.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+#cancelButton {
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-family: Georgia, serif;
+    -fx-background-radius: 15px;
+}
+
+.cancelButton:hover {
+    -fx-background-color: linear-gradient(#ffd27f, #ff9e1a);
+}
+
+.cancelButton:pressed {
+    -fx-background-color: linear-gradient(#ff8a00, #d86b00);
+}
+
+#threeDigitCardNumber,
+#cardNumberField,
+#nameField
+{
+    -fx-text-fill: white;
+}
+
+#choiceOfPayment > .label {
+    -fx-text-fill: white;
+}

@@ -43,3 +43,57 @@
 .axis .tick-label {
     -fx-text-fill: white;
 }
+
+.button{
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-family: Georgia, serif;
+    -fx-background-radius: 15px;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#ffd27f, #ff9e1a);
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(#ff8a00, #d86b00);
+}
+
+
+#popularListView{
+    -fx-background-color: #141414;
+    -fx-control-inner-background: transparent;
+    -fx-table-cell-border-color: #303030;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #262626;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #ffb347;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* rows */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: rgba(255,255,255,0.03);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(51, 163, 204, 0.4);
+    -fx-text-fill: #ffffff;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}

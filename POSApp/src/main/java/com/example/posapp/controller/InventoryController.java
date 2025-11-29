@@ -182,6 +182,11 @@ public class InventoryController {
         colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
         colLow.setCellValueFactory(new PropertyValueFactory<>("lowStokeThreshold"));
 
+        colId.setReorderable(false);
+        colName.setReorderable(false);
+        colQty.setReorderable(false);
+        colLow.setReorderable(false);
+
         ObservableList<Inventory> inventoryList = getInventory();
         inventoryListView.setItems(inventoryList);
     }

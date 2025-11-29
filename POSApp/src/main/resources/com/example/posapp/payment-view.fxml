@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="804.0" prefWidth="460.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.PaymentController">
+<AnchorPane fx:id="paymentPane" prefHeight="804.0" prefWidth="460.0" stylesheets="@payment.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.PaymentController">
    <children>
        <fx:define>
            <ToggleGroup fx:id="tipGroup" />
@@ -23,10 +23,13 @@
            <children>
                <AnchorPane prefHeight="116.0" prefWidth="89.0">
                    <children>
-                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%" toggleGroup="$tipGroup">
+                       <RadioButton fx:id="radioButton10percent" layoutX="12.0" layoutY="14.0" onAction="#getTipPercentage" text="10%">
                      <font>
                         <Font size="13.0" />
                      </font>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="tipGroup" />
+                     </toggleGroup>
                      </RadioButton>
                        <Label fx:id="amount10PercentTip" layoutX="28.0" layoutY="49.0" text="Label">
                      <font>
@@ -82,54 +85,54 @@
            </children>
        </HBox>
 
-       <Label fx:id="paymentTitle" layoutX="84.0" layoutY="25.0" text="How would you like to pay?">
+       <Label fx:id="paymentTitle" layoutX="84.0" layoutY="25.0" text="How would you like to pay?" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Label fx:id="tipsTitle" layoutX="61.0" layoutY="389.0" text="Tips">
+      <Label fx:id="tipsTitle" layoutX="61.0" layoutY="389.0" text="Tips" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <ListView fx:id="finalTotal" layoutX="61.0" layoutY="588.0" prefHeight="147.0" prefWidth="341.0" style="-fx-background-radius: 20px;" />
+      <ListView fx:id="finalTotal" layoutX="61.0" layoutY="588.0" prefHeight="147.0" prefWidth="341.0" />
       <Button fx:id="payButton" layoutX="233.0" layoutY="749.0" mnemonicParsing="false" onAction="#OnPayAction" style="-fx-background-color: blue; -fx-text-fill: white; -fx-background-radius: 200px; -fx-padding: 5 15;" text="Pay Now">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="cancelButton" layoutX="137.0" layoutY="749.0" mnemonicParsing="false" onAction="#onCancelAction" style="-fx-background-radius: 20; -fx-padding: 5 15;" text="Cancel">
+      <Button fx:id="cancelButton" layoutX="137.0" layoutY="749.0" mnemonicParsing="false" onAction="#onCancelAction" prefHeight="37.0" prefWidth="87.0" style="-fx-background-radius: 20; -fx-padding: 5 15;" text="Cancel">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Label fx:id="cardDetailTitle" layoutX="62.0" layoutY="125.0" text="Card Details">
+      <Label fx:id="cardDetailTitle" layoutX="62.0" layoutY="125.0" text="Card Details" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceOfPayment" layoutX="64.0" layoutY="80.0" prefHeight="25.0" prefWidth="322.0" style="-fx-background-color: transparent; -fx-border-radius: 200px; -fx-border-style: solid; -fx-background-insets: 0 0 0 0, 0, 1, 2;" />
+      <ChoiceBox fx:id="choiceOfPayment" layoutX="64.0" layoutY="80.0" prefHeight="25.0" prefWidth="322.0" style="-fx-background-color: transparent; -fx-border-radius: 200px; -fx-border-style: solid; -fx-background-insets: 0 0 0 0, 0, 1, 2; -fx-border-color: white;" />
       <Separator layoutX="63.0" layoutY="160.0" prefHeight="19.0" prefWidth="322.0" />
       <Pane layoutX="37.0" layoutY="173.0" prefHeight="201.0" prefWidth="363.0">
          <children>
             <TextField fx:id="nameField" layoutX="22.0" layoutY="35.0" onAction="#onNameFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Name" style="-fx-padding: 5 0 5 15px; -fx-background-color: transparent; -fx-border-color: lightgrey; -fx-border-radius: 300px;" />
             <TextField fx:id="cardNumberField" layoutX="20.0" layoutY="102.0" onAction="#onCardNumFieldAction" prefHeight="25.0" prefWidth="322.0" promptText="Number" style="-fx-padding: 5 0 5 15px; -fx-background-color: transparent; -fx-border-color: lightgrey; -fx-border-radius: 300px;" />
             <TextField fx:id="threeDigitCardNumber" layoutX="232.0" layoutY="162.0" onAction="#onCVVFieldAction" prefHeight="25.0" prefWidth="110.0" promptText="e.g. 123" style="-fx-padding: 5 0 5 15px; -fx-background-color: transparent; -fx-border-color: lightgrey; -fx-border-radius: 300px;" />
-            <Label layoutX="20.0" layoutY="8.0" text="Card Name:">
+            <Label layoutX="20.0" layoutY="8.0" text="Card Name:" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="232.0" layoutY="140.0" text="CVV:">
+            <Label layoutX="232.0" layoutY="140.0" text="CVV:" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="20.0" layoutY="73.0" text="Card Number:">
+            <Label layoutX="20.0" layoutY="73.0" text="Card Number:" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="22.0" layoutY="140.0" text="Expiration Date:">
+            <Label layoutX="22.0" layoutY="140.0" text="Expiration Date:" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
