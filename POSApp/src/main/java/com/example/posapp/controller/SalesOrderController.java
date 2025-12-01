@@ -18,6 +18,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class SalesOrderController {
 
             Inventory.subtractQuantity(inventoryId, quantity);
 
-            // Track what we subtracted so we can undo if payment is cancelled
+            // Track what we subtracted so we can undo if payment is canceled
             inventoryChanges.merge(inventoryId, quantity, Integer::sum);
 
         }
@@ -154,7 +155,7 @@ public class SalesOrderController {
 
 
     @FXML
-    public void searchButtonClick(ActionEvent event) {
+    public void searchButtonClick() {
         String search = searchText.getText();
         ObservableList<SalesOrder> salesOrdersList = items;
 
@@ -168,26 +169,44 @@ public class SalesOrderController {
     }
 
     @FXML
-    public void refreshButtonClick(ActionEvent event) {
+    public void refreshButtonClick() {
         orderTableView.setItems(items);
         searchText.clear();
     }
 
     @FXML
-    public void removeItem(ActionEvent event) {
+    public void removeItem(ActionEvent event) throws IOException {
         SalesOrder selectedItem = orderTableView.getSelectionModel().getSelectedItem();
 
         if (selectedItem == null) {
             return;
         }
-        orderTableView.getItems().remove(selectedItem);
+
+        orderTableView.getItems().remove(selectedItem); //removing the item from the table
+
+        restoreInventoryForCurrentOrder(); //restocking the inventory not used
+
+        //if there are no items in the cart, go back to the menu page
+        if(items.isEmpty()) {
+            invalidSaleOrder("Empty Cart","List of items cannot be empty.");
+            FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/com/example/posapp/menu-view.fxml"));
+            Parent newRoot2 = loader2.load();
+            Scene newScene2 = new Scene(newRoot2);
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage2 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage2.setScene(newScene2);
+            stage2.setTitle("Menu");
+            return;
+        }
+
         refreshSubTotal();
     }
 
     @FXML
     public void cancelOrder(ActionEvent event) {
         try {
-            restoreInventoryForCurrentOrder();
+            restoreInventoryForCurrentOrder(); //restocking the inventory not used
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
@@ -198,7 +217,7 @@ public class SalesOrderController {
             stage.setScene(newScene);
             stage.setTitle("Main");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while going back to the main");
+            LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError while going back to the main");
         }
     }
 
@@ -216,6 +235,7 @@ public class SalesOrderController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
+
             PaymentController paymentController = loader.getController();
             paymentController.setSalesOrderController(this);
 
@@ -228,17 +248,23 @@ public class SalesOrderController {
 
             paymentController.setSalesOrderTotal(this, orderID);
 
-         //   removeInventory();
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Payment");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getCause() + e.getMessage() + " \nError while trying to proceed to payment view.");
+            LOGGER.log(Level.SEVERE, e.getCause() + e.getMessage() + " /nError while trying to proceed to payment view.");
         }
     }
 
+    public void invalidSaleOrder(String title,String msg){
+        Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
+        processingAlert.setTitle(title);
+        processingAlert.setHeaderText(null);
+        processingAlert.setContentText(msg);
+        processingAlert.show();
+    }
 
 
 }

@@ -185,7 +185,7 @@ public class SalesOrder {
             }
 
         }catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while adding Sale to SalesOrder");
         }
         return list;
     }
@@ -211,7 +211,7 @@ public class SalesOrder {
             }
         }
         catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while adding Sale to SalesOrder");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while adding Sale to SalesOrder");
         }
         return -1;//get orderID failed
     }
@@ -232,7 +232,7 @@ public class SalesOrder {
             preparedStatement.executeUpdate();
         }
         catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while updating Sale in SalesOrder");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while updating Sale in SalesOrder");
         }
     }
 
@@ -247,7 +247,7 @@ public class SalesOrder {
             preparedStatement.executeUpdate();
         }
         catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while deleting a sale in SalesOrder");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while deleting a sale in SalesOrder");
         }
     }
 
@@ -263,7 +263,7 @@ public class SalesOrder {
             preparedStatement.executeUpdate();
         }
         catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError while updating the quantities in PopularItems");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while updating the quantities in PopularItems");
         }
     }
 

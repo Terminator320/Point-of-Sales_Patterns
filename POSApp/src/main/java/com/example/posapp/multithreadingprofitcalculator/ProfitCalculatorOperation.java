@@ -14,7 +14,6 @@ public class ProfitCalculatorOperation {
             ProfitCalculator.reset();
             return;
         }
-
         int mid = allSales.size() / 2;
 
         List<SalesOrder> firstHalf  = allSales.subList(0, mid);

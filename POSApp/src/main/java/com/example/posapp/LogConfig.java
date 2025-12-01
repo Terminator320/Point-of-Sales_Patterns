@@ -1,11 +1,7 @@
 package com.example.posapp;
 
-import com.example.posapp.controller.MainController;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +11,6 @@ public class LogConfig {
 
     static {
         try{
-
             Logger log = Logger.getLogger("");
             FileHandler fh = new FileHandler("POSApp/src/logfile.log", false);
             fh.setFormatter(new SimpleFormatter());

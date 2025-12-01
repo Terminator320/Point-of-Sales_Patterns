@@ -101,31 +101,7 @@ public class SalesOrderControllerTest {
         fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of searchButtonClick method, of class SalesOrderController.
-     */
-    @Test
-    public void testSearchButtonClick() {
-        System.out.println("searchButtonClick");
-        ActionEvent event = null;
-        SalesOrderController instance = new SalesOrderController();
-        instance.searchButtonClick(event);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of refreshButtonClick method, of class SalesOrderController.
-     */
-    @Test
-    public void testRefreshButtonClick() {
-        System.out.println("refreshButtonClick");
-        ActionEvent event = null;
-        SalesOrderController instance = new SalesOrderController();
-        instance.refreshButtonClick(event);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of cancelOrder method, of class SalesOrderController.

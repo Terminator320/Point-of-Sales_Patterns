@@ -2,7 +2,6 @@ package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
-import com.example.posapp.models.PopularItems;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,15 +16,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
 import java.util.logging.Logger;
-
-import static com.example.posapp.models.PopularItems.popularItemsFinder;
 
 public class InventoryController {
     @FXML private TableView<Inventory> inventoryListView;
@@ -34,8 +26,6 @@ public class InventoryController {
     @FXML private TableColumn<Inventory, Integer> colQty;
     @FXML private TableColumn<Inventory, Integer> colLow;
 
-
-
     @FXML private TextField input_TF;
 
     private static final Logger LOGGER = LogConfig.getLogger(InventoryController.class.getName());
@@ -43,10 +33,11 @@ public class InventoryController {
 
     @FXML
     public void initialize() {
-        innitAndLoadInventory();
-        checkQTY();
-        updateStoke();
-        updateQTY();
+
+        innitAndLoadInventory(); // setting up the table for the inventory
+        checkQTY(); //checking if the qty is below the threshold hold  to set it to yellow or red
+        updateStoke(); // if the user updates the stock
+        updateQTY(); //if the user updates the quantity
     }
 
     private void reloadInventory(){
@@ -58,31 +49,28 @@ public class InventoryController {
         colLow.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         colLow.setOnEditCommit(event -> {
             Inventory item = event.getRowValue();
-            int oldStoke = item.getLowStokeThreshold();
-            Integer newStoke = event.getNewValue();
+            int oldStock = item.getLowStockThreshold();
+            Integer newStock = event.getNewValue();
 
-            if(newStoke == null || newStoke < 0 || newStoke == oldStoke){
-
-            }
-            if(newStoke >= 0) {
-                item.setLowStokeThreshold(newStoke);
+            if(newStock >= 0) {
+                item.setLowStockThreshold(newStock);
                 //update to db
                 try
                 {
-                    Inventory.editLowStoke(newStoke,item.getInvId());
+                    Inventory.editLowStoke(newStock,item.getInvId());
                 }
                 catch (Exception e) {
                     //if there is an error while updating the db go back to old value
-                    item.setLowStokeThreshold(oldStoke);
-                    LOGGER.log(Level.SEVERE, "Error updating low stoke threshold the database.");
+                    item.setLowStockThreshold(oldStock);
+                    LOGGER.log(Level.SEVERE, "Error updating low stock threshold the database.");
                     Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB.");
                     alert.showAndWait();
                 }
             }
             else {
-                item.setLowStokeThreshold(oldStoke);
+                item.setLowStockThreshold(oldStock);
                 //logger
-                LOGGER.log(Level.SEVERE, "Error updating low stoke threshold the database.");
+                LOGGER.log(Level.SEVERE, "Error updating low stock threshold the database.");
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Low Stoke Threshold can not be a negative number.");
                 alert.showAndWait();
@@ -90,7 +78,7 @@ public class InventoryController {
             }
         });
 
-        //clears selection AFTER edit
+        //clears selection after edit
         Platform.runLater(() ->
                 inventoryListView.getSelectionModel().clearSelection()
         );
@@ -129,7 +117,7 @@ public class InventoryController {
                 alert.showAndWait();
 
 
-                LOGGER.log(Level.SEVERE, "Error updating quantity the database.");
+                LOGGER.log(Level.SEVERE, e.getCause() + e.getMessage()+" /nError updating quantity the database.");
             }
 
             //clears selection AFTER edit
@@ -165,9 +153,9 @@ public class InventoryController {
         }
 
         if (item.getQty() == 0) {
-            row.setStyle("-fx-background-color: #fa0202;");
-        } else if (item.getQty() < item.getLowStokeThreshold()) {
-            row.setStyle("-fx-background-color: #FFF300FF;");
+            row.setStyle("-fx-background-color: #5a0000;");
+        } else if (item.getQty() < item.getLowStockThreshold()) {
+            row.setStyle("-fx-background-color: #665200; fx-font-weight: bold;");
         } else {
             row.setStyle("");
         }
@@ -180,7 +168,7 @@ public class InventoryController {
         colId.setCellValueFactory(new PropertyValueFactory<>("invId"));
         colName.setCellValueFactory(new PropertyValueFactory<>("invName"));
         colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
-        colLow.setCellValueFactory(new PropertyValueFactory<>("lowStokeThreshold"));
+        colLow.setCellValueFactory(new PropertyValueFactory<>("lowStockThreshold"));
 
         colId.setReorderable(false);
         colName.setReorderable(false);

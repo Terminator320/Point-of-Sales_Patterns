@@ -1,5 +1,7 @@
 package com.example.posapp.models;
 
+import com.example.posapp.LogConfig;
+import com.example.posapp.controller.MenuItemConntroller;
 import database.ConfigManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,6 +9,8 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MenuItem {
     private int menuItemId;
@@ -14,6 +18,9 @@ public class MenuItem {
     private double price,costPrice;
     private int quantity;
     private Inventory inventory;
+
+    //logger
+    private static final Logger LOGGER = LogConfig.getLogger(MenuItem.class.getName());
 
     public MenuItem(int menuItemId, String name, double price, double costPrice, Inventory inventory) {
         this.menuItemId = menuItemId;
@@ -75,11 +82,6 @@ public class MenuItem {
         this.quantity = quantity;
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
-
     public double getCostPrice() {
         return this.costPrice;
     }
@@ -88,8 +90,12 @@ public class MenuItem {
         this.costPrice = costPrice;
     }
 
-    //crud
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
+    //crud
     public static ObservableList<MenuItem> getMenuItems() {
         ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
         //get the statement
@@ -100,20 +106,18 @@ public class MenuItem {
 
             ResultSet resultSet = pstmt.executeQuery();
             while(resultSet.next()){
-                int id = resultSet.getInt("id");
+                int id = resultSet.getInt("menuItem_id");
                 String name = resultSet.getString("name");
                 double price = resultSet.getDouble("price");
                 double costPrice = resultSet.getDouble("costPrice");
                 int inventoryId = resultSet.getInt("inv_id");
 
-
                 menuItems.add(new MenuItem(id,name,price,costPrice, Inventory.getOne(inventoryId)));
             }
         }
         catch (Exception e) {
-            //LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while fetching inventory");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while fetching Menu Items");
         }
         return menuItems;
     }
-
 }

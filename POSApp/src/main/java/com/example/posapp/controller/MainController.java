@@ -32,7 +32,7 @@ public class MainController {
             stage.setTitle("Menu");
         }
         catch (Exception e) {
-           LOGGER.log(Level.SEVERE, "Error going to create a new order");
+           LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError going to create a new order");
         }
     }
 
@@ -52,7 +52,7 @@ public class MainController {
             stage.setTitle("Inventory");
         }
         catch (Exception e) {
-         LOGGER.log(Level.SEVERE, "Error going to inventory.");
+         LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError going to inventory.");
         }
     }
 
@@ -71,8 +71,7 @@ public class MainController {
             stage.setTitle("Sales");
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error going to sales view.");
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError going to sales view.");
         }
     }
 }

@@ -8,24 +8,23 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class Inventory {
-    private int invId, qty, lowStokeThreshold;
+    private int invId, qty, lowStockThreshold;
     private String invName;
 
     private static final Logger LOGGER = LogConfig.getLogger(Inventory.class.getName());
 
 
 
-    public Inventory(String invName,int qty, int lowStokeThreshold) {
+    public Inventory(String invName,int qty, int lowStockThreshold) {
         this.invName = invName;
         this.qty = qty;
-        this.lowStokeThreshold = lowStokeThreshold;
+        this.lowStockThreshold = lowStockThreshold;
     }
 
     public Inventory(int invId, String invName, int qty) {
@@ -34,11 +33,11 @@ public class Inventory {
         this.qty = qty;
     }
 
-    public Inventory(int invId, String invName, int qty, int lowStokeThreshold) {
+    public Inventory(int invId, String invName, int qty, int lowStockThreshold) {
         this.invId = invId;
         this.invName = invName;
         this.qty = qty;
-        this.lowStokeThreshold = lowStokeThreshold;
+        this.lowStockThreshold = lowStockThreshold;
     }
 
     public int getInvId() {
@@ -57,12 +56,12 @@ public class Inventory {
         this.qty = qty;
     }
 
-    public int getLowStokeThreshold() {
-        return lowStokeThreshold;
+    public int getLowStockThreshold() {
+        return lowStockThreshold;
     }
 
-    public void setLowStokeThreshold(int lowStokeThreshold) {
-        this.lowStokeThreshold = lowStokeThreshold;
+    public void setLowStockThreshold(int lowStockThreshold) {
+        this.lowStockThreshold = lowStockThreshold;
     }
 
     public String getInvName() {
@@ -73,7 +72,22 @@ public class Inventory {
         this.invName = invName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Inventory inventory = (Inventory) o;
+        return getInvId() == inventory.getInvId() && getQty() == inventory.getQty() && getLowStockThreshold() == inventory.getLowStockThreshold() && Objects.equals(getInvName(), inventory.getInvName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getInvId(), getQty(), getLowStockThreshold(), getInvName());
+    }
+
     //crud
+    public synchronized static boolean checkInventory(Inventory inventory, int qty) {
+        return inventory.getQty() >= qty; // true means OK
+    }
 
     //read
     public static ObservableList<Inventory> getAllInventory(){
@@ -90,7 +104,7 @@ public class Inventory {
                         resultSet.getInt("invId"),
                         resultSet.getString("invName"),
                         resultSet.getInt("qty"),
-                        resultSet.getInt("lowStokeThreshold")
+                        resultSet.getInt("lowStockThreshold")
                 ));
             }
         }
@@ -101,7 +115,6 @@ public class Inventory {
     }
 
     public static Inventory getOne(int invId){
-
         Inventory item = null;
         for(int i = 0; i < getAllInventory().size(); i++){
             if(getAllInventory().get(i).getInvId() == invId){
@@ -115,13 +128,13 @@ public class Inventory {
 
 
     //update (edit)
-    public static void editLowStoke(int lowStokeThreshold,int invId) {
-        final String sql = "UPDATE inventory set lowStokeThreshold = ? where invId = ?";
+    public static void editLowStoke(int lowStockThreshold,int invId) {
+        final String sql = "UPDATE inventory set lowStockThreshold = ? where invId = ?";
 
         try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)){
 
-            pstmt.setInt(1, lowStokeThreshold);
+            pstmt.setInt(1, lowStockThreshold);
             pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         }
@@ -158,7 +171,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while ");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while removing quantity");
         }
     }
 
@@ -172,7 +185,7 @@ public class Inventory {
             pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nDatabase error while adding back item quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "  /nDatabase error while adding back item quantity");
         }
     }
 

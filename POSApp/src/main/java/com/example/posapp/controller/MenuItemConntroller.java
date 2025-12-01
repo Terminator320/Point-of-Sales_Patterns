@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
 import javafx.stage.Stage;
@@ -23,60 +24,71 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.example.posapp.models.MenuItem;
+import javafx.stage.Window;
 
 
 public class MenuItemConntroller {
 
     @FXML private ListView<String> recitedView;
 
+    //buttons in the fxml
+    @FXML private Button espressoButton;
+    @FXML private Button latteButton;
+    @FXML private Button cappuccinoButton;
+    @FXML private Button iceAmericanoButton;
+    @FXML private Button iceCoffeeButton;
+    @FXML private Button frappeButton;
+
+    @FXML private Button greenTeaButton;
+    @FXML private Button chaiLatteButton;
+    @FXML private Button blackTeaButton;
+    @FXML private Button oolongTeaButton;
+    @FXML private Button peachTeaButton;
+    @FXML private Button strawberryTeaButton;
+
+    @FXML private Button croissantButton;
+    @FXML private Button muffinButton;
+    @FXML private Button cheeseBagelButton;
+    @FXML private Button bltSandwichButton;
+    @FXML private Button grilledCheeseButton;
+    @FXML private Button chickenWrapButton;
+
+    @FXML private Button strawberrySmoothieButton;
+    @FXML private Button berrySmoothieButton;
+    @FXML private Button proteinShakeButton;
+    @FXML private Button mangoSmoothieButton;
+
+
+    // menuId -> Button
+    private final Map<Integer, Button> menuButtons = new HashMap<>();
+
+    // invId -> Inventory
+    private Map<Integer, Inventory> inventoryMap = new HashMap<>();
+
     //menuId , MenuItem
     private  Map<Integer, MenuItem> menuItems = new HashMap<>();
-
-    private Map<Integer, Inventory> inventoryMap = new HashMap<>();
 
     // menuId , quantity
     private final Map<Integer, Integer> activeOrder = new HashMap<>();
 
+    // check item
     private final ObservableList<String> receiptLines = FXCollections.observableArrayList();
 
-    public ListView<String> getRecitedView() {
-        return recitedView;
-    }
-
-    public void setRecitedView(ListView<String> recitedView) {
-        this.recitedView = recitedView;
-    }
-
-    public Map<Integer, MenuItem> getMenuItems() {
-        return menuItems;
-    }
-
-    public void setMenuItems(Map<Integer, MenuItem> menuItems) {
-        this.menuItems = menuItems;
-    }
-
-    public Map<Integer, Inventory> getInventoryMap() {
-        return inventoryMap;
-    }
-
-    public void setInventoryMap(Map<Integer, Inventory> inventoryMap) {
-        this.inventoryMap = inventoryMap;
-    }
-
-    public Map<Integer, Integer> getActiveOrder() {
-        return activeOrder;
-    }
-
-    public ObservableList<String> getReceiptLines() {
-        return receiptLines;
-    }
-
+    //logger
     private static final Logger LOGGER = LogConfig.getLogger(MenuItemConntroller.class.getName());
-
 
 
     public void initialize() {
         recitedView.setItems(receiptLines);
+
+        initMenuItems(); //setting up the menuItems
+
+        initMenuButtons();  //setting up the buttons
+        refreshButtonStates(); //checks all the inventory and if the qty is 0 disable the button
+    }
+
+
+    private void initMenuItems(){
         //setting the map for the menu items with its inventory
         for (Inventory inv : Inventory.getAllInventory()) {
             inventoryMap.put(inv.getInvId(), inv);
@@ -112,9 +124,52 @@ public class MenuItemConntroller {
         menuItems.put(31, new MenuItem(13,"Berry Smoothie",5.75, 3.75,inventoryMap.get(13)));
         menuItems.put(32, new MenuItem(15,"Protein Shake",6, 4.00,inventoryMap.get(15)));
         menuItems.put(33,new MenuItem(14,"Mango Smoothie",5.75, 3.75,inventoryMap.get(14)));
-
     }
 
+    private void initMenuButtons() {
+        // coffees
+        menuButtons.put(1, espressoButton);
+        menuButtons.put(2, latteButton);
+        menuButtons.put(3, cappuccinoButton);
+        menuButtons.put(4, iceAmericanoButton);
+        menuButtons.put(5, iceCoffeeButton);
+        menuButtons.put(6, frappeButton);
+
+        // teas
+        menuButtons.put(7, greenTeaButton);
+        menuButtons.put(8, chaiLatteButton);
+        menuButtons.put(9, blackTeaButton);
+        menuButtons.put(10, oolongTeaButton);
+        menuButtons.put(11, peachTeaButton);
+        menuButtons.put(12, strawberryTeaButton);
+
+        // food
+        menuButtons.put(20, croissantButton);
+        menuButtons.put(21, muffinButton);
+        menuButtons.put(22, cheeseBagelButton);
+        menuButtons.put(23, bltSandwichButton);
+        menuButtons.put(24, grilledCheeseButton);
+        menuButtons.put(25, chickenWrapButton);
+
+        // smoothies
+        menuButtons.put(30, strawberrySmoothieButton);
+        menuButtons.put(31, berrySmoothieButton);
+        menuButtons.put(32, proteinShakeButton);
+        menuButtons.put(33, mangoSmoothieButton);
+    }
+
+    private void refreshButtonStates() {
+        for (Map.Entry<Integer, MenuItem> entry : menuItems.entrySet()) {
+            //getting the key-value pair
+            int menuId = entry.getKey();
+            MenuItem item = entry.getValue();
+            Button button = menuButtons.get(menuId);
+
+            int invQty = item.getInventory().getQty();
+            // disable if 0 or less
+            button.setDisable(invQty == 0);
+        }
+    }
 
     //addMethod
     private void addItemToOrder(int menuId) {
@@ -124,7 +179,27 @@ public class MenuItemConntroller {
         // update quantity in order
         int newQty = activeOrder.getOrDefault(menuId, 0) + 1;
 
+        Inventory inventory = item.getInventory();
+
+        boolean check = Inventory.checkInventory(inventory, newQty);
+
+        if (!check) {
+
+            Button b = menuButtons.get(menuId);
+            if (b != null) {
+                b.setDisable(true);
+            }
+
+            Alert processingAlert = new Alert(Alert.AlertType.WARNING);
+            processingAlert.setTitle("Out of Stock");
+            processingAlert.setHeaderText(item + " is out of stock");
+            processingAlert.setContentText(item.getInventory().getInvName() + " out of stoke.");
+            processingAlert.show();
+            return;
+        }
+
         activeOrder.put(menuId, newQty);
+
 
         rebuildReceipt();
     }
@@ -146,6 +221,7 @@ public class MenuItemConntroller {
 
         if (menuIdToRemove != null) {
             activeOrder.remove(menuIdToRemove);
+            refreshButtonStates();
             rebuildReceipt();
         }
     }
@@ -161,6 +237,7 @@ public class MenuItemConntroller {
             receiptLines.add(qty + " x " + item.getName());
         }
     }
+
 
     @FXML
     public void espressoClick(ActionEvent event) {
@@ -278,7 +355,7 @@ public class MenuItemConntroller {
         try {
 
             if(activeOrder.isEmpty()){
-                invalidMenuOrder("Proceeding to Payment","You can't continue without adding an item!");
+                invalidMenuOrder("Proceeding to Sales Order","You can't continue without adding an item!");
             }
             else{
                 // Load the FXML file for the second scene
@@ -296,7 +373,7 @@ public class MenuItemConntroller {
             }
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() +"/nError loading sales order view");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() +"\nError loading sales order view");
         }
     }
 
@@ -315,14 +392,15 @@ public class MenuItemConntroller {
             stage.setTitle("Menu");
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "/nError loading back to the Main Menu.");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError loading back to the Main Menu.");
         }
     }
 
 
     @FXML
-    public void removeItemClick(ActionEvent event) {
+    public void removeItemClick() {
         removeSelectedItem();
+
     }
 
     public void invalidMenuOrder(String title,String msg){

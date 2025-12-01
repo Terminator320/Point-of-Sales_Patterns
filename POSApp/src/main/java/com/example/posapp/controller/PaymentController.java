@@ -253,7 +253,7 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onNameFieldAction(ActionEvent event) {
+    protected void onNameFieldAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isCardNameValid(nameField.getText())) {
                 showInvalidInformation("Invalid name. Must only contain alphabets.");
@@ -263,7 +263,7 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onCardNumFieldAction(ActionEvent event) {
+    protected void onCardNumFieldAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isCardNumValid(cardNumberField.getText())) {
                 showInvalidInformation("Invalid card number. Please enter a valid card number (16 digits).");
@@ -273,7 +273,7 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onCVVFieldAction(ActionEvent event) {
+    protected void onCVVFieldAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isCVVValid(threeDigitCardNumber.getText())) {
                 showInvalidInformation("Invalid CVV. Please make sure it only contains 3 digits.");
@@ -283,7 +283,7 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onExpirationDateAction(ActionEvent event) {
+    protected void onExpirationDateAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
             if (!isDateEmpty()) {
                 if (!isDateValid()) {
@@ -295,7 +295,7 @@ public class PaymentController {
 
     //TIPS SECTION
     @FXML
-    protected void getTipPercentage(ActionEvent actionEvent) {
+    protected void getTipPercentage() {
         if (radioButton10percent.isSelected()) {
             tipAmount = calculateTip(0.10);
             customTipField.setDisable(true);
@@ -322,7 +322,7 @@ public class PaymentController {
     }
 
     @FXML
-    protected void onCustomTipFieldAction(ActionEvent event) {
+    protected void onCustomTipFieldAction() {
         isCustomAmountValid();
         setListOfCost();
     }
@@ -389,7 +389,7 @@ public class PaymentController {
             cancelledOrder(orderID);
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
+            LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError while trying to proceed to payment view.");
         }
     }
 

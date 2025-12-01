@@ -5,12 +5,20 @@
     -fx-background-position: center;
 }
 
+
+
 .button{
     -fx-background-color: #ff8a00;
     -fx-text-fill: #ffffff;
     -fx-font-family: Georgia, serif;
     -fx-background-radius: 20px;
     -fx-font-size: 8px;
+}
+
+.button:disabled {
+    -fx-opacity: 1; /*stop JavaFX style of fade */
+    -fx-background-color: #b56a00;
+    -fx-text-fill: #e0e0e0;
 }
 
 .button:hover {
