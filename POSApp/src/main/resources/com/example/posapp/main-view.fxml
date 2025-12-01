@@ -5,22 +5,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="welcomePane" maxHeight="268.0" maxWidth="370.0" minHeight="268.0" minWidth="370.0" prefHeight="268.0" prefWidth="370.0" stylesheets="@welcome.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.MainController">
+<AnchorPane fx:id="welcomePane" maxHeight="707.0" maxWidth="1051.0" minHeight="268.0" minWidth="370.0" prefHeight="655.0" prefWidth="1040.0" stylesheets="@welcome.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.MainController">
    <children>
-      <Button layoutX="26.0" layoutY="77.0" mnemonicParsing="false" onAction="#newOrder" prefHeight="80.0" prefWidth="145.0" text="New Order" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="26.0">
+      <Button layoutX="362.0" layoutY="275.0" mnemonicParsing="false" onAction="#newOrder" prefHeight="80.0" prefWidth="145.0" text="New Order" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="362.0">
          <font>
             <Font name="Georgia Bold" size="20.0" />
          </font></Button>
-      <Button layoutX="199.0" layoutY="77.0" mnemonicParsing="false" onAction="#inventory" prefHeight="80.0" prefWidth="145.0" text="Inventory" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="26.0">
+      <Button layoutX="521.0" layoutY="275.0" mnemonicParsing="false" onAction="#inventory" prefHeight="80.0" prefWidth="145.0" text="Inventory" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="374.0">
          <font>
             <Font name="System Bold" size="21.0" />
          </font></Button>
-      <Label layoutX="98.0" layoutY="14.0" text="Welcome" textAlignment="CENTER">
+      <Label layoutX="427.0" layoutY="220.0" text="Welcome" textAlignment="CENTER">
          <font>
             <Font name="Georgia Bold" size="36.0" />
          </font>
       </Label>
-      <Button layoutX="112.0" layoutY="174.0" mnemonicParsing="false" onAction="#sales" prefHeight="80.0" prefWidth="145.0" text="Profit" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="14.0">
+      <Button layoutX="441.0" layoutY="366.0" mnemonicParsing="false" onAction="#sales" prefHeight="80.0" prefWidth="145.0" text="Profit" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="209.0">
          <font>
             <Font name="Georgia Bold" size="21.0" />
          </font></Button>

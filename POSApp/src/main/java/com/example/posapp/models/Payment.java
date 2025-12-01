@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public class Payment {
 
-    public enum PaymentMethod{
+    public enum PaymentMethod {
         CASH, CREDIT, DEBIT
     }
 
@@ -34,9 +34,6 @@ public class Payment {
         this.paymentID = paymentID;
         this.orderID = orderID;
         this.methodPayment = methodPayment;
-
-        //2 = two digit after decimal point
-        //RoundingMode.HALF_UP = round nearest point
         this.tips = tips;
         this.paymentDate = paymentDate;
     }
@@ -49,37 +46,42 @@ public class Payment {
     }
 
     //GETTERS AND SETTERS
-    public int getPaymentID(){
+    public int getPaymentID() {
         return paymentID;
     }
+
     public void setPaymentID(int paymentID) {
         this.paymentID = paymentID;
     }
 
-    public int getOrderID(){
+    public int getOrderID() {
         return orderID;
     }
-    public void setOrderID(int orderID){
+
+    public void setOrderID(int orderID) {
         this.orderID = orderID;
     }
 
-    public PaymentMethod getMethodPayment(){
+    public PaymentMethod getMethodPayment() {
         return methodPayment;
     }
-    public void setMethodPayment(PaymentMethod methodPayment){
+
+    public void setMethodPayment(PaymentMethod methodPayment) {
         this.methodPayment = methodPayment;
     }
 
-    public double getTips(){
+    public double getTips() {
         return tips;
     }
-    public void setTips(double tips){
+
+    public void setTips(double tips) {
         this.tips = tips;
     }
 
-    public LocalDateTime getPaymentDate(){
+    public LocalDateTime getPaymentDate() {
         return paymentDate;
     }
+
     public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
     }
@@ -90,10 +92,11 @@ public class Payment {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o){
+        if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) return false;
+
         Payment payment = (Payment) o;
         return paymentID == payment.paymentID
                 && orderID == payment.orderID
@@ -118,107 +121,95 @@ public class Payment {
                 '}';
     }
 
-
     //CRUD OPERATIONS
     //CREATE
-    public boolean insertPayment(){
+    public boolean insertPayment() {
         final String insertSQL = "INSERT INTO payment (order_ID, method_payment, tips, payment_date) VALUES (?, ?, ?, ?)";
 
-        try(Connection connection = ConfigManager.getConnection();
-            //statement for returning payment_ID after insertion
-            PreparedStatement pstmt = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)){
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setInt(1, this.orderID);
             pstmt.setString(2, this.methodPayment.name());
             pstmt.setDouble(3, this.tips);
             pstmt.setTimestamp(4, Timestamp.valueOf(this.paymentDate));
 
-
             int insertRow = pstmt.executeUpdate();
-            //check if row was inserted successfully
-            if(insertRow > 0){
-                //Get ResultSet containing the auto-generated payment_ID from current insertion
+            if (insertRow > 0) {
                 ResultSet resultSet = pstmt.getGeneratedKeys();
-                //move to first row and check if exist
-                if(resultSet.next()){
-                    this.paymentID = resultSet.getInt(1);//get generated payment_ID
+                if (resultSet.next()) {
+                    this.paymentID = resultSet.getInt(1);
                     return true;
                 }
             }
             return false;
-        }catch(Exception e){
+
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Database Error inserting payment record.");
             return false;
         }
     }
 
     //READ
-    public static ObservableList<Payment> getAllPayment(){
+    public static ObservableList<Payment> getAllPayment() {
         ObservableList<Payment> paymentData = FXCollections.observableArrayList();
         final String sql = "SELECT * FROM payment";
 
         try (Connection connection = ConfigManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)){
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             ResultSet resultSet = pstmt.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 paymentData.add(new Payment(
                         resultSet.getInt("payment_ID"),
                         resultSet.getInt("order_ID"),
                         PaymentMethod.valueOf(resultSet.getString("method_payment")),
                         resultSet.getDouble("tips"),
                         resultSet.getTimestamp("payment_date").toLocalDateTime()
-                        ));
+                ));
             }
-        }
-        catch (Exception e) {
-            LOGGER.log(Level.SEVERE,"Error loading data from payment.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error loading data from payment.");
         }
         return paymentData;
     }
 
     //UPDATE
-    public boolean updatePayment(){
+    public boolean updatePayment() {
         final String insertSQL = "UPDATE payment SET order_ID = ?, method_payment = ?, " +
-                                    "tips = ? WHERE payment_ID = ?";
+                "tips = ? WHERE payment_ID = ?";
 
-        try(Connection connection = ConfigManager.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(insertSQL)){
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
 
             pstmt.setInt(1, this.orderID);
             pstmt.setString(2, this.methodPayment.name());
             pstmt.setDouble(3, this.tips);
             pstmt.setInt(4, this.paymentID);
 
-            return  pstmt.executeUpdate() > 0;
-        }catch(SQLException e){
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);
         }
         return false;
     }
 
     //DELETE
-    public boolean deletePayment(){
+    public boolean deletePayment() {
         final String insertSQL = "DELETE FROM payment WHERE payment_ID = ?";
 
-        try(Connection connection = ConfigManager.getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(insertSQL)){
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
 
             pstmt.setInt(1, this.paymentID);
-            return  pstmt.executeUpdate() > 0;
-        }catch(SQLException e){
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);
         }
         return false;

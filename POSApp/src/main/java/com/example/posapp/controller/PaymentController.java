@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import static com.example.posapp.models.SalesOrder.*;
 
-
 public class PaymentController {
 
     //METHOD PAYMENT SECTION
@@ -82,7 +81,6 @@ public class PaymentController {
     //LOGGER FILE
     private static final Logger LOGGER = LogConfig.getLogger(PaymentController.class.getName());
 
-
     private SalesOrderController mySalesOrder;
     private int orderID;
     private double subtotal = 0;
@@ -112,7 +110,6 @@ public class PaymentController {
         }
     }
 
-    //
     public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID) {
         this.mySalesOrder = salesOrderController;
         this.orderID = orderID;
@@ -123,7 +120,6 @@ public class PaymentController {
     }
 
     //METHOD PAYMENT
-    //populate ChoiceBox with available payment methods
     private void setUpPaymentMethod() {
         for (Payment.PaymentMethod paymentMethod : Payment.PaymentMethod.values()) {
             choiceOfPayment.getItems().addAll(paymentMethod);
@@ -133,7 +129,6 @@ public class PaymentController {
         handlePaymentMethod();
     }
 
-    //helper method to clear all payment input fields
     private void clearAllField() {
         nameField.clear();
         cardNumberField.clear();
@@ -142,8 +137,6 @@ public class PaymentController {
         selectYearExpiration.getSelectionModel().clearSelection();
     }
 
-    //helper method to enable/disable user card information fields based on their
-    //selected payment method
     private void setCardInfoVisibility(boolean visible) {
         double opacityLvl = visible ? 1.0 : 0.5;
 
@@ -163,7 +156,6 @@ public class PaymentController {
         selectYearExpiration.setDisable(!visible);
     }
 
-    //Handle UI based on selected payment method
     private void handlePaymentMethod() {
         Payment.PaymentMethod methodSelected = choiceOfPayment.getValue();
 
@@ -191,30 +183,24 @@ public class PaymentController {
         }
     }
 
-
     //USER INFORMATION
-    //check if a text field is empty
     private boolean isFieldEmpty(TextField text) {
         return text.getText().isEmpty();
     }
 
-    //check if the card number contains 16 digits
     private boolean isCardNumValid(String cardNum) {
         String removeSpaces = cardNum.replaceAll("\\s+", "");
         return removeSpaces.matches("\\d{16}");
     }
 
-    //check if card name contains letters and spaces
     private boolean isCardNameValid(String cardName) {
         return cardName.matches("[a-zA-Z ]+");
     }
 
-    //check if the CVV contains 3 digits
     private boolean isCVVValid(String cvv) {
         return cvv.matches("\\d{3}");
     }
 
-    //check if expiration date is not already expired
     private boolean isDateValid() {
         if (isDateEmpty()) {
             return false;
@@ -228,13 +214,33 @@ public class PaymentController {
         return expirationYearMonth.equals(currentYearMonth) || expirationYearMonth.isAfter(currentYearMonth);
     }
 
-    //check if month and year is not selected
     private boolean isDateEmpty() {
         return selectMonthExpiration.getValue() == null
                 || selectYearExpiration.getValue() == null;
     }
 
-    //populate ComboBox with months (1-12) and years (current year up to 15 years in the future)
+    private void isCustomAmountValid() {
+        try {
+            String tipField = customTipField.getText();
+            if (tipField.isEmpty()) {
+                tipAmount = 0;
+                return;
+            }
+
+            double tip = Double.parseDouble(tipField);
+            if (tip < 0) {
+                throw new NumberFormatException();
+            }
+
+            tipAmount = tip;
+
+        } catch (NumberFormatException e) {
+            tipAmount = 0;
+            showInvalidInformation("Invalid tip amount. Please enter a valid number.");
+            customTipField.clear();
+        }
+    }
+
     private void expirationDateChoice() {
         for (int i = 1; i <= 12; i++) {
             selectMonthExpiration.getItems().add(String.format("%02d", i));
@@ -287,7 +293,6 @@ public class PaymentController {
         }
     }
 
-
     //TIPS SECTION
     @FXML
     protected void getTipPercentage(ActionEvent actionEvent) {
@@ -322,17 +327,14 @@ public class PaymentController {
         setListOfCost();
     }
 
-    //helper method to calculate tip amount based on subtotal
     private double calculateTip(double percentage) {
         return subtotal * percentage;
     }
 
-    //helper method to format money precision to 2 decimal places
     private String formatMoney(double money) {
         return String.format("$%.2f", money);
     }
 
-    //helper method to show tip amount based on the subtotal
     private void showTipAmountLabel() {
         double tip10 = calculateTip(0.10);
         double tip15 = calculateTip(0.15);
@@ -343,28 +345,7 @@ public class PaymentController {
         amount20PercentTip.setText(formatMoney(tip20));
     }
 
-    private void isCustomAmountValid() {
-        try {
-            String tipField = customTipField.getText();
-            if (tipField.isEmpty()) {
-                tipAmount = 0;
-                return;
-            }
-            double tip = Double.parseDouble(tipField);
-            if (tip < 0) {
-                throw new NumberFormatException();
-            }
-            tipAmount = tip;
-
-        } catch (NumberFormatException e) {
-            tipAmount = 0;
-            showInvalidInformation("Invalid tip amount. Please enter a valid number.");
-            customTipField.clear();
-        }
-    }
-
-
-    //LIST SHOWING PAYMENT DETAILS SUCH AS SUBTOTAL, TIPS, TAXES, AND TOTAL
+    //LIST SHOWING PAYMENT DETAILS
     private double calculateTotal() {
         double taxes = calculateTaxes();
         return subtotal + taxes + tipAmount;
@@ -388,28 +369,25 @@ public class PaymentController {
         );
     }
 
-
-    //ACTION BUTTONS FOR CREATING/CANCELLING A PAYMENT
+    //ACTION BUTTONS
     @FXML
     protected void onCancelAction(ActionEvent event) {
         try {
-
             if (salesOrderController != null) {
                 salesOrderController.restoreInventoryForCurrentOrder();
             }
 
-            // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
-            // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Main menu");
             stage.show();
 
             cancelledOrder(orderID);
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while trying to proceed to payment view.");
         }
@@ -423,11 +401,18 @@ public class PaymentController {
             return;
         }
 
-        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
-            if (isFieldEmpty(nameField) || isFieldEmpty(cardNumberField) || isFieldEmpty(threeDigitCardNumber) || isDateEmpty()) {
+        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT
+                || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
+
+            if (isFieldEmpty(nameField)
+                    || isFieldEmpty(cardNumberField)
+                    || isFieldEmpty(threeDigitCardNumber)
+                    || isDateEmpty()) {
+
                 showErrorInformation("At least one field is empty. Please fill out all fields.");
                 return;
             }
+
             if (!isDateValid()) {
                 showErrorInformation("Date is expired. Cannot proceed with payment");
                 return;
@@ -443,20 +428,27 @@ public class PaymentController {
 
         if (successfulPayment) {
 
-            //for factory
-            PaymentProcessing paymentFactory = PaymentFactoryClass.createPayment(choiceOfPayment.getValue());
-            String msg = paymentFactory.processPayment();
+            PaymentProcessing paymentFactory =
+                    PaymentFactoryClass.createPayment(choiceOfPayment.getValue());
 
+            String msg = paymentFactory.processPayment();
             showProcessingInfo(msg);
 
-            //update the sales order
-            SalesOrder.finalizeSale(orderID, "CLOSED", String.valueOf(LocalDateTime.now()), subtotal, calculateTaxes(), calculateTotal());
+            SalesOrder.finalizeSale(
+                    orderID,
+                    "CLOSED",
+                    String.valueOf(LocalDateTime.now()),
+                    subtotal,
+                    calculateTaxes(),
+                    calculateTotal()
+            );
 
             HashMap<Integer, SalesOrder> map = salesOrderController.getPopularItemsSaleMap();
             loadPopItems(map);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
+
         } else {
             showErrorInformation("Payment failed");
         }
@@ -475,6 +467,25 @@ public class PaymentController {
         return payment.insertPayment();
     }
 
+    private void showConfirmation(String message) {
+        alertInformation(Alert.AlertType.CONFIRMATION, "Cancel Payment", message);
+    }
+
+    private void showProcessingInfo(String message) {
+
+        Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
+        processingAlert.setTitle("Payment process");
+        processingAlert.setHeaderText(null);
+        processingAlert.setContentText(message);
+        processingAlert.show();
+
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(event2 -> {
+            processingAlert.close();
+            showSuccessInformation();
+        });
+        delay.play();
+    }
 
     //ALERTS SECTION
     private void alertInformation(Alert.AlertType type, String alertTitle, String alertMessage) {
@@ -485,12 +496,10 @@ public class PaymentController {
         myAlert.show();
     }
 
-    private void showConfirmation(String message) {
-        alertInformation(Alert.AlertType.CONFIRMATION, "Cancel Payment", message);
-    }
-
     private void showSuccessInformation() {
-        alertInformation(Alert.AlertType.INFORMATION, "Successful Payment", "Payment Successful. Thank you for your purchase!");
+        alertInformation(Alert.AlertType.INFORMATION,
+                "Successful Payment",
+                "Payment Successful. Thank you for your purchase!");
     }
 
     private void showErrorInformation(String message) {
@@ -499,24 +508,5 @@ public class PaymentController {
 
     private void showInvalidInformation(String message) {
         alertInformation(Alert.AlertType.WARNING, "Invalid Input", message);
-    }
-
-    private void showProcessingInfo(String message){
-
-        Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
-        processingAlert.setTitle("Payment process");
-        processingAlert.setHeaderText(null);
-//        processingAlert.getButtonTypes().clear();
-        processingAlert.setContentText(message);
-        processingAlert.show();
-
-        // Wait 1 second, then close this and show success
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(event2 -> {
-            processingAlert.close();
-
-            showSuccessInformation();
-        });
-        delay.play();
     }
 }

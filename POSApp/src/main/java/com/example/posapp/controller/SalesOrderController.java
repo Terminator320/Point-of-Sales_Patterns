@@ -62,7 +62,6 @@ public class SalesOrderController {
 
     @FXML
     public void innitAndLoadInventory() {
-        orderTableView.setEditable(true);
 
         colItemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -73,11 +72,6 @@ public class SalesOrderController {
         colPrice.setReorderable(false);
 
         colQuantity.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        colQuantity.setOnEditCommit(event -> {
-            SalesOrder order = event.getRowValue();
-            order.setQuantity(event.getNewValue());
-            refreshSubTotal();
-        });
     }
 
     public void loadOrder(Map<Integer, Integer> activeOrder, Map<Integer, MenuItem> menuItems) {
@@ -119,6 +113,16 @@ public class SalesOrderController {
 
 
         totalPriceText.setText("$ " + String.format("%.2f", (totalPrice)));
+    }
+
+    //used for cancel and restore the qty
+    public void restoreInventoryForCurrentOrder() {
+        for (Map.Entry<Integer, Integer> entry : inventoryChanges.entrySet()) {
+            int inventoryId = entry.getKey();
+            int qty = entry.getValue();
+            Inventory.addQuantity(inventoryId, qty);
+        }
+        inventoryChanges.clear();
     }
 
     
@@ -170,6 +174,17 @@ public class SalesOrderController {
     }
 
     @FXML
+    public void removeItem(ActionEvent event) {
+        SalesOrder selectedItem = orderTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedItem == null) {
+            return;
+        }
+        orderTableView.getItems().remove(selectedItem);
+        refreshSubTotal();
+    }
+
+    @FXML
     public void cancelOrder(ActionEvent event) {
         try {
             restoreInventoryForCurrentOrder();
@@ -185,17 +200,6 @@ public class SalesOrderController {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while going back to the main");
         }
-    }
-
-
-    //used for cancel and restore the qty
-    public void restoreInventoryForCurrentOrder() {
-        for (Map.Entry<Integer, Integer> entry : inventoryChanges.entrySet()) {
-            int inventoryId = entry.getKey();
-            int qty = entry.getValue();
-            Inventory.addQuantity(inventoryId, qty);
-        }
-        inventoryChanges.clear();
     }
 
     public void clearInventoryChanges() {
@@ -224,7 +228,7 @@ public class SalesOrderController {
 
             paymentController.setSalesOrderTotal(this, orderID);
 
-         //   revomeInventory();
+         //   removeInventory();
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
