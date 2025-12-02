@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2025 at 12:29 AM
+-- Generation Time: Dec 02, 2025 at 04:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,36 +31,36 @@ CREATE TABLE `inventory` (
   `invId` int(11) NOT NULL,
   `invName` varchar(50) NOT NULL,
   `qty` int(11) NOT NULL,
-  `lowStokeThreshold` int(11) NOT NULL
+  `lowStockThreshold` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inventory`
 --
 
-INSERT INTO `inventory` (`invId`, `invName`, `qty`, `lowStokeThreshold`) VALUES
-(1, 'Espresso Beans', 10, 10),
-(2, 'Milk', 10, 10),
-(3, 'Foam Ingredients', 17, 10),
-(4, 'Americano brewed ', 69, 10),
-(5, 'Green Tea Leaves', 14, 10),
+INSERT INTO `inventory` (`invId`, `invName`, `qty`, `lowStockThreshold`) VALUES
+(1, 'Espresso Beans', 2, 10),
+(2, 'Milk', 0, 10),
+(3, 'Foam Ingredients', 25, 10),
+(4, 'Americano brewed ', 50, 10),
+(5, 'Green Tea Leaves', 15, 10),
 (6, 'Chai Mix', 25, 10),
-(7, 'Croissants', 60, 15),
+(7, 'Croissants', 50, 15),
 (8, 'Muffins', 50, 15),
 (9, 'Bagels & Cream Cheese', 35, 10),
 (10, 'BLT Ingredients', 25, 10),
 (11, 'Cheese & Bread', 25, 10),
 (12, 'Chicken Wrap Ingredients', 20, 10),
-(13, 'Berry Mix', 19, 10),
+(13, 'Berry Mix', 20, 10),
 (14, 'Mango Mix', 20, 10),
 (15, 'Protein Shake Mix', 40, 10),
-(16, 'Brewed Coffee', 44, 15),
-(17, 'Instant Coffee', 79, 20),
-(18, 'Black Tea leaves', 44, 10),
+(16, 'Brewed Coffee', 45, 15),
+(17, 'Instant Coffee', 80, 20),
+(18, 'Black Tea leaves', 45, 10),
 (19, 'Oolong Tea leaves', 45, 15),
 (20, 'Dried Peach Pieces', 20, 10),
 (21, 'Dried Strawberries', 25, 15),
-(22, 'Strawberry Mix', 11, 5);
+(22, 'Strawberry Mix', 15, 5);
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ INSERT INTO `inventory` (`invId`, `invName`, `qty`, `lowStokeThreshold`) VALUES
 --
 
 CREATE TABLE `menu_item` (
-  `id` int(11) NOT NULL,
+  `menuItem_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `price` double NOT NULL,
   `costPrice` double NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE `menu_item` (
 -- Dumping data for table `menu_item`
 --
 
-INSERT INTO `menu_item` (`id`, `name`, `price`, `costPrice`, `inv_id`) VALUES
+INSERT INTO `menu_item` (`menuItem_id`, `name`, `price`, `costPrice`, `inv_id`) VALUES
 (1, 'Espresso', 3, 1.8, 1),
 (2, 'Latte', 4.5, 2, 2),
 (3, 'Cappuccino', 4.25, 1.85, 3),
@@ -129,7 +129,10 @@ INSERT INTO `payment` (`payment_ID`, `order_ID`, `method_payment`, `tips`, `paym
 (59, 80, 'CASH', 0.00, '2025-11-25 22:50:42'),
 (61, 82, 'CASH', 0.00, '2025-11-27 10:22:55'),
 (62, 92, 'CASH', 0.00, '2025-11-27 15:24:03'),
-(63, 93, 'CASH', 0.00, '2025-11-27 15:28:27');
+(63, 93, 'CASH', 0.00, '2025-11-27 15:28:27'),
+(64, 96, 'CREDIT', 4.35, '2025-12-01 13:54:13'),
+(65, 100, 'CASH', 0.00, '2025-12-01 15:36:45'),
+(66, 103, 'CASH', 0.60, '2025-12-01 18:20:18');
 
 -- --------------------------------------------------------
 
@@ -148,10 +151,10 @@ CREATE TABLE `popular_items` (
 --
 
 INSERT INTO `popular_items` (`popular_items_id`, `popular_items_name`, `popular_items_quantity`) VALUES
-(1, 'Espresso', 19),
-(2, 'Latte', 5),
+(1, 'Espresso', 21),
+(2, 'Latte', 6),
 (3, 'Cappuccino', 9),
-(4, 'Ice Americano', 4),
+(4, 'Ice Americano', 5),
 (5, 'Green Tea', 2),
 (6, 'Chai Latte', 0),
 (7, 'Croissant', 1),
@@ -162,9 +165,9 @@ INSERT INTO `popular_items` (`popular_items_id`, `popular_items_name`, `popular_
 (12, 'Chicken Wrap', 14),
 (13, 'Berry Smoothie', 3),
 (14, 'Mango Smoothie', 0),
-(15, 'Protein Shake', 0),
+(15, 'Protein Shake', 1),
 (16, 'Greek Frappe', 3),
-(17, 'Ice Coffee', 1),
+(17, 'Ice Coffee', 2),
 (18, 'Black Tea', 12),
 (19, 'Oolong Tea', 0),
 (20, 'Peach Tea', 0),
@@ -209,7 +212,11 @@ INSERT INTO `sale_order` (`order_id`, `status`, `created_at`, `finalized_at`, `s
 (90, '\'OPEN\'', '2025-11-27 14:28:15', NULL, 3.00, 0.00, 0.00, 1.80),
 (91, '\'OPEN\'', '2025-11-27 14:28:20', NULL, 3.00, 0.00, 0.00, 1.80),
 (92, 'CLOSED', '2025-11-27 15:22:13', '2025-11-27T15:24:03.616811200', 33.00, 4.95, 37.95, 19.80),
-(93, 'CLOSED', '2025-11-27 15:27:34', '2025-11-27T15:28:27.801050900', 26.49, 3.97, 30.46, 12.45);
+(93, 'CLOSED', '2025-11-27 15:27:34', '2025-11-27T15:28:27.801050900', 26.49, 3.97, 30.46, 12.45),
+(96, 'CLOSED', '2025-12-01 13:53:35', '2025-12-01T13:54:13.720769300', 28.99, 4.35, 37.69, 17.15),
+(100, 'CLOSED', '2025-12-01 15:36:37', '2025-12-01T15:36:45.460218500', 3.00, 0.45, 3.45, 1.80),
+(102, '\'OPEN\'', '2025-12-01 17:51:33', NULL, 0.00, 0.00, 0.00, 1.85),
+(103, 'CLOSED', '2025-12-01 18:20:09', '2025-12-01T18:20:18.493029400', 3.00, 0.45, 4.05, 1.80);
 
 --
 -- Indexes for dumped tables
@@ -225,7 +232,7 @@ ALTER TABLE `inventory`
 -- Indexes for table `menu_item`
 --
 ALTER TABLE `menu_item`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`menuItem_id`),
   ADD KEY `inventory_FK` (`inv_id`);
 
 --
@@ -261,19 +268,19 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `menu_item`
 --
 ALTER TABLE `menu_item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `menuItem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `sale_order`
 --
 ALTER TABLE `sale_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- Constraints for dumped tables
@@ -295,7 +302,7 @@ ALTER TABLE `payment`
 -- Constraints for table `popular_items`
 --
 ALTER TABLE `popular_items`
-  ADD CONSTRAINT `FK_popularItems_menuItems_popularItemsID` FOREIGN KEY (`popular_items_id`) REFERENCES `menu_item` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_popularItems_menuItems_popularItemsID` FOREIGN KEY (`popular_items_id`) REFERENCES `menu_item` (`menuItem_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
