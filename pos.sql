@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2025 at 04:36 AM
+-- Generation Time: Dec 03, 2025 at 03:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,7 @@ CREATE TABLE `inventory` (
 
 INSERT INTO `inventory` (`invId`, `invName`, `qty`, `lowStockThreshold`) VALUES
 (1, 'Espresso Beans', 2, 10),
-(2, 'Milk', 0, 10),
+(2, 'Milk', 9, 10),
 (3, 'Foam Ingredients', 25, 10),
 (4, 'Americano brewed ', 50, 10),
 (5, 'Green Tea Leaves', 15, 10),
@@ -81,28 +81,108 @@ CREATE TABLE `menu_item` (
 --
 
 INSERT INTO `menu_item` (`menuItem_id`, `name`, `price`, `costPrice`, `inv_id`) VALUES
-(1, 'Espresso', 3, 1.8, 1),
-(2, 'Latte', 4.5, 2, 2),
-(3, 'Cappuccino', 4.25, 1.85, 3),
+(1, 'Espresso', 3, 1.8, 4),
+(2, 'Latte', 4.5, 2, 4),
+(3, 'Cappuccino', 4.25, 1.85, 4),
 (4, 'Ice Americano', 3.5, 1.9, 4),
-(5, 'Green Tea', 3, 1.5, 5),
-(6, 'Chai Latte', 4, 2, 6),
-(7, 'Croissant', 2.75, 0.5, 7),
-(8, 'Muffin', 2.5, 1.95, 8),
-(9, 'Bagel with Cream Cheese', 3.25, 2.25, 9),
-(10, 'BLT Sandwich', 6.5, 4.25, 10),
-(11, 'Grilled Cheese', 5.5, 3.5, 11),
-(12, 'Chicken Wrap', 7, 4.8, 12),
-(13, 'Berry Smoothie', 5.75, 3.75, 13),
-(14, 'Mango Smoothie', 5.75, 3.75, 14),
-(15, 'Protein Shake', 6, 4, 15),
-(16, 'Greek Frappe', 4, 1.25, 17),
-(17, 'Ice Coffee', 2.99, 1.25, 16),
-(18, 'Black Tea', 1.5, 0.5, 18),
-(19, 'Oolong Tea', 3, 0.5, 19),
-(20, 'Peach Tea', 2.5, 0.5, 20),
-(21, 'Strawberry Tea', 2.5, 0.5, 21),
-(22, 'Strawberry Smoothies', 5.75, 2.3, 22);
+(5, 'Green Tea', 3, 1.5, 4),
+(6, 'Chai Latte', 4, 2, 4),
+(7, 'Croissant', 2.75, 0.5, 4),
+(8, 'Muffin', 2.5, 1.95, 4),
+(9, 'Bagel with Cream Cheese', 3.25, 2.25, 4),
+(10, 'BLT Sandwich', 6.5, 4.25, 4),
+(11, 'Grilled Cheese', 5.5, 3.5, 4),
+(12, 'Chicken Wrap', 7, 4.8, 4),
+(13, 'Berry Smoothie', 5.75, 3.75, 4),
+(14, 'Mango Smoothie', 5.75, 3.75, 4),
+(15, 'Protein Shake', 6, 4, 4),
+(16, 'Greek Frappe', 4, 1.25, 4),
+(17, 'Ice Coffee', 2.99, 1.25, 4),
+(18, 'Black Tea', 1.5, 0.5, 4),
+(19, 'Oolong Tea', 3, 0.5, 4),
+(20, 'Peach Tea', 2.5, 0.5, 4),
+(21, 'Strawberry Tea', 2.5, 0.5, 4),
+(22, 'Strawberry Smoothies', 5.75, 2.3, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `menu_item_ingredient`
+--
+
+CREATE TABLE `menu_item_ingredient` (
+  `id` int(11) NOT NULL,
+  `menu_item_id` int(11) NOT NULL,
+  `inv_id` int(11) NOT NULL,
+  `quantity_used` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menu_item_ingredient`
+--
+
+INSERT INTO `menu_item_ingredient` (`id`, `menu_item_id`, `inv_id`, `quantity_used`) VALUES
+(1, 1, 1, 1),
+(2, 2, 1, 1),
+(3, 2, 2, 1),
+(4, 2, 3, 1),
+(5, 3, 1, 1),
+(6, 3, 2, 1),
+(7, 3, 3, 1),
+(8, 4, 4, 1),
+(9, 17, 16, 1),
+(10, 17, 2, 1),
+(11, 16, 17, 1),
+(12, 16, 2, 1),
+(13, 1, 1, 1),
+(14, 2, 1, 1),
+(15, 2, 2, 1),
+(16, 2, 3, 1),
+(17, 3, 1, 1),
+(18, 3, 2, 1),
+(19, 3, 3, 1),
+(20, 4, 4, 1),
+(21, 17, 16, 1),
+(22, 17, 2, 1),
+(23, 16, 17, 1),
+(24, 16, 2, 1),
+(25, 5, 5, 1),
+(26, 6, 6, 1),
+(27, 6, 2, 1),
+(28, 18, 18, 1),
+(29, 19, 19, 1),
+(30, 20, 20, 1),
+(31, 21, 21, 1),
+(32, 5, 5, 1),
+(33, 6, 6, 1),
+(34, 6, 2, 1),
+(35, 18, 18, 1),
+(36, 19, 19, 1),
+(37, 20, 20, 1),
+(38, 21, 21, 1),
+(39, 5, 5, 1),
+(40, 6, 6, 1),
+(41, 6, 2, 1),
+(42, 18, 18, 1),
+(43, 19, 19, 1),
+(44, 20, 20, 1),
+(45, 21, 21, 1),
+(46, 7, 7, 1),
+(47, 8, 8, 1),
+(48, 9, 9, 1),
+(49, 10, 10, 1),
+(50, 11, 11, 1),
+(51, 12, 12, 1),
+(52, 7, 7, 1),
+(53, 8, 8, 1),
+(54, 9, 9, 1),
+(55, 10, 10, 1),
+(56, 11, 11, 1),
+(57, 12, 12, 1),
+(58, 13, 13, 1),
+(59, 14, 14, 1),
+(60, 15, 15, 1),
+(61, 22, 22, 1);
 
 -- --------------------------------------------------------
 
@@ -232,8 +312,15 @@ ALTER TABLE `inventory`
 -- Indexes for table `menu_item`
 --
 ALTER TABLE `menu_item`
-  ADD PRIMARY KEY (`menuItem_id`),
-  ADD KEY `inventory_FK` (`inv_id`);
+  ADD PRIMARY KEY (`menuItem_id`);
+
+--
+-- Indexes for table `menu_item_ingredient`
+--
+ALTER TABLE `menu_item_ingredient`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `menu_item_id` (`menu_item_id`),
+  ADD KEY `inv_id` (`inv_id`);
 
 --
 -- Indexes for table `payment`
@@ -271,6 +358,12 @@ ALTER TABLE `menu_item`
   MODIFY `menuItem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
+-- AUTO_INCREMENT for table `menu_item_ingredient`
+--
+ALTER TABLE `menu_item_ingredient`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+
+--
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
@@ -280,7 +373,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `sale_order`
 --
 ALTER TABLE `sale_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- Constraints for dumped tables
@@ -291,6 +384,13 @@ ALTER TABLE `sale_order`
 --
 ALTER TABLE `menu_item`
   ADD CONSTRAINT `inventory_FK` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`invId`);
+
+--
+-- Constraints for table `menu_item_ingredient`
+--
+ALTER TABLE `menu_item_ingredient`
+  ADD CONSTRAINT `menu_item_ingredient_ibfk_1` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_item` (`menuItem_id`),
+  ADD CONSTRAINT `menu_item_ingredient_ibfk_2` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`invId`);
 
 --
 -- Constraints for table `payment`

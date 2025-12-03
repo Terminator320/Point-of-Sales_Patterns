@@ -46,9 +46,6 @@ public class SalesOrderController {
     private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
     private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
 
-    // Track how much inventory we subtracted per inventoryId
-    private final Map<Integer, Integer> inventoryChanges = new HashMap<>();
-
 
     public HashMap<Integer, SalesOrder> getPopularItemsSaleMap() {
         return popularItemsSaleMap;
@@ -88,7 +85,7 @@ public class SalesOrderController {
             double price = item.getPrice();
             double costPrice = item.getCostPrice();
             int menuItemId = item.getMenuItemId();
-            int inventoryId = item.getInventory().getInvId();
+            //int inventoryId = item.getInventory().getInvId();
 
 
             SalesOrder popularItemSale = new SalesOrder(menuItemId, quantity);
@@ -103,10 +100,7 @@ public class SalesOrderController {
             totalPrice += quantity * price;
 
 
-            Inventory.subtractQuantity(inventoryId, quantity);
-
-            // Track what we subtracted so we can undo if payment is canceled
-            inventoryChanges.merge(inventoryId, quantity, Integer::sum);
+            //Inventory.subtractQuantity(inventoryId, quantity);
 
         }
 
@@ -117,14 +111,14 @@ public class SalesOrderController {
     }
 
     //used for cancel and restore the qty
-    public void restoreInventoryForCurrentOrder() {
-        for (Map.Entry<Integer, Integer> entry : inventoryChanges.entrySet()) {
-            int inventoryId = entry.getKey();
-            int qty = entry.getValue();
-            Inventory.addQuantity(inventoryId, qty);
-        }
-        inventoryChanges.clear();
-    }
+//    public void restoreInventoryForCurrentOrder() {
+//        for (Map.Entry<Integer, Integer> entry : inventoryChanges.entrySet()) {
+//            int inventoryId = entry.getKey();
+//            int qty = entry.getValue();
+//            Inventory.addQuantity(inventoryId, qty);
+//        }
+//        inventoryChanges.clear();
+//    }
 
     
     public void refreshSubTotal() {
@@ -184,7 +178,8 @@ public class SalesOrderController {
 
         orderTableView.getItems().remove(selectedItem); //removing the item from the table
 
-        restoreInventoryForCurrentOrder(); //restocking the inventory not used
+
+        //restoreInventoryForCurrentOrder(); /restocking the inventory not used
 
         //if there are no items in the cart, go back to the menu page
         if(items.isEmpty()) {
@@ -206,7 +201,7 @@ public class SalesOrderController {
     @FXML
     public void cancelOrder(ActionEvent event) {
         try {
-            restoreInventoryForCurrentOrder(); //restocking the inventory not used
+          //  restoreInventoryForCurrentOrder(); //restocking the inventory not used
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
@@ -221,9 +216,7 @@ public class SalesOrderController {
         }
     }
 
-    public void clearInventoryChanges() {
-        inventoryChanges.clear();
-    }
+
 
     @FXML
     public void checkOutClick(ActionEvent event) {

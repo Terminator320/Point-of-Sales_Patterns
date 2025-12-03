@@ -21,6 +21,9 @@ public class SalesOrder {
     private double tax_total;
     private double total;
 
+    private ArrayList<MenuItem> menu_items;
+
+    //need to take all these out
     private int menu_id;
     private String itemName;
     private int quantity;
@@ -32,7 +35,9 @@ public class SalesOrder {
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
 
-    public SalesOrder() {}
+    public SalesOrder() {
+        menu_items = new ArrayList<>();
+    }
 
     public SalesOrder(double totalCostPrice, double subtotal,String created_at) {
         this.totalCostPrice = totalCostPrice;

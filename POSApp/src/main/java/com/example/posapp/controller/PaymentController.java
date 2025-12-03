@@ -373,9 +373,9 @@ public class PaymentController {
     @FXML
     protected void onCancelAction(ActionEvent event) {
         try {
-            if (salesOrderController != null) {
-                salesOrderController.restoreInventoryForCurrentOrder();
-            }
+//            if (salesOrderController != null) {
+//                salesOrderController.restoreInventoryForCurrentOrder();
+//            }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
@@ -420,7 +420,7 @@ public class PaymentController {
         }
 
         if (salesOrderController != null) {
-            salesOrderController.clearInventoryChanges();
+            //salesOrderController.clearInventoryChanges();
         }
 
         Payment createAPayment = createPaymentInfo();

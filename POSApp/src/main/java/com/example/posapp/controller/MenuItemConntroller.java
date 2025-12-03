@@ -2,6 +2,7 @@ package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
+import com.example.posapp.models.MenuIngredient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,8 +63,6 @@ public class MenuItemConntroller {
     // menuId -> Button
     private final Map<Integer, Button> menuButtons = new HashMap<>();
 
-    // invId -> Inventory
-    private Map<Integer, Inventory> inventoryMap = new HashMap<>();
 
     //menuId , MenuItem
     private  Map<Integer, MenuItem> menuItems = new HashMap<>();
@@ -80,7 +79,6 @@ public class MenuItemConntroller {
 
     public void initialize() {
         recitedView.setItems(receiptLines);
-
         initMenuItems(); //setting up the menuItems
 
         initMenuButtons();  //setting up the buttons
@@ -89,41 +87,10 @@ public class MenuItemConntroller {
 
 
     private void initMenuItems(){
-        //setting the map for the menu items with its inventory
-        for (Inventory inv : Inventory.getAllInventory()) {
-            inventoryMap.put(inv.getInvId(), inv);
+        // Load all menu items from DB; each one loads its ingredients
+        for (MenuItem item : MenuItem.getMenuItems()) {
+            menuItems.put(item.getMenuItemId(), item);
         }
-
-        //coffees
-        menuItems.put(1, new MenuItem(1, "Espresso",3,1.8, inventoryMap.get(1)));
-        menuItems.put(2, new MenuItem(2, "Latte",4.5, 2.00,inventoryMap.get(2)));
-        menuItems.put(3, new MenuItem(3, "Cappuccino",4.25, 1.85,inventoryMap.get(3)));
-        menuItems.put(4, new MenuItem(4, "Iced Americano",3.5, 1.90,inventoryMap.get(4)));
-        menuItems.put(5, new MenuItem(17, "Iced Coffee",2.99, 1.25,inventoryMap.get(16)));
-        menuItems.put(6, new MenuItem(16, "Greek Frappe",4, 1.25,inventoryMap.get(17)));
-
-        //teas
-        menuItems.put(7, new MenuItem(5, "Green Tea",3, 1.5,inventoryMap.get(5)));
-        menuItems.put(8, new MenuItem(6, "Chai Latte",4, 2,inventoryMap.get(6)));
-        menuItems.put(9,new MenuItem(18, "Black Tea",1.5, 0.5,inventoryMap.get(18)));
-        menuItems.put(10,new MenuItem(19,"Oolong Tea",3,0.5,inventoryMap.get(19)));
-        menuItems.put(11,new MenuItem(20,"Peach Tea",2.5,0.5,inventoryMap.get(20)));
-        menuItems.put(12,new MenuItem(21,"Strawberry Tea",2.5,0.5,inventoryMap.get(21)));
-
-        //food
-        menuItems.put(20, new MenuItem(7, "Croissant",2.75, 0.5,inventoryMap.get(7)));
-        menuItems.put(21, new MenuItem(8, "Muffin",2.50, 1.95,inventoryMap.get(8)));
-        menuItems.put(22, new MenuItem(9, "Cheese Bagel",3.25, 2.25,inventoryMap.get(9)));
-        menuItems.put(23, new MenuItem(10, "BLT Sandwich",6.50, 4.25,inventoryMap.get(10)));
-        menuItems.put(24, new MenuItem(11, "Grilled Cheese",5.50, 3.5,inventoryMap.get(11)));
-        menuItems.put(25, new MenuItem(12, "Chicken Wrap",7.00, 4.80,inventoryMap.get(12)));
-
-
-        //smoothies
-        menuItems.put(30, new MenuItem(22,"Strawberry Smoothie",5.75, 2.30,inventoryMap.get(22)));
-        menuItems.put(31, new MenuItem(13,"Berry Smoothie",5.75, 3.75,inventoryMap.get(13)));
-        menuItems.put(32, new MenuItem(15,"Protein Shake",6, 4.00,inventoryMap.get(15)));
-        menuItems.put(33,new MenuItem(14,"Mango Smoothie",5.75, 3.75,inventoryMap.get(14)));
     }
 
     private void initMenuButtons() {
@@ -144,30 +111,45 @@ public class MenuItemConntroller {
         menuButtons.put(12, strawberryTeaButton);
 
         // food
-        menuButtons.put(20, croissantButton);
-        menuButtons.put(21, muffinButton);
-        menuButtons.put(22, cheeseBagelButton);
-        menuButtons.put(23, bltSandwichButton);
-        menuButtons.put(24, grilledCheeseButton);
-        menuButtons.put(25, chickenWrapButton);
+        menuButtons.put(13, croissantButton);
+        menuButtons.put(14, muffinButton);
+        menuButtons.put(15, cheeseBagelButton);
+        menuButtons.put(16, bltSandwichButton);
+        menuButtons.put(17, grilledCheeseButton);
+        menuButtons.put(18, chickenWrapButton);
 
         // smoothies
-        menuButtons.put(30, strawberrySmoothieButton);
-        menuButtons.put(31, berrySmoothieButton);
-        menuButtons.put(32, proteinShakeButton);
-        menuButtons.put(33, mangoSmoothieButton);
+        menuButtons.put(19, strawberrySmoothieButton);
+        menuButtons.put(20, berrySmoothieButton);
+        menuButtons.put(21, proteinShakeButton);
+        menuButtons.put(22, mangoSmoothieButton);
     }
 
     private void refreshButtonStates() {
         for (Map.Entry<Integer, MenuItem> entry : menuItems.entrySet()) {
-            //getting the key-value pair
             int menuId = entry.getKey();
             MenuItem item = entry.getValue();
             Button button = menuButtons.get(menuId);
 
-            int invQty = item.getInventory().getQty();
-            // disable if 0 or less
-            button.setDisable(invQty == 0);
+            if (button == null || item == null || item.getIngredients() == null) {
+                continue;
+            }
+
+            boolean canMake = true;
+
+            // If ANY ingredient has qty == 0, disable the button
+            for (MenuIngredient ingredient : item.getIngredients()) {
+                Inventory inv = ingredient.getInventory();
+                if (inv == null) {
+                    continue;
+                }
+                if (inv.getQty() <= 0) {
+                    canMake = false;
+                    break;
+                }
+            }
+
+            button.setDisable(!canMake);
         }
     }
 
@@ -176,15 +158,25 @@ public class MenuItemConntroller {
         MenuItem item = menuItems.get(menuId);
         if (item == null) return;
 
-        // update quantity in order
         int newQty = activeOrder.getOrDefault(menuId, 0) + 1;
 
-        Inventory inventory = item.getInventory();
+        // check all ingredients
+        boolean enoughStock = true;
+        MenuIngredient outOfStock = null;
 
-        boolean check = Inventory.checkInventory(inventory, newQty);
+        for (MenuIngredient ingredient : item.getIngredients()) {
+            Inventory inv = ingredient.getInventory();
+            if (inv == null) continue;
 
-        if (!check) {
+            int required = ingredient.getQuantityUsed() * newQty;
+            if (!Inventory.checkInventory(inv, required)) {
+                enoughStock = false;
+                outOfStock = ingredient;
+                break;
+            }
+        }
 
+        if (!enoughStock) {
             Button b = menuButtons.get(menuId);
             if (b != null) {
                 b.setDisable(true);
@@ -192,15 +184,18 @@ public class MenuItemConntroller {
 
             Alert processingAlert = new Alert(Alert.AlertType.WARNING);
             processingAlert.setTitle("Out of Stock");
-            processingAlert.setHeaderText(item + " is out of stock");
-            processingAlert.setContentText(item.getInventory().getInvName() + " out of stoke.");
+            processingAlert.setHeaderText(item.getName() + " is out of stock");
+            if (outOfStock != null && outOfStock.getInventory() != null) {
+                processingAlert.setContentText(outOfStock.getInventory().getInvName() + " is out of stock.");
+            }
+            else {
+                processingAlert.setContentText("Not enough ingredients.");
+            }
             processingAlert.show();
             return;
         }
 
         activeOrder.put(menuId, newQty);
-
-
         rebuildReceipt();
     }
 
@@ -240,114 +235,70 @@ public class MenuItemConntroller {
 
 
     @FXML
-    public void espressoClick(ActionEvent event) {
-        addItemToOrder(1);
-    }
+    public void espressoClick(ActionEvent event) { addItemToOrder(1); }
 
     @FXML
-    public void latteClick(ActionEvent event) {
-        addItemToOrder(2);
-    }
+    public void latteClick(ActionEvent event) { addItemToOrder(2); }
 
     @FXML
-    public void cappuccinoClick(ActionEvent event) {
-        addItemToOrder(3);
-    }
+    public void cappuccinoClick(ActionEvent event) { addItemToOrder(3); }
 
     @FXML
-    public void frappeClick(ActionEvent event) {
-        addItemToOrder(6);
-    }
+    public void iceAmeriClick(ActionEvent event) { addItemToOrder(4); }
 
     @FXML
-    public void iceAmeriClick(ActionEvent event) {
-        addItemToOrder(4);
-    }
+    public void iceCoffeeClick(ActionEvent event) { addItemToOrder(17); }
 
     @FXML
-    public void iceCoffeeClick(ActionEvent event) {
-        addItemToOrder(5);
-    }
+    public void frappeClick(ActionEvent event) { addItemToOrder(16); }
 
     @FXML
-    public void greenTeaClick(ActionEvent event) {
-        addItemToOrder(7);
-    }
+    public void greenTeaClick(ActionEvent event) { addItemToOrder(5); }
 
     @FXML
-    public void blackTeaClick(ActionEvent event) {
-        addItemToOrder(9);
-    }
+    public void chaiLatteTeaClick(ActionEvent event) { addItemToOrder(6); }
 
     @FXML
-    public void peachTeaClick(ActionEvent event) {
-        addItemToOrder(11);
-    }
+    public void blackTeaClick(ActionEvent event) { addItemToOrder(18); }
 
     @FXML
-    public void starwberryTeaClick(ActionEvent event) {
-        addItemToOrder(12);
-    }
+    public void oolongTeaClick(ActionEvent event) { addItemToOrder(19); }
 
     @FXML
-    public void chaiLatteTeaClick(ActionEvent event) {
-        addItemToOrder(8);
-    }
+    public void peachTeaClick(ActionEvent event) { addItemToOrder(20); }
 
     @FXML
-    public void oolongTeaClick(ActionEvent event) {
-        addItemToOrder(10);
-    }
+    public void starwberryTeaClick(ActionEvent event) { addItemToOrder(21); }
 
     @FXML
-    public void starwberrySmoClick(ActionEvent event) {
-        addItemToOrder(30);
-    }
+    public void croissantClick(ActionEvent event) { addItemToOrder(7); }
 
     @FXML
-    public void mangoSmClick(ActionEvent event) {
-        addItemToOrder(33);
-    }
+    public void muffinClick(ActionEvent event) { addItemToOrder(8); }
 
     @FXML
-    public void mixedBerrySmClick(ActionEvent event) {
-        addItemToOrder(31);
-    }
+    public void cheeseBagelClick(ActionEvent event) { addItemToOrder(9); }
 
     @FXML
-    public void proteinShakenClick(ActionEvent event) {
-        addItemToOrder(32);
-    }
+    public void btlSandwichClick(ActionEvent event) { addItemToOrder(10); }
 
     @FXML
-    public void croissantClick(ActionEvent event) {
-        addItemToOrder(20);
-    }
+    public void grilledCheeseClick(ActionEvent event) { addItemToOrder(11); }
 
     @FXML
-    public void muffinClick(ActionEvent event) {
-        addItemToOrder(21);
-    }
+    public void chickenWrapClick(ActionEvent event) { addItemToOrder(12); }
 
     @FXML
-    public void chickenWrapClick(ActionEvent event) {
-        addItemToOrder(25);
-    }
+    public void starwberrySmoClick(ActionEvent event) { addItemToOrder(22); }
 
     @FXML
-    public void btlSandwichClick(ActionEvent event) {
-        addItemToOrder(23);
-    }
+    public void mixedBerrySmClick(ActionEvent event) { addItemToOrder(13); }
 
     @FXML
-    public void grilledCheeseClick(ActionEvent event) {
-        addItemToOrder(24);
-    }
+    public void proteinShakenClick(ActionEvent event) { addItemToOrder(15); }
 
     @FXML
-    public void cheeseBagelClick(ActionEvent event) {
-        addItemToOrder(22);
-    }
+    public void mangoSmClick(ActionEvent event) { addItemToOrder(14); }
 
 
     @FXML
@@ -400,7 +351,6 @@ public class MenuItemConntroller {
     @FXML
     public void removeItemClick() {
         removeSelectedItem();
-
     }
 
     public void invalidMenuOrder(String title,String msg){

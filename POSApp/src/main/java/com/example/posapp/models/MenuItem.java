@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,31 +18,24 @@ public class MenuItem {
     private int menuItemId;
     private String name;
     private double price,costPrice;
-    private int quantity;
-    private Inventory inventory;
+
+
+    private List<MenuIngredient> ingredients = new ArrayList<>();
+
 
     //logger
     private static final Logger LOGGER = LogConfig.getLogger(MenuItem.class.getName());
 
-    public MenuItem(int menuItemId, String name, double price, double costPrice, Inventory inventory) {
-        this.menuItemId = menuItemId;
-        this.name = name;
-        this.price = price;
-        this.costPrice = costPrice;
-        this.inventory = inventory;
-    }
-
-    public MenuItem( Inventory inventory, int quantity) {
-        this.inventory = inventory;
-        this.quantity = quantity;
-    }
 
     public MenuItem(int menuItemId, String name, double price, double costPrice) {
         this.menuItemId = menuItemId;
         this.name = name;
         this.price = price;
         this.costPrice = costPrice;
+        this.ingredients = MenuIngredient.getByMenuItemId(menuItemId);
     }
+
+
 
     public int getMenuItemId() {
         return menuItemId;
@@ -66,28 +61,20 @@ public class MenuItem {
         this.price = price;
     }
 
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public double getCostPrice() {
         return this.costPrice;
     }
 
     public void setCostPrice(double costPrice) {
         this.costPrice = costPrice;
+    }
+
+    public void addIngredient(MenuIngredient ingredient) {
+        ingredients.add(ingredient);
+    }
+
+    public List<MenuIngredient> getIngredients() {
+        return ingredients;
     }
 
     @Override
@@ -99,24 +86,24 @@ public class MenuItem {
     public static ObservableList<MenuItem> getMenuItems() {
         ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
         //get the statement
-        final String sql = "SELECT * FROM menu_item";
+        final String sql = "SELECT menuItem_id, name, price, costPrice FROM menu_item";
 
         try (Connection connection = ConfigManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)){
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             ResultSet resultSet = pstmt.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 int id = resultSet.getInt("menuItem_id");
                 String name = resultSet.getString("name");
                 double price = resultSet.getDouble("price");
                 double costPrice = resultSet.getDouble("costPrice");
-                int inventoryId = resultSet.getInt("inv_id");
 
-                menuItems.add(new MenuItem(id,name,price,costPrice, Inventory.getOne(inventoryId)));
+                // this constructor will auto-load ingredients from menu_item_ingredient
+                MenuItem item = new MenuItem(id, name, price, costPrice);
+                menuItems.add(item);
             }
-        }
-        catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while fetching Menu Items");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \n Database error while fetching Menu Items");
         }
         return menuItems;
     }
