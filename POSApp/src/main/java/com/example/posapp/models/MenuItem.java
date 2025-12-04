@@ -83,7 +83,7 @@ public class MenuItem {
     }
 
     //crud
-    public static ObservableList<MenuItem> getMenuItems() {
+    public synchronized static ObservableList<MenuItem> getMenuItems() {
         ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
         //get the statement
         final String sql = "SELECT menuItem_id, name, price, costPrice FROM menu_item";

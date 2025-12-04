@@ -61,7 +61,7 @@ public class MenuIngredient {
 
 
     // load all ingredients for one menu item
-    public static List<MenuIngredient> getByMenuItemId(int menuItemId) {
+    public synchronized static List<MenuIngredient> getByMenuItemId(int menuItemId) {
         List<MenuIngredient> list = new ArrayList<>();
 
         final String sql = "SELECT ing.id, ing.menu_item_id, ing.inv_id, ing.quantity_used ,inv.invName, inv.qty, inv.lowStockThreshold FROM menu_item_ingredient ing JOIN inventory inv ON inv.invId = ing.inv_id WHERE ing.menu_item_id = ?";

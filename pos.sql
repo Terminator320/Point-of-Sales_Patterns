@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2025 at 03:42 AM
+-- Generation Time: Dec 04, 2025 at 03:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,37 +72,36 @@ CREATE TABLE `menu_item` (
   `menuItem_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `price` double NOT NULL,
-  `costPrice` double NOT NULL,
-  `inv_id` int(11) NOT NULL
+  `costPrice` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `menu_item`
 --
 
-INSERT INTO `menu_item` (`menuItem_id`, `name`, `price`, `costPrice`, `inv_id`) VALUES
-(1, 'Espresso', 3, 1.8, 4),
-(2, 'Latte', 4.5, 2, 4),
-(3, 'Cappuccino', 4.25, 1.85, 4),
-(4, 'Ice Americano', 3.5, 1.9, 4),
-(5, 'Green Tea', 3, 1.5, 4),
-(6, 'Chai Latte', 4, 2, 4),
-(7, 'Croissant', 2.75, 0.5, 4),
-(8, 'Muffin', 2.5, 1.95, 4),
-(9, 'Bagel with Cream Cheese', 3.25, 2.25, 4),
-(10, 'BLT Sandwich', 6.5, 4.25, 4),
-(11, 'Grilled Cheese', 5.5, 3.5, 4),
-(12, 'Chicken Wrap', 7, 4.8, 4),
-(13, 'Berry Smoothie', 5.75, 3.75, 4),
-(14, 'Mango Smoothie', 5.75, 3.75, 4),
-(15, 'Protein Shake', 6, 4, 4),
-(16, 'Greek Frappe', 4, 1.25, 4),
-(17, 'Ice Coffee', 2.99, 1.25, 4),
-(18, 'Black Tea', 1.5, 0.5, 4),
-(19, 'Oolong Tea', 3, 0.5, 4),
-(20, 'Peach Tea', 2.5, 0.5, 4),
-(21, 'Strawberry Tea', 2.5, 0.5, 4),
-(22, 'Strawberry Smoothies', 5.75, 2.3, 4);
+INSERT INTO `menu_item` (`menuItem_id`, `name`, `price`, `costPrice`) VALUES
+(1, 'Espresso', 3, 1.8),
+(2, 'Latte', 4.5, 2),
+(3, 'Cappuccino', 4.25, 1.85),
+(4, 'Ice Americano', 3.5, 1.9),
+(5, 'Green Tea', 3, 1.5),
+(6, 'Chai Latte', 4, 2),
+(7, 'Croissant', 2.75, 0.5),
+(8, 'Muffin', 2.5, 1.95),
+(9, 'Bagel with Cream Cheese', 3.25, 2.25),
+(10, 'BLT Sandwich', 6.5, 4.25),
+(11, 'Grilled Cheese', 5.5, 3.5),
+(12, 'Chicken Wrap', 7, 4.8),
+(13, 'Berry Smoothie', 5.75, 3.75),
+(14, 'Mango Smoothie', 5.75, 3.75),
+(15, 'Protein Shake', 6, 4),
+(16, 'Greek Frappe', 4, 1.25),
+(17, 'Ice Coffee', 2.99, 1.25),
+(18, 'Black Tea', 1.5, 0.5),
+(19, 'Oolong Tea', 3, 0.5),
+(20, 'Peach Tea', 2.5, 0.5),
+(21, 'Strawberry Tea', 2.5, 0.5),
+(22, 'Strawberry Smoothies', 5.75, 2.3);
 
 -- --------------------------------------------------------
 
@@ -212,7 +211,8 @@ INSERT INTO `payment` (`payment_ID`, `order_ID`, `method_payment`, `tips`, `paym
 (63, 93, 'CASH', 0.00, '2025-11-27 15:28:27'),
 (64, 96, 'CREDIT', 4.35, '2025-12-01 13:54:13'),
 (65, 100, 'CASH', 0.00, '2025-12-01 15:36:45'),
-(66, 103, 'CASH', 0.60, '2025-12-01 18:20:18');
+(66, 103, 'CASH', 0.60, '2025-12-01 18:20:18'),
+(67, 107, 'DEBIT', 3.10, '2025-12-03 08:46:08');
 
 -- --------------------------------------------------------
 
@@ -236,18 +236,18 @@ INSERT INTO `popular_items` (`popular_items_id`, `popular_items_name`, `popular_
 (3, 'Cappuccino', 9),
 (4, 'Ice Americano', 5),
 (5, 'Green Tea', 2),
-(6, 'Chai Latte', 0),
-(7, 'Croissant', 1),
+(6, 'Chai Latte', 1),
+(7, 'Croissant', 2),
 (8, 'Muffin', 122),
 (9, 'Bagel with Cream Cheese', 0),
 (10, 'BLT Sandwich', 10),
 (11, 'Grilled Cheese', 0),
 (12, 'Chicken Wrap', 14),
-(13, 'Berry Smoothie', 3),
+(13, 'Berry Smoothie', 4),
 (14, 'Mango Smoothie', 0),
 (15, 'Protein Shake', 1),
 (16, 'Greek Frappe', 3),
-(17, 'Ice Coffee', 2),
+(17, 'Ice Coffee', 3),
 (18, 'Black Tea', 12),
 (19, 'Oolong Tea', 0),
 (20, 'Peach Tea', 0),
@@ -296,7 +296,8 @@ INSERT INTO `sale_order` (`order_id`, `status`, `created_at`, `finalized_at`, `s
 (96, 'CLOSED', '2025-12-01 13:53:35', '2025-12-01T13:54:13.720769300', 28.99, 4.35, 37.69, 17.15),
 (100, 'CLOSED', '2025-12-01 15:36:37', '2025-12-01T15:36:45.460218500', 3.00, 0.45, 3.45, 1.80),
 (102, '\'OPEN\'', '2025-12-01 17:51:33', NULL, 0.00, 0.00, 0.00, 1.85),
-(103, 'CLOSED', '2025-12-01 18:20:09', '2025-12-01T18:20:18.493029400', 3.00, 0.45, 4.05, 1.80);
+(103, 'CLOSED', '2025-12-01 18:20:09', '2025-12-01T18:20:18.493029400', 3.00, 0.45, 4.05, 1.80),
+(107, 'CLOSED', '2025-12-03 08:45:00', '2025-12-03T08:46:08.284004900', 15.49, 2.32, 20.91, 7.50);
 
 --
 -- Indexes for dumped tables
@@ -367,23 +368,17 @@ ALTER TABLE `menu_item_ingredient`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `sale_order`
 --
 ALTER TABLE `sale_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `menu_item`
---
-ALTER TABLE `menu_item`
-  ADD CONSTRAINT `inventory_FK` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`invId`);
 
 --
 -- Constraints for table `menu_item_ingredient`

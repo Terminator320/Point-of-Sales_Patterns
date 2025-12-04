@@ -86,14 +86,14 @@ public class MenuItemConntroller {
     }
 
 
-    private void initMenuItems(){
+    private synchronized void initMenuItems(){
         // Load all menu items from DB; each one loads its ingredients
         for (MenuItem item : MenuItem.getMenuItems()) {
             menuItems.put(item.getMenuItemId(), item);
         }
     }
 
-    private void initMenuButtons() {
+    private  synchronized void initMenuButtons() {
         // coffees
         menuButtons.put(1, espressoButton);
         menuButtons.put(2, latteButton);
@@ -125,7 +125,7 @@ public class MenuItemConntroller {
         menuButtons.put(22, mangoSmoothieButton);
     }
 
-    private void refreshButtonStates() {
+    private  synchronized void refreshButtonStates() {
         for (Map.Entry<Integer, MenuItem> entry : menuItems.entrySet()) {
             int menuId = entry.getKey();
             MenuItem item = entry.getValue();
@@ -221,7 +221,7 @@ public class MenuItemConntroller {
         }
     }
 
-    private void rebuildReceipt() {
+    private synchronized void rebuildReceipt() {
         receiptLines.clear();
 
         for (Map.Entry<Integer, Integer> e : activeOrder.entrySet()) {
