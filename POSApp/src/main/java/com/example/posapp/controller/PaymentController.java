@@ -6,6 +6,7 @@ import com.example.posapp.PaymentFactory.PaymentProcessing;
 import com.example.posapp.models.Payment;
 import com.example.posapp.models.SalesOrder;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -394,7 +396,7 @@ public class PaymentController {
     }
 
     @FXML
-    protected void OnPayAction(ActionEvent event) {
+    protected void OnPayAction(ActionEvent event) throws IOException, InterruptedException {
 
         if (choiceOfPayment.getValue() == null) {
             showErrorInformation("Please select a payment method");
@@ -446,9 +448,6 @@ public class PaymentController {
             HashMap<Integer, SalesOrder> map = salesOrderController.getPopularItemsSaleMap();
             loadPopItems(map);
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.close();
-
         } else {
             showErrorInformation("Payment failed");
         }
@@ -471,18 +470,27 @@ public class PaymentController {
         alertInformation(Alert.AlertType.CONFIRMATION, "Cancel Payment", message);
     }
 
-    private void showProcessingInfo(String message) {
+    private void showProcessingInfo(String message) throws InterruptedException {
 
         Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
         processingAlert.setTitle("Payment process");
         processingAlert.setHeaderText(null);
         processingAlert.setContentText(message);
+        processingAlert.getDialogPane().setPrefHeight(100);
+        processingAlert.getDialogPane().getButtonTypes().clear();
         processingAlert.show();
 
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(event2 -> {
-            processingAlert.close();
-            showSuccessInformation();
+        delay.setOnFinished(event -> {
+            processingAlert.getButtonTypes().add(ButtonType.OK);
+
+            // Wait for the user to click OK
+            Button okButton = (Button) processingAlert.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setOnAction(e -> {
+                processingAlert.close(); // close the processing alert
+                showSuccessInformation(); // show success alert
+                goBackToMain(); // go back to main scene
+            });
         });
         delay.play();
     }
@@ -508,5 +516,18 @@ public class PaymentController {
 
     private void showInvalidInformation(String message) {
         alertInformation(Alert.AlertType.WARNING, "Invalid Input", message);
+    }
+
+    private void goBackToMain(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
+            Parent newRoot = loader.load();
+            Scene newScene = new Scene(newRoot);
+            Stage stage = (Stage) payButton.getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Main");
+        }catch (IOException e){
+            LOGGER.log(Level.SEVERE, "Error loading back to main view", e);
+        }
     }
 }

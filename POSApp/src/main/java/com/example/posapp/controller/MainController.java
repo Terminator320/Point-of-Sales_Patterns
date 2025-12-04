@@ -1,6 +1,8 @@
 package com.example.posapp.controller;
 
+import com.example.posapp.HelloApplication;
 import com.example.posapp.LogConfig;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -62,7 +64,6 @@ public class MainController {
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-view.fxml"));
             Parent newRoot = loader.load();
-
             Scene newScene = new Scene(newRoot);
 
             // Get the current stage (e.g., from a component's scene and window)
@@ -73,5 +74,9 @@ public class MainController {
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError going to sales view.");
         }
+    }
+    @FXML
+    private void exit(ActionEvent event) {
+        Platform.exit();
     }
 }

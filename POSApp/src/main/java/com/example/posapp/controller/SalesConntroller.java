@@ -84,9 +84,9 @@ public class SalesConntroller {
                 // Threads will fill ProfitCalculator.*
                 ProfitCalculatorOperation.calculate(orders);
 
-                double totalRevenue = ProfitCalculator.total;
+                double totalRevenue = ProfitCalculator.profit;
                 double totalCost    = ProfitCalculator.costTotal;
-                double netProfit    = ProfitCalculator.profit;
+                double netProfit    = ProfitCalculator.total;
 
                 //double totalLossParam   = Math.abs(totalCost);  // negative for your pie
                 //double totalProfitSlice = netProfit;
@@ -137,10 +137,12 @@ public class SalesConntroller {
             }
         }
 
+
+
         //setting label
-        netProfitLbl.setText("Net Profit: $" + String.format("%.2f", totalRevenue));
+        netProfitLbl.setText("Net Profit: $" + String.format("%.2f", totalNetProfit));
         costLbl.setText("Cost: $" + String.format("%.2f", totalCost));
-        profitLbl.setText("Profit: $" + String.format("%.2f", totalNetProfit));
+        profitLbl.setText("Profit: $" + String.format("%.2f", totalRevenue));
     }
 
 
