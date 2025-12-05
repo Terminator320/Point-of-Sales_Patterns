@@ -12,28 +12,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MenuIngredient {
-    private int id;              // PK of menu_item_ingredient
-    private int menuItemId;      // FK to menu_item.menuItem_id
-    private Inventory inventory; // FK to inventory.invId
-    private int quantityUsed;    // how many units per ONE menu item
+    private int menuItemId;      // PK, FK to menu_item.menuItem_id
+    private Inventory inventory; // PK, FK to inventory.invId
+    private int quantityUsed;    // how many units per one menu item
 
     private static final Logger LOGGER = LogConfig.getLogger(MenuIngredient.class.getName());
 
-    // constructor for when you already know DB id
-    public MenuIngredient(int id, int menuItemId, Inventory inventory, int quantityUsed) {
-        this.id = id;
+    public MenuIngredient(int menuItemId, Inventory inventory, int quantityUsed) {
         this.menuItemId = menuItemId;
         this.inventory = inventory;
         this.quantityUsed = quantityUsed;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getMenuItemId() {
         return menuItemId;
@@ -64,7 +54,7 @@ public class MenuIngredient {
     public synchronized static List<MenuIngredient> getByMenuItemId(int menuItemId) {
         List<MenuIngredient> list = new ArrayList<>();
 
-        final String sql = "SELECT ing.id, ing.menu_item_id, ing.inv_id, ing.quantity_used ,inv.invName, inv.qty, inv.lowStockThreshold FROM menu_item_ingredient ing JOIN inventory inv ON inv.invId = ing.inv_id WHERE ing.menu_item_id = ?";
+        final String sql = "SELECT ing.menu_item_id, ing.inv_id, ing.quantity_used ,inv.invName, inv.qty, inv.lowStockThreshold FROM menu_item_ingredient ing JOIN inventory inv ON inv.invId = ing.inv_id WHERE ing.menu_item_id = ?";
 
         try (Connection conn = ConfigManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -73,7 +63,7 @@ public class MenuIngredient {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+
                 int invId = rs.getInt("inv_id");
                 int qtyUsed = rs.getInt("quantity_used");
 
@@ -83,7 +73,7 @@ public class MenuIngredient {
 
                 Inventory inv = new Inventory(invId, invName, invQty, lowStockThreshold);
 
-                list.add(new MenuIngredient(id, menuItemId, inv, qtyUsed));
+                list.add(new MenuIngredient(menuItemId, inv, qtyUsed));
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nDB error while fetching ingredients for menu item " + menuItemId);

@@ -1,7 +1,6 @@
 package com.example.posapp.models;
 
 import com.example.posapp.LogConfig;
-import com.example.posapp.controller.MenuItemConntroller;
 import database.ConfigManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +34,6 @@ public class MenuItem {
         this.costPrice = costPrice;
         this.ingredients = MenuIngredient.getByMenuItemId(menuItemId);
     }
-
 
 
     public int getMenuItemId() {
@@ -82,6 +81,18 @@ public class MenuItem {
         return this.name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuItem menuItem = (MenuItem) o;
+        return getMenuItemId() == menuItem.getMenuItemId() && Double.compare(getPrice(), menuItem.getPrice()) == 0 && Double.compare(getCostPrice(), menuItem.getCostPrice()) == 0 && Objects.equals(getName(), menuItem.getName()) && Objects.equals(getIngredients(), menuItem.getIngredients());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMenuItemId(), getName(), getPrice(), getCostPrice(), getIngredients());
+    }
+
     //crud
     public synchronized static ObservableList<MenuItem> getMenuItems() {
         ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
@@ -93,13 +104,13 @@ public class MenuItem {
 
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("menuItem_id");
+                int menu_item_id = resultSet.getInt("menuItem_id");
                 String name = resultSet.getString("name");
                 double price = resultSet.getDouble("price");
                 double costPrice = resultSet.getDouble("costPrice");
 
-                // this constructor will auto-load ingredients from menu_item_ingredient
-                MenuItem item = new MenuItem(id, name, price, costPrice);
+                // auto-load ingredients from menu_item_ingredient
+                MenuItem item = new MenuItem(menu_item_id, name, price, costPrice);
                 menuItems.add(item);
             }
         } catch (Exception e) {

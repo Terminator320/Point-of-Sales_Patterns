@@ -139,7 +139,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch (Exception e) {
-           LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /nDatabase error while editing low stoke threshold");
+           LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nDatabase error while editing low stoke threshold");
         }
     }
 
@@ -154,7 +154,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch ( Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /nDatabase error while editing item quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nDatabase error while editing item quantity");
         }
     }
 
@@ -171,7 +171,7 @@ public class Inventory {
             pstmt.executeUpdate();
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while removing quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \n Database error while removing quantity");
         }
     }
 
@@ -185,7 +185,7 @@ public class Inventory {
             pstmt.setInt(2, invId);
             pstmt.executeUpdate();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "  /nDatabase error while adding back item quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "  \nDatabase error while adding back item quantity");
         }
     }
 

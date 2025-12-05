@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2025 at 03:38 AM
+-- Generation Time: Dec 05, 2025 at 02:37 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -110,7 +110,6 @@ INSERT INTO `menu_item` (`menuItem_id`, `name`, `price`, `costPrice`) VALUES
 --
 
 CREATE TABLE `menu_item_ingredient` (
-  `id` int(11) NOT NULL,
   `menu_item_id` int(11) NOT NULL,
   `inv_id` int(11) NOT NULL,
   `quantity_used` int(11) NOT NULL
@@ -120,68 +119,36 @@ CREATE TABLE `menu_item_ingredient` (
 -- Dumping data for table `menu_item_ingredient`
 --
 
-INSERT INTO `menu_item_ingredient` (`id`, `menu_item_id`, `inv_id`, `quantity_used`) VALUES
-(1, 1, 1, 1),
-(2, 2, 1, 1),
-(3, 2, 2, 1),
-(4, 2, 3, 1),
-(5, 3, 1, 1),
-(6, 3, 2, 1),
-(7, 3, 3, 1),
-(8, 4, 4, 1),
-(9, 17, 16, 1),
-(10, 17, 2, 1),
-(11, 16, 17, 1),
-(12, 16, 2, 1),
-(13, 1, 1, 1),
-(14, 2, 1, 1),
-(15, 2, 2, 1),
-(16, 2, 3, 1),
-(17, 3, 1, 1),
-(18, 3, 2, 1),
-(19, 3, 3, 1),
-(20, 4, 4, 1),
-(21, 17, 16, 1),
-(22, 17, 2, 1),
-(23, 16, 17, 1),
-(24, 16, 2, 1),
-(25, 5, 5, 1),
-(26, 6, 6, 1),
-(27, 6, 2, 1),
-(28, 18, 18, 1),
-(29, 19, 19, 1),
-(30, 20, 20, 1),
-(31, 21, 21, 1),
-(32, 5, 5, 1),
-(33, 6, 6, 1),
-(34, 6, 2, 1),
-(35, 18, 18, 1),
-(36, 19, 19, 1),
-(37, 20, 20, 1),
-(38, 21, 21, 1),
-(39, 5, 5, 1),
-(40, 6, 6, 1),
-(41, 6, 2, 1),
-(42, 18, 18, 1),
-(43, 19, 19, 1),
-(44, 20, 20, 1),
-(45, 21, 21, 1),
-(46, 7, 7, 1),
-(47, 8, 8, 1),
-(48, 9, 9, 1),
-(49, 10, 10, 1),
-(50, 11, 11, 1),
-(51, 12, 12, 1),
-(52, 7, 7, 1),
-(53, 8, 8, 1),
-(54, 9, 9, 1),
-(55, 10, 10, 1),
-(56, 11, 11, 1),
-(57, 12, 12, 1),
-(58, 13, 13, 1),
-(59, 14, 14, 1),
-(60, 15, 15, 1),
-(61, 22, 22, 1);
+INSERT INTO `menu_item_ingredient` (`menu_item_id`, `inv_id`, `quantity_used`) VALUES
+(1, 1, 1),
+(2, 1, 1),
+(2, 2, 1),
+(2, 3, 1),
+(3, 1, 1),
+(3, 2, 1),
+(3, 3, 1),
+(4, 4, 1),
+(5, 5, 1),
+(6, 2, 1),
+(6, 6, 1),
+(7, 7, 1),
+(8, 8, 1),
+(9, 9, 1),
+(10, 10, 1),
+(11, 11, 1),
+(12, 12, 1),
+(13, 13, 1),
+(14, 14, 1),
+(15, 15, 1),
+(16, 2, 1),
+(16, 17, 1),
+(17, 2, 1),
+(17, 16, 1),
+(18, 18, 1),
+(19, 19, 1),
+(20, 20, 1),
+(21, 21, 1),
+(22, 22, 1);
 
 -- --------------------------------------------------------
 
@@ -319,9 +286,8 @@ ALTER TABLE `menu_item`
 -- Indexes for table `menu_item_ingredient`
 --
 ALTER TABLE `menu_item_ingredient`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `menu_item_id` (`menu_item_id`),
-  ADD KEY `inv_id` (`inv_id`);
+  ADD PRIMARY KEY (`menu_item_id`,`inv_id`),
+  ADD KEY `fk_menu_ingredient_inv` (`inv_id`) USING BTREE;
 
 --
 -- Indexes for table `payment`
@@ -359,12 +325,6 @@ ALTER TABLE `menu_item`
   MODIFY `menuItem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
--- AUTO_INCREMENT for table `menu_item_ingredient`
---
-ALTER TABLE `menu_item_ingredient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
-
---
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
@@ -374,7 +334,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `sale_order`
 --
 ALTER TABLE `sale_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- Constraints for dumped tables
@@ -384,8 +344,8 @@ ALTER TABLE `sale_order`
 -- Constraints for table `menu_item_ingredient`
 --
 ALTER TABLE `menu_item_ingredient`
-  ADD CONSTRAINT `menu_item_ingredient_ibfk_1` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_item` (`menuItem_id`),
-  ADD CONSTRAINT `menu_item_ingredient_ibfk_2` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`invId`);
+  ADD CONSTRAINT `fk_menu_ingredient_inv` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`invId`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_menu_ingredient_menuItem` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_item` (`menuItem_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `payment`
