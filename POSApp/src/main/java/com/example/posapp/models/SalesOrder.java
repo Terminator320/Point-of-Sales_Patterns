@@ -195,16 +195,41 @@ public class SalesOrder {
         return list;
     }
 
+    public static int addSaleOrderInitial(){
+        final String sql = "INSERT INTO sale_order (subtotal, totalCostPrice) VALUES(?,?)";
+
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
+
+            preparedStatement.setDouble(1,0);
+            preparedStatement.setDouble(2, 0);
+
+            int insertRow = preparedStatement.executeUpdate();
+
+            if(insertRow > 0){
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if(resultSet.next()){
+                    return resultSet.getInt(1);//return orderID
+                }
+            }
+        }
+        catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while adding Sale to SalesOrder");
+        }
+        return -1;//get orderID failed
+    }
+
 
     //Adding to SALES_ORDER when 'checkout' button is clicked
-    public static int addSale(double subtotal, double totalCostPrice){
-        final String sql = "INSERT INTO sale_order (subtotal, totalCostPrice) VALUES(?,?)";
+    public static int addSale(double subtotal, double totalCostPrice, int orderId){
+        final String sql = "UPDATE sale_order SET subtotal = ?, totalCostPrice = ? WHERE order_id = ?";
 
         try (Connection connection = ConfigManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
             preparedStatement.setDouble(1,subtotal);
             preparedStatement.setDouble(2, totalCostPrice);
+            preparedStatement.setInt(3, orderId);
 
             int insertRow = preparedStatement.executeUpdate();
 
@@ -270,6 +295,25 @@ public class SalesOrder {
         catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError while updating the quantities in PopularItems");
         }
+    }
+
+    public static int sizeSalesOrder() {
+        final String sql = "SELECT order_id FROM sale_order ORDER BY order_id DESC LIMIT 1;";
+
+        try (Connection connection = ConfigManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                int num  = rs.getInt("order_id");
+                return num;
+            }
+
+        } catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
+            LOGGER.log(Level.SEVERE, "Error getting the size of sale_order", e);
+        }
+
+        return 0;
     }
 
 

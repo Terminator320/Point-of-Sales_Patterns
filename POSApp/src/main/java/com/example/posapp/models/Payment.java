@@ -123,13 +123,13 @@ public class Payment {
 
     //CRUD OPERATIONS
     //CREATE
-    public boolean insertPayment() {
+    public boolean insertPayment(int orderID) {
         final String insertSQL = "INSERT INTO payment (order_ID, method_payment, tips, payment_date) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setInt(1, this.orderID);
+            pstmt.setInt(1, orderID);
             pstmt.setString(2, this.methodPayment.name());
             pstmt.setDouble(3, this.tips);
             pstmt.setTimestamp(4, Timestamp.valueOf(this.paymentDate));

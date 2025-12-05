@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2025 at 02:37 AM
+-- Generation Time: Dec 05, 2025 at 06:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -179,7 +179,10 @@ INSERT INTO `payment` (`payment_ID`, `order_ID`, `method_payment`, `tips`, `paym
 (64, 96, 'CREDIT', 4.35, '2025-12-01 13:54:13'),
 (65, 100, 'CASH', 0.00, '2025-12-01 15:36:45'),
 (66, 103, 'CASH', 0.60, '2025-12-01 18:20:18'),
-(67, 107, 'DEBIT', 3.10, '2025-12-03 08:46:08');
+(67, 107, 'DEBIT', 3.10, '2025-12-03 08:46:08'),
+(74, 121, 'CASH', 0.00, '2025-12-05 00:22:26'),
+(75, 122, 'CASH', 2.15, '2025-12-05 00:33:14'),
+(76, 125, 'CASH', 0.00, '2025-12-05 00:36:36');
 
 -- --------------------------------------------------------
 
@@ -198,10 +201,10 @@ CREATE TABLE `popular_items` (
 --
 
 INSERT INTO `popular_items` (`popular_items_id`, `popular_items_name`, `popular_items_quantity`) VALUES
-(1, 'Espresso', 21),
-(2, 'Latte', 6),
-(3, 'Cappuccino', 9),
-(4, 'Ice Americano', 5),
+(1, 'Espresso', 23),
+(2, 'Latte', 8),
+(3, 'Cappuccino', 12),
+(4, 'Ice Americano', 6),
 (5, 'Green Tea', 2),
 (6, 'Chai Latte', 1),
 (7, 'Croissant', 2),
@@ -211,15 +214,78 @@ INSERT INTO `popular_items` (`popular_items_id`, `popular_items_name`, `popular_
 (11, 'Grilled Cheese', 0),
 (12, 'Chicken Wrap', 14),
 (13, 'Berry Smoothie', 4),
-(14, 'Mango Smoothie', 0),
+(14, 'Mango Smoothie', 1),
 (15, 'Protein Shake', 1),
 (16, 'Greek Frappe', 3),
-(17, 'Ice Coffee', 3),
+(17, 'Ice Coffee', 4),
 (18, 'Black Tea', 12),
 (19, 'Oolong Tea', 0),
 (20, 'Peach Tea', 0),
 (21, 'Strawberry Tea', 0),
-(22, 'Strawberry Smoothie', 5);
+(22, 'Strawberry Smoothie', 6);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sales_order_items`
+--
+
+CREATE TABLE `sales_order_items` (
+  `sales_order_items_id` int(11) NOT NULL,
+  `menu_item_id` int(11) NOT NULL,
+  `sales_order_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sales_order_items`
+--
+
+INSERT INTO `sales_order_items` (`sales_order_items_id`, `menu_item_id`, `sales_order_id`) VALUES
+(26, 1, 109),
+(27, 2, 109),
+(28, 3, 109),
+(29, 17, 110),
+(30, 4, 110),
+(31, 1, 111),
+(32, 2, 111),
+(33, 1, 112),
+(34, 2, 112),
+(35, 3, 112),
+(36, 1, 113),
+(37, 2, 113),
+(38, 3, 113),
+(39, 1, 114),
+(40, 2, 114),
+(41, 3, 114),
+(51, 1, 118),
+(52, 2, 118),
+(53, 3, 118),
+(57, 1, 120),
+(58, 2, 120),
+(59, 3, 120),
+(60, 1, 121),
+(61, 2, 121),
+(62, 3, 121),
+(63, 17, 122),
+(64, 3, 122),
+(65, 4, 122),
+(66, 16, 123),
+(67, 1, 123),
+(68, 17, 123),
+(69, 2, 123),
+(70, 3, 123),
+(71, 4, 123),
+(72, 22, 123),
+(73, 13, 123),
+(74, 14, 123),
+(75, 15, 123),
+(76, 17, 124),
+(77, 4, 124),
+(78, 1, 125),
+(79, 2, 125),
+(80, 3, 125),
+(81, 22, 125),
+(82, 14, 125);
 
 -- --------------------------------------------------------
 
@@ -264,7 +330,20 @@ INSERT INTO `sale_order` (`order_id`, `status`, `created_at`, `finalized_at`, `s
 (100, 'CLOSED', '2025-12-01 15:36:37', '2025-12-01T15:36:45.460218500', 3.00, 0.45, 3.45, 1.80),
 (102, '\'OPEN\'', '2025-12-01 17:51:33', NULL, 0.00, 0.00, 0.00, 1.85),
 (103, 'CLOSED', '2025-12-01 18:20:09', '2025-12-01T18:20:18.493029400', 3.00, 0.45, 4.05, 1.80),
-(107, 'CLOSED', '2025-12-03 08:45:00', '2025-12-03T08:46:08.284004900', 15.49, 2.32, 20.91, 7.50);
+(107, 'CLOSED', '2025-12-03 08:45:00', '2025-12-03T08:46:08.284004900', 15.49, 2.32, 20.91, 7.50),
+(109, '\'OPEN\'', '2025-12-04 23:57:54', NULL, 0.00, 0.00, 0.00, 0.00),
+(110, '\'OPEN\'', '2025-12-04 23:59:23', NULL, 0.00, 0.00, 0.00, 0.00),
+(111, '\'OPEN\'', '2025-12-05 00:00:37', NULL, 0.00, 0.00, 0.00, 0.00),
+(112, '\'OPEN\'', '2025-12-05 00:02:03', NULL, 0.00, 0.00, 0.00, 0.00),
+(113, '\'OPEN\'', '2025-12-05 00:03:28', NULL, 11.75, 0.00, 0.00, 5.65),
+(114, '\'OPEN\'', '2025-12-05 00:04:23', NULL, 11.75, 0.00, 0.00, 5.65),
+(118, '\'OPEN\'', '2025-12-05 00:13:32', NULL, 11.75, 0.00, 0.00, 5.65),
+(120, '\'OPEN\'', '2025-12-05 00:16:21', NULL, 11.75, 0.00, 0.00, 5.65),
+(121, '\'OPEN\'', '2025-12-05 00:22:22', NULL, 11.75, 0.00, 0.00, 5.65),
+(122, 'CLOSED', '2025-12-05 00:33:02', '2025-12-05T00:33:14.685784900', 10.74, 1.61, 14.50, 5.00),
+(123, '\'OPEN\'', '2025-12-05 00:34:09', NULL, 0.00, 0.00, 0.00, 0.00),
+(124, '\'OPEN\'', '2025-12-05 00:35:25', NULL, 0.00, 0.00, 0.00, 0.00),
+(125, 'CLOSED', '2025-12-05 00:36:32', '2025-12-05T00:36:36.612236', 23.25, 3.49, 26.74, 11.70);
 
 --
 -- Indexes for dumped tables
@@ -303,6 +382,14 @@ ALTER TABLE `popular_items`
   ADD PRIMARY KEY (`popular_items_id`);
 
 --
+-- Indexes for table `sales_order_items`
+--
+ALTER TABLE `sales_order_items`
+  ADD PRIMARY KEY (`sales_order_items_id`),
+  ADD KEY `FK_menuItem_salesOrderItems_menuId` (`menu_item_id`),
+  ADD KEY `FK_saleOrder_salesOrderItems_orderId` (`sales_order_id`);
+
+--
 -- Indexes for table `sale_order`
 --
 ALTER TABLE `sale_order`
@@ -328,13 +415,19 @@ ALTER TABLE `menu_item`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+
+--
+-- AUTO_INCREMENT for table `sales_order_items`
+--
+ALTER TABLE `sales_order_items`
+  MODIFY `sales_order_items_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT for table `sale_order`
 --
 ALTER TABLE `sale_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- Constraints for dumped tables
@@ -358,6 +451,13 @@ ALTER TABLE `payment`
 --
 ALTER TABLE `popular_items`
   ADD CONSTRAINT `FK_popularItems_menuItems_popularItemsID` FOREIGN KEY (`popular_items_id`) REFERENCES `menu_item` (`menuItem_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sales_order_items`
+--
+ALTER TABLE `sales_order_items`
+  ADD CONSTRAINT `FK_menuItem_salesOrderItems_menuId` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_item` (`menuItem_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_saleOrder_salesOrderItems_orderId` FOREIGN KEY (`sales_order_id`) REFERENCES `sale_order` (`order_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -383,12 +383,14 @@ public class PaymentController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
+            cancelledOrder(sizeSalesOrder());
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Main menu");
             stage.show();
 
-            cancelledOrder(orderID);
+
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError while trying to proceed to payment view.");
@@ -437,7 +439,7 @@ public class PaymentController {
             showProcessingInfo(msg);
 
             SalesOrder.finalizeSale(
-                    orderID,
+                    sizeSalesOrder(),
                     "CLOSED",
                     String.valueOf(LocalDateTime.now()),
                     subtotal,
@@ -463,7 +465,7 @@ public class PaymentController {
     }
 
     private boolean processPayment(Payment payment) {
-        return payment.insertPayment();
+        return payment.insertPayment(sizeSalesOrder());
     }
 
     private void showConfirmation(String message) {

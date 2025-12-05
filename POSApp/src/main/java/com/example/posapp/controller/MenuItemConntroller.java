@@ -25,6 +25,10 @@ import java.util.logging.Logger;
 
 import com.example.posapp.models.MenuItem;
 
+import static com.example.posapp.models.SalesOrder.addSaleOrderInitial;
+import static com.example.posapp.models.SalesOrder.sizeSalesOrder;
+import static com.example.posapp.models.SalesOrderItems.addMenuItemsToSalesOrderItems;
+
 
 public class MenuItemConntroller {
 
@@ -311,6 +315,14 @@ public class MenuItemConntroller {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-order.fxml"));
                 Parent newRoot = loader.load();
                 Scene newScene = new Scene(newRoot);
+
+                addSaleOrderInitial();
+
+                int size = sizeSalesOrder();
+                activeOrder.forEach((key, value) -> {
+                    addMenuItemsToSalesOrderItems(key, size);
+                });
+
 
                 SalesOrderController controller = loader.getController();
                 controller.loadOrder(activeOrder, menuItems);

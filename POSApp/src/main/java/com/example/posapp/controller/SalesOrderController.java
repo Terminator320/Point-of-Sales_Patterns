@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.example.posapp.models.SalesOrder.addSale;
+import static com.example.posapp.models.SalesOrder.*;
 
 public class SalesOrderController {
     @FXML
@@ -188,6 +188,8 @@ public class SalesOrderController {
             Parent newRoot2 = loader2.load();
             Scene newScene2 = new Scene(newRoot2);
 
+            cancelledOrder(sizeSalesOrder());
+
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage2 = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage2.setScene(newScene2);
@@ -206,6 +208,8 @@ public class SalesOrderController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
+
+            cancelledOrder(sizeSalesOrder());
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -237,7 +241,7 @@ public class SalesOrderController {
             double subtotal = getSubtotalAsDouble();
             double totalCostPrice = getTotalCostPrice();
 
-            int orderID = addSale(subtotal, totalCostPrice);
+            int orderID = addSale(subtotal, totalCostPrice, sizeSalesOrder());
 
             paymentController.setSalesOrderTotal(this, orderID);
 
