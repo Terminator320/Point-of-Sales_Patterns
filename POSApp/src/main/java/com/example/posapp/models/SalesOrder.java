@@ -52,7 +52,8 @@ public class SalesOrder {
         this.quantity = quantity;
     }
 
-    public SalesOrder(String itemName, int quantity, double price, double totalCostPrice) {
+    public SalesOrder(int menu_id,String itemName, int quantity, double price, double totalCostPrice) {
+        this.menu_id =  menu_id;
         this.itemName = itemName;
         this.quantity = quantity;
         this.price = price;

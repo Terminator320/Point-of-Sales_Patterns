@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.example.posapp.models.SalesOrder.*;
+import static com.example.posapp.models.SalesOrderItems.getMenuItemsBySalesOrderID;
+import static com.example.posapp.models.SalesOrderItems.removeItems;
 
 public class SalesOrderController {
     @FXML
@@ -43,11 +45,11 @@ public class SalesOrderController {
 
 
     private ObservableList<SalesOrder> items;
-    private HashMap<Integer, SalesOrder> popularItemsSaleMap = new HashMap<>();
+    private HashMap<Integer, Integer> popularItemsSaleMap = new HashMap<>();
     private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
 
 
-    public HashMap<Integer, SalesOrder> getPopularItemsSaleMap() {
+    public HashMap<Integer, Integer> getPopularItemsSaleMap() {
         return popularItemsSaleMap;
     }
 
@@ -72,55 +74,21 @@ public class SalesOrderController {
         colQuantity.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
     }
 
-    public void loadOrder(Map<Integer, Integer> activeOrder, Map<Integer, MenuItem> menuItems) {
-        double totalPrice = 0;
-        double totalCostPrice = 0;
-        int i = 0;
-
-        for (Map.Entry<Integer, Integer> entry : activeOrder.entrySet()) {
-            MenuItem item = menuItems.get(entry.getKey());
-
-            String name = item.getName();
-            int quantity = entry.getValue();
-            double price = item.getPrice();
-            double costPrice = item.getCostPrice();
-            int menuItemId = item.getMenuItemId();
-            //int inventoryId = item.getInventory().getInvId();
-
-
-            SalesOrder popularItemSale = new SalesOrder(menuItemId, quantity);
-            popularItemsSaleMap.put(i, popularItemSale);
-            i++;
-
-
-            SalesOrder so = new SalesOrder(name, quantity, price, costPrice);
-            listOfOrders.add(so);
-            orderTableView.getItems().add(so);
-
-            totalPrice += quantity * price;
-
-
-            //Inventory.subtractQuantity(inventoryId, quantity);
-
+    public void loadOrder(ObservableList<SalesOrder> menuItems) {
+        if (items == null) {
+            items = FXCollections.observableArrayList();
+        } else {
+            items.clear();  // Clear old items to avoid duplicates
         }
 
-        items = orderTableView.getItems();
+        items.addAll(menuItems);
+        listOfOrders.addAll(items);
+        orderTableView.setItems(items);
+        refreshSubTotal();
 
-
-        totalPriceText.setText("$ " + String.format("%.2f", (totalPrice)));
+        //Inventory.subtractQuantity(inventoryId, quantity); BIG PROBLEM! , I think
     }
 
-    //used for cancel and restore the qty
-//    public void restoreInventoryForCurrentOrder() {
-//        for (Map.Entry<Integer, Integer> entry : inventoryChanges.entrySet()) {
-//            int inventoryId = entry.getKey();
-//            int qty = entry.getValue();
-//            Inventory.addQuantity(inventoryId, qty);
-//        }
-//        inventoryChanges.clear();
-//    }
-
-    
     public void refreshSubTotal() {
         double totalPrice = 0;
         for (int i = 0; i < orderTableView.getItems().size(); i++) {
@@ -175,11 +143,13 @@ public class SalesOrderController {
         if (selectedItem == null) {
             return;
         }
+        String menuRemovedName = selectedItem.getItemName();
+        removeItems(menuRemovedName, sizeSalesOrder());
 
-        orderTableView.getItems().remove(selectedItem); //removing the item from the table
 
-
-        //restoreInventoryForCurrentOrder(); /restocking the inventory not used
+        items.remove(selectedItem);
+        orderTableView.refresh();
+        refreshSubTotal();
 
         //if there are no items in the cart, go back to the menu page
         if(items.isEmpty()) {
@@ -196,8 +166,6 @@ public class SalesOrderController {
             stage2.setTitle("Menu");
             return;
         }
-
-        refreshSubTotal();
     }
 
     @FXML
@@ -226,6 +194,10 @@ public class SalesOrderController {
     public void checkOutClick(ActionEvent event) {
         try {
             orderTableView.setItems(items);
+
+            for (SalesOrder order : items) {
+                popularItemsSaleMap.put(order.getMenu_id(), order.getQuantity());
+            }
 
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/payment-view.fxml"));

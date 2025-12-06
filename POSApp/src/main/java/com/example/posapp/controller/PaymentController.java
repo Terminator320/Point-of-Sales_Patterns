@@ -104,14 +104,6 @@ public class PaymentController {
         setListOfCost();
     }
 
-    public static void loadPopItems(HashMap<Integer, SalesOrder> items) {
-        for (Map.Entry<Integer, SalesOrder> item : items.entrySet()) {
-            int id = item.getValue().getMenu_id();
-            int quantity = item.getValue().getQuantity();
-            updateQuantityItems(id, quantity);
-        }
-    }
-
     public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID) {
         this.mySalesOrder = salesOrderController;
         this.orderID = orderID;
@@ -447,8 +439,11 @@ public class PaymentController {
                     calculateTotal()
             );
 
-            HashMap<Integer, SalesOrder> map = salesOrderController.getPopularItemsSaleMap();
-            loadPopItems(map);
+            HashMap<Integer, Integer> map = salesOrderController.getPopularItemsSaleMap();
+
+            map.forEach((key, value) -> {
+                updateQuantityItems(key, value);
+            });
 
         } else {
             showErrorInformation("Payment failed");

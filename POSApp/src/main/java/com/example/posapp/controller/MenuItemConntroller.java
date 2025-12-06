@@ -3,6 +3,7 @@ package com.example.posapp.controller;
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
 import com.example.posapp.models.MenuIngredient;
+import com.example.posapp.models.SalesOrder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,6 +29,7 @@ import com.example.posapp.models.MenuItem;
 import static com.example.posapp.models.SalesOrder.addSaleOrderInitial;
 import static com.example.posapp.models.SalesOrder.sizeSalesOrder;
 import static com.example.posapp.models.SalesOrderItems.addMenuItemsToSalesOrderItems;
+import static com.example.posapp.models.SalesOrderItems.getMenuItemsBySalesOrderID;
 
 
 public class MenuItemConntroller {
@@ -319,13 +321,15 @@ public class MenuItemConntroller {
                 addSaleOrderInitial();
 
                 int size = sizeSalesOrder();
-                activeOrder.forEach((key, value) -> {
-                    addMenuItemsToSalesOrderItems(key, size);
+                activeOrder.forEach((Integer key, Integer value) -> {
+                    for (int i = 0; i < value; i++) {
+                        addMenuItemsToSalesOrderItems(key, size);
+                    }
                 });
 
-
+                ObservableList<SalesOrder> menuItems = getMenuItemsBySalesOrderID(sizeSalesOrder());
                 SalesOrderController controller = loader.getController();
-                controller.loadOrder(activeOrder, menuItems);
+                controller.loadOrder(menuItems);
 
                 // Get the current stage (e.g., from a component's scene and window)
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
