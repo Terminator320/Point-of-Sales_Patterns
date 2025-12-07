@@ -85,9 +85,6 @@ public class Inventory {
     }
 
     //crud
-    public synchronized static boolean checkInventory(Inventory inventory, int qty) {
-        return inventory.getQty() >= qty; // true means OK
-    }
 
     //read
     public static ObservableList<Inventory> getAllInventory(){
@@ -119,9 +116,9 @@ public class Inventory {
         for(int i = 0; i < getAllInventory().size(); i++){
             if(getAllInventory().get(i).getInvId() == invId){
                 item = getAllInventory().get(i);
+                System.out.println("Name: "+  item.getInvName() + ", Quantity"+ item.qty);
             }
         }
-
         return item;
     }
 
@@ -160,33 +157,35 @@ public class Inventory {
 
 
     //removing at the end when order has been paid
-    public static void subtractQuantity(int invId, int amount){
-        final String sql = "UPDATE inventory set qty = qty - ? where invId = ?";
+    public static boolean subtractQuantitySafe(int invId, int amount){
+        final String selectSql = "SELECT qty FROM inventory WHERE invId = ?";
+        final String updateSql = "UPDATE inventory SET qty = qty - ? WHERE invId = ?";
 
         try (Connection connection = ConfigManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)){
+             PreparedStatement selectStmt = connection.prepareStatement(selectSql);
+             PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
 
-            pstmt.setInt(1, amount);
-            pstmt.setInt(2, invId);
-            pstmt.executeUpdate();
-        }
-        catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \n Database error while removing quantity");
-        }
-    }
+            selectStmt.setInt(1, invId);
+            ResultSet rs = selectStmt.executeQuery();
+            if (!rs.next()) return false;
 
-    public static void addQuantity(int invId, int amount) {
-        final String sql = "UPDATE inventory set qty = qty + ? where invId = ?";
+            int currentQty = rs.getInt("qty");
+            if (currentQty < amount) {
+                LOGGER.log(Level.SEVERE, currentQty + " is less than " + amount);
+                return false; // not enough stock, do not update
+            }
 
-        try (Connection connection = ConfigManager.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            updateStmt.setInt(1, amount);
+            updateStmt.setInt(2, invId);
+            updateStmt.executeUpdate();
+            return true;
 
-            pstmt.setInt(1, amount);
-            pstmt.setInt(2, invId);
-            pstmt.executeUpdate();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "  \nDatabase error while adding back item quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause()
+                    + " \n Database error while removing quantity");
+            return false;
         }
     }
+
 
 }

@@ -6,6 +6,7 @@ import com.example.posapp.models.MenuIngredient;
 import com.example.posapp.models.SalesOrder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,38 +37,6 @@ public class MenuItemConntroller {
 
     @FXML private ListView<String> recitedView;
 
-    //buttons in the fxml
-    @FXML private Button espressoButton;
-    @FXML private Button latteButton;
-    @FXML private Button cappuccinoButton;
-    @FXML private Button iceAmericanoButton;
-    @FXML private Button iceCoffeeButton;
-    @FXML private Button frappeButton;
-
-    @FXML private Button greenTeaButton;
-    @FXML private Button chaiLatteButton;
-    @FXML private Button blackTeaButton;
-    @FXML private Button oolongTeaButton;
-    @FXML private Button peachTeaButton;
-    @FXML private Button strawberryTeaButton;
-
-    @FXML private Button croissantButton;
-    @FXML private Button muffinButton;
-    @FXML private Button cheeseBagelButton;
-    @FXML private Button bltSandwichButton;
-    @FXML private Button grilledCheeseButton;
-    @FXML private Button chickenWrapButton;
-
-    @FXML private Button strawberrySmoothieButton;
-    @FXML private Button berrySmoothieButton;
-    @FXML private Button proteinShakeButton;
-    @FXML private Button mangoSmoothieButton;
-
-
-    // menuId -> Button
-    private final Map<Integer, Button> menuButtons = new HashMap<>();
-
-
     //menuId , MenuItem
     private  Map<Integer, MenuItem> menuItems = new HashMap<>();
 
@@ -84,123 +53,103 @@ public class MenuItemConntroller {
     public void initialize() {
         recitedView.setItems(receiptLines);
         initMenuItems(); //setting up the menuItems
-
-        initMenuButtons();  //setting up the buttons
-        refreshButtonStates(); //checks all the inventory and if the qty is 0 disable the button
     }
 
 
-    private synchronized void initMenuItems(){
+    private  void initMenuItems(){
         // Load all menu items from DB; each one loads its ingredients
         for (MenuItem item : MenuItem.getMenuItems()) {
             menuItems.put(item.getMenuItemId(), item);
         }
     }
 
-    private  synchronized void initMenuButtons() {
-        // coffees
-        menuButtons.put(1, espressoButton);
-        menuButtons.put(2, latteButton);
-        menuButtons.put(3, cappuccinoButton);
-        menuButtons.put(4, iceAmericanoButton);
-        menuButtons.put(5, iceCoffeeButton);
-        menuButtons.put(6, frappeButton);
-
-        // teas
-        menuButtons.put(7, greenTeaButton);
-        menuButtons.put(8, chaiLatteButton);
-        menuButtons.put(9, blackTeaButton);
-        menuButtons.put(10, oolongTeaButton);
-        menuButtons.put(11, peachTeaButton);
-        menuButtons.put(12, strawberryTeaButton);
-
-        // food
-        menuButtons.put(13, croissantButton);
-        menuButtons.put(14, muffinButton);
-        menuButtons.put(15, cheeseBagelButton);
-        menuButtons.put(16, bltSandwichButton);
-        menuButtons.put(17, grilledCheeseButton);
-        menuButtons.put(18, chickenWrapButton);
-
-        // smoothies
-        menuButtons.put(19, strawberrySmoothieButton);
-        menuButtons.put(20, berrySmoothieButton);
-        menuButtons.put(21, proteinShakeButton);
-        menuButtons.put(22, mangoSmoothieButton);
-    }
-
-    private  synchronized void refreshButtonStates() {
-        for (Map.Entry<Integer, MenuItem> entry : menuItems.entrySet()) {
-            int menuId = entry.getKey();
-            MenuItem item = entry.getValue();
-            Button button = menuButtons.get(menuId);
-
-            if (button == null || item == null || item.getIngredients() == null) {
-                continue;
-            }
-
-            boolean canMake = true;
-
-            // If ANY ingredient has qty == 0, disable the button
-            for (MenuIngredient ingredient : item.getIngredients()) {
-                Inventory inv = ingredient.getInventory();
-                if (inv == null) {
-                    continue;
-                }
-                if (inv.getQty() <= 0) {
-                    canMake = false;
-                    break;
-                }
-            }
-
-            button.setDisable(!canMake);
-        }
-    }
 
     //addMethod
     private void addItemToOrder(int menuId) {
         MenuItem item = menuItems.get(menuId);
         if (item == null) return;
 
-        int newQty = activeOrder.getOrDefault(menuId, 0) + 1;
+        int currentQTY = activeOrder.getOrDefault(menuId, 0);
 
-        // check all ingredients
-        boolean enoughStock = true;
-        MenuIngredient outOfStock = null;
+        MenuIngredient ingredientOutOfStock = findOutOfStockIngredient(item);
 
-        for (MenuIngredient ingredient : item.getIngredients()) {
-            Inventory inv = ingredient.getInventory();
-            if (inv == null) continue;
+        if (ingredientOutOfStock != null) {
 
-            int required = ingredient.getQuantityUsed() * newQty;
-            if (!Inventory.checkInventory(inv, required)) {
-                enoughStock = false;
-                outOfStock = ingredient;
-                break;
-            }
-        }
+            Inventory invSnapshot = ingredientOutOfStock.getInventory();
 
-        if (!enoughStock) {
-            Button b = menuButtons.get(menuId);
-            if (b != null) {
-                b.setDisable(true);
+            //ternary operater
+            Inventory freshInv = invSnapshot == null ? null : Inventory.getOne(invSnapshot.getInvId());
+
+            String invName;
+
+            if (freshInv != null && freshInv.getInvName() != null) {
+                invName = freshInv.getInvName();
+            } else if (invSnapshot != null && invSnapshot.getInvName() != null) {
+                invName = invSnapshot.getInvName();
+            } else {
+                invName = "One of the ingredients";
             }
 
-            Alert processingAlert = new Alert(Alert.AlertType.WARNING);
-            processingAlert.setTitle("Out of Stock");
-            processingAlert.setHeaderText(item.getName() + " is out of stock");
-            if (outOfStock != null && outOfStock.getInventory() != null) {
-                processingAlert.setContentText(outOfStock.getInventory().getInvName() + " is out of stock.");
-            }
-            else {
-                processingAlert.setContentText("Not enough ingredients.");
-            }
-            processingAlert.show();
+            invalidMenuOrder3(
+                    "Out of Stock",
+                    item.getName() + "cannot be added",
+                    invName + " is out of stock or not enough for this quantity.");
             return;
         }
 
-        activeOrder.put(menuId, newQty);
+        activeOrder.put(menuId, (currentQTY+1));
         rebuildReceipt();
+    }
+
+    //checking if the ingredient needed are out of stock
+    //This checks the total needed for this ingredient across the whole order
+    private MenuIngredient findOutOfStockIngredient(MenuItem item) {
+
+        // For each ingredient that the clicked item needs
+        for (MenuIngredient ingredient : item.getIngredients()) {
+            Inventory theInventory = ingredient.getInventory();
+
+            //getting the invId
+            int invId = theInventory.getInvId();
+
+            // Get fresh quantity from db (real current stock)
+            Inventory freshInv = Inventory.getOne(invId);
+
+            // Start with the value, then overwrite if db had something
+            int available = theInventory.getQty();
+            if (freshInv != null) {
+                available = freshInv.getQty();
+            }
+
+            //defaulting
+            int totalNeeded = 0;
+
+            // sum of the inventory item across all items already in the order
+            for (Map.Entry<Integer, Integer> entry : activeOrder.entrySet()) {
+                int menuIdInOrder = entry.getKey();
+                int qtyInOrder    = entry.getValue();
+
+                MenuItem itemInOrder = menuItems.get(menuIdInOrder);
+
+                for (MenuIngredient ingredient1 : itemInOrder.getIngredients()) {
+                    Inventory invInOrder = ingredient1.getInventory();
+
+                    if (invInOrder.getInvId() == invId) {
+                        totalNeeded += ingredient1.getQuantityUsed() * qtyInOrder;
+                    }
+                }
+            }
+
+            // Now add the extra 1 item we are trying to add right now
+            totalNeeded += ingredient.getQuantityUsed();
+
+            // If the total needed for this inventory exceeds what we have, it's out of stock
+            if (totalNeeded > available) {
+                return ingredient;
+            }
+        }
+
+        return null; // all ingredients
     }
 
     private void removeSelectedItem() {
@@ -220,12 +169,11 @@ public class MenuItemConntroller {
 
         if (menuIdToRemove != null) {
             activeOrder.remove(menuIdToRemove);
-            refreshButtonStates();
             rebuildReceipt();
         }
     }
 
-    private synchronized void rebuildReceipt() {
+    private void rebuildReceipt() {
         receiptLines.clear();
 
         for (Map.Entry<Integer, Integer> e : activeOrder.entrySet()) {
@@ -357,7 +305,7 @@ public class MenuItemConntroller {
             stage.setTitle("Menu");
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + "\nError loading back to the Main Menu.");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \nError loading back to the Main Menu.");
         }
     }
 
@@ -371,6 +319,14 @@ public class MenuItemConntroller {
         Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
         processingAlert.setTitle(title);
         processingAlert.setHeaderText(null);
+        processingAlert.setContentText(msg);
+        processingAlert.show();
+    }
+
+    public void invalidMenuOrder3(String title,String header,String msg){
+        Alert processingAlert = new Alert(Alert.AlertType.WARNING);
+        processingAlert.setTitle(title);
+        processingAlert.setHeaderText(header);
         processingAlert.setContentText(msg);
         processingAlert.show();
     }

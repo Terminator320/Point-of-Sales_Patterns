@@ -5,6 +5,7 @@ module com.example.posapp {
     requires javafx.base;
     requires javafx.graphics;
     requires java.logging;
+    requires java.management;
 
 
     opens com.example.posapp to javafx.fxml;

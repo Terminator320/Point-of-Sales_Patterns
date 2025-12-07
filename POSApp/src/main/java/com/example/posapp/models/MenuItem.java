@@ -118,4 +118,12 @@ public class MenuItem {
         }
         return menuItems;
     }
+
+    public static MenuItem getById(int id) {
+        for (MenuItem m : getMenuItems()) {
+            if (m.getMenuItemId() == id) return m;
+        }
+        return null;
+    }
+
 }

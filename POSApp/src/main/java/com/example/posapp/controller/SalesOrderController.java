@@ -2,6 +2,7 @@ package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.Inventory;
+import com.example.posapp.models.MenuIngredient;
 import com.example.posapp.models.MenuItem;
 import com.example.posapp.models.SalesOrder;
 import javafx.collections.FXCollections;
@@ -18,9 +19,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
+import javax.management.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +58,7 @@ public class SalesOrderController {
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrderController.class.getName());
 
+    private boolean inventoryAdjusted = false;
 
     public void initialize() {
         innitAndLoadInventory();
@@ -82,12 +86,66 @@ public class SalesOrderController {
         }
 
         items.addAll(menuItems);
+
+        listOfOrders.clear();
         listOfOrders.addAll(items);
+
         orderTableView.setItems(items);
         refreshSubTotal();
-
-        //Inventory.subtractQuantity(inventoryId, quantity); BIG PROBLEM! , I think
     }
+
+    // called from PaymentController when payment is successful
+    public void applyInventoryForCurrentOrder() {
+        // Optional: prevent double-apply
+        if (inventoryAdjusted) {
+            return;
+        }
+
+
+        //getting each ingredient from the sales order needed
+        for (SalesOrder order : listOfOrders) {
+            int menuId  = order.getMenu_id();
+            int orderQuantity = order.getQuantity();
+
+            //testing
+            System.out.println("Processing order: menuId=" + menuId +  ", qty=" + orderQuantity);
+
+            // FIXED: using getById as you asked earlier
+            MenuItem menuItem = MenuItem.getById(menuId);
+            if (menuItem == null) {
+                System.out.println("No MenuItem found for menuId=" + menuId);
+                continue;
+            }
+
+            // get all ingredients for this menu item
+            List<MenuIngredient> allIngredients = menuItem.getIngredients();
+
+            //loop thought each ingredient
+            for (MenuIngredient ingredient : allIngredients) {
+                int inventoryId = ingredient.getInventory().getInvId(); //inventory id
+                int quantityUsed = ingredient.getQuantityUsed(); //quantity per in ingredient
+
+                int totalQty = orderQuantity * quantityUsed;
+
+                //these are for testing and debuging REMOVE AFTER
+                System.out.println("TotalQTY: " + totalQty);
+
+                System.out.println("   uses invId=" + inventoryId
+                        + " (" + ingredient.getInventory().getInvName() + ")"
+                        + ", qtyUsedPerItem=" + quantityUsed
+                        + ", totalSubtract=" + totalQty);
+
+
+                boolean ok = Inventory.subtractQuantitySafe(inventoryId, totalQty);
+                if (!ok) {
+                    System.out.println("ERROR: not enough stock for invId=" + inventoryId);
+                }
+
+            }
+        }
+        inventoryAdjusted = true;
+    }
+
 
     public void refreshSubTotal() {
         double totalPrice = 0;
@@ -171,7 +229,7 @@ public class SalesOrderController {
     @FXML
     public void cancelOrder(ActionEvent event) {
         try {
-          //  restoreInventoryForCurrentOrder(); //restocking the inventory not used
+            //restoreInventoryForCurrentOrder(); //restocking the inventory not used
             // Load the FXML file for the second scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/main-view.fxml"));
             Parent newRoot = loader.load();
@@ -193,7 +251,10 @@ public class SalesOrderController {
     @FXML
     public void checkOutClick(ActionEvent event) {
         try {
-            orderTableView.setItems(items);
+            orderTableView.setItems(items); //debug
+
+            listOfOrders.clear(); //clearing order
+            listOfOrders.addAll(orderTableView.getItems()); //if change made get the new list of items
 
             for (SalesOrder order : items) {
                 popularItemsSaleMap.put(order.getMenu_id(), order.getQuantity());
@@ -203,6 +264,7 @@ public class SalesOrderController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/payment-view.fxml"));
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
+
 
 
             PaymentController paymentController = loader.getController();
