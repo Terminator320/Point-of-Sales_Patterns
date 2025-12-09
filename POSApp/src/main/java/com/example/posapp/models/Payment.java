@@ -20,6 +20,7 @@ public class Payment {
         CASH, CREDIT, DEBIT
     }
 
+    //LOGGING
     private static final Logger LOGGER = LogConfig.getLogger(Payment.class.getName());
 
     //ATTRIBUTES

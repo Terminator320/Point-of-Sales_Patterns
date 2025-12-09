@@ -83,18 +83,22 @@ public class PaymentController {
     //LOGGER FILE
     private static final Logger LOGGER = LogConfig.getLogger(PaymentController.class.getName());
 
+    //ATTRIBUTES
     private SalesOrderController mySalesOrder;
     private int orderID;
     private double subtotal = 0;
     private double tipAmount = 0;
     private Payment.PaymentMethod selectPaymentMethod = Payment.PaymentMethod.CASH;
 
+    //REFERENCE TO SALES ORDER CONTROLLER
     private SalesOrderController salesOrderController;
 
+    //SETTER FOR SALES ORDER CONTROLLER
     public void setSalesOrderController(SalesOrderController controller) {
         this.salesOrderController = controller;
     }
 
+    //INITIALIZE METHOD
     @FXML
     public void initialize() {
         setUpPaymentMethod();
@@ -104,6 +108,7 @@ public class PaymentController {
         setListOfCost();
     }
 
+    //SETTER FOR SALES ORDER TOTAL
     public void setSalesOrderTotal(SalesOrderController salesOrderController, int orderID) {
         this.mySalesOrder = salesOrderController;
         this.orderID = orderID;
@@ -131,6 +136,7 @@ public class PaymentController {
         selectYearExpiration.getSelectionModel().clearSelection();
     }
 
+    //SET VISIBILITY OF CARD INFO
     private void setCardInfoVisibility(boolean visible) {
         double opacityLvl = visible ? 1.0 : 0.5;
 
@@ -140,8 +146,13 @@ public class PaymentController {
         cardNumberField.setOpacity(opacityLvl);
         cardNumberField.setDisable(!visible);
 
-        threeDigitCardNumber.setOpacity(opacityLvl);
-        threeDigitCardNumber.setDisable(!visible);
+        if(choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT){
+            threeDigitCardNumber.setOpacity(0.5);
+            threeDigitCardNumber.setDisable(visible);
+        }else {
+            threeDigitCardNumber.setOpacity(opacityLvl);
+            threeDigitCardNumber.setDisable(!visible);
+        }
 
         selectMonthExpiration.setOpacity(opacityLvl);
         selectMonthExpiration.setDisable(!visible);
@@ -150,6 +161,7 @@ public class PaymentController {
         selectYearExpiration.setDisable(!visible);
     }
 
+    //ALLOW/BlOCK ACCESS TO TEXT FIELDS BASED ON PAYMENT METHOD
     private void handlePaymentMethod() {
         Payment.PaymentMethod methodSelected = choiceOfPayment.getValue();
 
@@ -227,7 +239,6 @@ public class PaymentController {
             }
 
             tipAmount = tip;
-
         } catch (NumberFormatException e) {
             tipAmount = 0;
             showInvalidInformation("Invalid tip amount. Please enter a valid number.");
@@ -235,6 +246,7 @@ public class PaymentController {
         }
     }
 
+    //POPULATE EXPIRATION DATE CHOICES
     private void expirationDateChoice() {
         for (int i = 1; i <= 12; i++) {
             selectMonthExpiration.getItems().add(String.format("%02d", i));
@@ -246,6 +258,8 @@ public class PaymentController {
         }
     }
 
+    //VERIFY THE VALIDITY OF USER'S NAME WHEN
+    //PRESSING ENTER KEY
     @FXML
     protected void onNameFieldAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
@@ -256,6 +270,8 @@ public class PaymentController {
         }
     }
 
+    //VERIFY THE VALIDITY OF CARD'S NUMBER WHEN
+    //PRESSING ENTER KEY
     @FXML
     protected void onCardNumFieldAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
@@ -266,9 +282,11 @@ public class PaymentController {
         }
     }
 
+    //VERIFY THE VALIDITY OF CVV NUMBER WHEN
+    //PRESSING ENTER KEY
     @FXML
     protected void onCVVFieldAction() {
-        if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
+        if (selectPaymentMethod == Payment.PaymentMethod.CREDIT) {
             if (!isCVVValid(threeDigitCardNumber.getText())) {
                 showInvalidInformation("Invalid CVV. Please make sure it only contains 3 digits.");
                 threeDigitCardNumber.clear();
@@ -276,6 +294,8 @@ public class PaymentController {
         }
     }
 
+    //VERIFY THE VALIDITY OF EXPIRATION DATE WHEN
+    //SELECTING MONTH OR YEAR
     @FXML
     protected void onExpirationDateAction() {
         if (selectPaymentMethod == Payment.PaymentMethod.CREDIT || selectPaymentMethod == Payment.PaymentMethod.DEBIT) {
@@ -288,6 +308,8 @@ public class PaymentController {
     }
 
     //TIPS SECTION
+    //GET TIP AMOUNT BASED ON SELECTED
+    //TIP PERCENTAGE RADIO BUTTON
     @FXML
     protected void getTipPercentage() {
         if (radioButton10percent.isSelected()) {
@@ -315,6 +337,8 @@ public class PaymentController {
         setListOfCost();
     }
 
+    //VERIFY THE VALIDITY OF CUSTOM TIP AMOUNT WHEN
+    //PRESSING ENTER KEY
     @FXML
     protected void onCustomTipFieldAction() {
         isCustomAmountValid();
@@ -329,6 +353,7 @@ public class PaymentController {
         return String.format("$%.2f", money);
     }
 
+    //DISPLAY TIP AMOUNT LABELS
     private void showTipAmountLabel() {
         double tip10 = calculateTip(0.10);
         double tip15 = calculateTip(0.15);
@@ -349,6 +374,7 @@ public class PaymentController {
         return subtotal * 0.15;
     }
 
+    //DISPLAY LIST OF COST
     private void setListOfCost() {
         finalTotal.setMouseTransparent(true);
         finalTotal.setFocusTraversable(false);
@@ -372,61 +398,59 @@ public class PaymentController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
+            //mark order as cancelled in the database
             cancelledOrder(sizeSalesOrder());
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(newScene);
             stage.setTitle("Main menu");
             stage.show();
-
-
-
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError while trying to proceed to payment view.");
         }
     }
 
     @FXML
-    protected void OnPayAction(ActionEvent event) throws IOException, InterruptedException {
+    protected void OnPayAction(ActionEvent event) throws InterruptedException {
 
         if (choiceOfPayment.getValue() == null) {
             showErrorInformation("Please select a payment method");
             return;
         }
 
-        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT
-                || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
+        if (isFieldEmpty(nameField)
+                || isFieldEmpty(cardNumberField)
+                || isDateEmpty()) {
+            showErrorInformation("At least one field is empty. Please fill out all fields.");
+            return;
+        }
+        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT){
+             isFieldEmpty(threeDigitCardNumber);
+            showErrorInformation("At least one field is empty. Please fill out all fields.");
+        }
 
-            if (isFieldEmpty(nameField)
-                    || isFieldEmpty(cardNumberField)
-                    || isFieldEmpty(threeDigitCardNumber)
-                    || isDateEmpty()) {
-
-                showErrorInformation("At least one field is empty. Please fill out all fields.");
-                return;
-            }
-
-            if (!isDateValid()) {
-                showErrorInformation("Date is expired. Cannot proceed with payment");
-                return;
-            }
+        if (!isDateValid()) {
+            showErrorInformation("Date is expired. Cannot proceed with payment");
+            return;
         }
 
         if (salesOrderController != null) {
             salesOrderController.applyInventoryForCurrentOrder();
         }
 
+        //create payment object and process payment
         Payment createAPayment = createPaymentInfo();
         boolean successfulPayment = processPayment(createAPayment);
 
+        //if payment is successful, finalize sale and update inventory
         if (successfulPayment) {
-
+            //simulate processing payment using factory method pattern
             PaymentProcessing paymentFactory =
-                    PaymentFactoryClass.createPayment(choiceOfPayment.getValue());
-
-            String msg = paymentFactory.processPayment();
+                    PaymentFactoryClass.showPaymentMSG(choiceOfPayment.getValue());
+            String msg = paymentFactory.printProcessPaymentMSG();
             showProcessingInfo(msg);
 
+            //finalize/update sale in the database
             SalesOrder.finalizeSale(
                     sizeSalesOrder(),
                     "CLOSED",
@@ -437,16 +461,15 @@ public class PaymentController {
             );
 
             HashMap<Integer, Integer> map = salesOrderController.getPopularItemsSaleMap();
-
             map.forEach((key, value) -> {
                 updateQuantityItems(key, value);
             });
-
         } else {
             showErrorInformation("Payment failed");
         }
     }
 
+    //CREATE PAYMENT OBJECT
     private Payment createPaymentInfo() {
         return new Payment(
                 orderID,
@@ -456,6 +479,7 @@ public class PaymentController {
         );
     }
 
+    //CREATE PAYMENT IN DATABASE
     private boolean processPayment(Payment payment) {
         return payment.insertPayment(sizeSalesOrder());
     }
@@ -464,6 +488,7 @@ public class PaymentController {
         alertInformation(Alert.AlertType.CONFIRMATION, "Cancel Payment", message);
     }
 
+    //SIMULATE PROCESSING USER PAYMENT
     private void showProcessingInfo(String message) throws InterruptedException {
 
         Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);

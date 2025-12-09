@@ -2,7 +2,7 @@ package com.example.posapp.PaymentFactory;
 
 public class DebitPayment implements PaymentProcessing{
     @Override
-    public String processPayment() {
+    public String printProcessPaymentMSG() {
         return "Processing Debit Payment...";
     }
 }
