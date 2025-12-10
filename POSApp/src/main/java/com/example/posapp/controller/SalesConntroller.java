@@ -79,7 +79,7 @@ public class SalesConntroller {
         Thread worker = new Thread(() -> {
             try {
                 // Load all orders once
-                List<SalesOrder> orders = SalesOrder.getALLSales();
+                List<SalesOrder> orders = SalesOrder.getAllSales();
 
                 // Threads will fill ProfitCalculator.*
                 ProfitCalculatorOperation.calculate(orders);

@@ -3,6 +3,9 @@ package com.example.posapp.controller;
 import com.example.posapp.LogConfig;
 import com.example.posapp.models.*;
 import com.example.posapp.models.MenuItem;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,11 +36,11 @@ public class SalesOrderController {
     @FXML
     private TableView<SalesOrderItem> orderTableView;
     @FXML
-    private TableColumn<SalesOrder, String> colItemName;
+    private TableColumn<SalesOrderItem, String> colItemName;
     @FXML
-    private TableColumn<SalesOrder, Integer> colQuantity;
+    private TableColumn<SalesOrderItem, Integer> colQuantity;
     @FXML
-    private TableColumn<SalesOrder, Double> colPrice;
+    private TableColumn<SalesOrderItem, Double> colPrice;
     @FXML
     private TextField searchText;
 
@@ -65,10 +68,30 @@ public class SalesOrderController {
 
     @FXML
     public void innitAndLoadInventory() {
+        colItemName.setCellValueFactory(cellData -> {
+            SalesOrderItem soi = cellData.getValue();
+            MenuItem mi = soi.getMenuItem();
+            String name = (mi != null) ? mi.getName() : "Unknown";
+            return new SimpleStringProperty(name);
+        });
 
-        colItemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
-        colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colQuantity.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(
+                        cellData.getValue().getQuantityUsed()
+                ).asObject()
+        );
+
+        // price column: derived from MenuItem price
+        colPrice.setCellValueFactory(cellData -> {
+            SalesOrderItem soi = cellData.getValue();
+            MenuItem mi = soi.getMenuItem();
+            double price = (mi != null) ? mi.getPrice() : 0.0;
+            return new SimpleDoubleProperty(price).asObject();
+        });
+
+        //colItemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        //colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        //colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         colItemName.setReorderable(false);
         colQuantity.setReorderable(false);
@@ -149,12 +172,9 @@ public class SalesOrderController {
     public void refreshSubTotal() {
         double totalPrice = 0;
         for (SalesOrderItem item : orderTableView.getItems()) {
-            int menuId = item.getMenuItemId();
-            MenuItem menuItem = MenuItem.getById(menuId);
-
-            int orderQuantity = item.getQuantityUsed();
-
-            totalPrice += orderQuantity * menuItem.getPrice();
+            MenuItem menuItem = item.getMenuItem();
+            if(menuItem==null) continue;
+            totalPrice += item.getQuantityUsed() * menuItem.getPrice();
         }
         totalPriceText.setText("$ " + String.format("%.2f", totalPrice));
     }
@@ -162,9 +182,8 @@ public class SalesOrderController {
     public double getSubtotalAsDouble() {
         double total = 0;
         for (SalesOrderItem item : orderTableView.getItems()) {
-            int menuId = item.getMenuItemId();
-            MenuItem menuItem = MenuItem.getById(menuId);
-
+            MenuItem menuItem = item.getMenuItem();
+            if(menuItem==null) continue;
             total += item.getQuantityUsed() * menuItem.getPrice();
         }
         return total;
@@ -173,12 +192,10 @@ public class SalesOrderController {
     public double getTotalCostPrice() {
         double totalCostPrice = 0;
         for (SalesOrderItem item : listOfItems) {
-            int quantityUsed = item.getQuantityUsed();
+            MenuItem menuItem = item.getMenuItem();
+            if(menuItem==null) continue;
 
-            int menuId = item.getMenuItemId();
-            MenuItem menuItem = MenuItem.getById(menuId);
-
-            totalCostPrice += quantityUsed * menuItem.getPrice();
+            totalCostPrice += item.getQuantityUsed() * menuItem.getPrice();
         }
         return totalCostPrice;
     }
@@ -188,13 +205,18 @@ public class SalesOrderController {
     public void searchButtonClick() {
         String search = searchText.getText();
 
+        String lowerCaseSearch = search.toLowerCase();
+
         ObservableList<SalesOrderItem> filteredSalesOrderList = FXCollections.observableArrayList();
         for (SalesOrderItem item : items) {
-            if (item.getItemName().toLowerCase().contains(search.toLowerCase())) {
-                filtered.add(item);
+            MenuItem menuItem = item.getMenuItem();
+            if(menuItem==null) continue;
+            String menuItemName = menuItem.getName();
+            if(menuItemName.toLowerCase().contains(lowerCaseSearch)) {
+                filteredSalesOrderList.add(item);
             }
         }
-        orderTableView.setItems(filtered);
+        orderTableView.setItems(filteredSalesOrderList);
     }
 
     @FXML
@@ -205,15 +227,16 @@ public class SalesOrderController {
 
     @FXML
     public void removeItem(ActionEvent event) throws IOException {
-        SalesOrder selectedItem = orderTableView.getSelectionModel().getSelectedItem();
+        SalesOrderItem selectedItem = orderTableView.getSelectionModel().getSelectedItem();
 
         if (selectedItem == null) {
             return;
         }
-        String menuRemovedName = selectedItem.getItemName();
-        removeItems(menuRemovedName, sizeSalesOrder());
 
+        //remove from DB
+        SalesOrderItem.removeItemsBySalesOrderId(selectedItem.getSalesOrderId());
 
+        //remove for list
         items.remove(selectedItem);
         orderTableView.refresh();
         refreshSubTotal();
@@ -262,11 +285,11 @@ public class SalesOrderController {
         try {
             orderTableView.setItems(items); //debug
 
-            listOfOrders.clear(); //clearing order
-            listOfOrders.addAll(orderTableView.getItems()); //if change made get the new list of items
+            listOfItems.clear(); //clearing order
+            listOfItems.addAll(orderTableView.getItems()); //if change made get the new list of items
 
-            for (SalesOrder order : items) {
-                popularItemsSaleMap.put(order.getMenu_id(), order.getQuantity());
+            for (SalesOrderItem item : items) {
+                popularItemsSaleMap.put(item.getMenuItemId(),item.getQuantityUsed());
             }
 
             // Load the FXML file for the second scene

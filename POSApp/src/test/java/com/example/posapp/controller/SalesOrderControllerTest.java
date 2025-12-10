@@ -66,16 +66,6 @@ public class SalesOrderControllerTest {
     /**
      * Test of loadOrder method, of class SalesOrderController.
      */
-    @Test
-    public void testLoadOrder() {
-        System.out.println("loadOrder");
-        Map<Integer, Integer> activeOrder = null;
-        Map<Integer, MenuItem> menuItems = null;
-        SalesOrderController instance = new SalesOrderController();
-        instance.loadOrder((ObservableList<SalesOrder>) menuItems);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of refreshSubTotal method, of class SalesOrderController.
