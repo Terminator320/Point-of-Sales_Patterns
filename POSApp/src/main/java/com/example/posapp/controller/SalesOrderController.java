@@ -178,7 +178,7 @@ public class SalesOrderController {
             MenuItem menuItem = item.getMenuItem();
             if(menuItem==null) continue;
 
-            totalCostPrice += item.getQuantityUsed() * menuItem.getPrice();
+            totalCostPrice += item.getQuantityUsed() * menuItem.getCostPrice();
         }
         return totalCostPrice;
     }
