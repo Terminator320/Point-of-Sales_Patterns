@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -63,6 +64,9 @@ public class SalesConntroller {
             popularItems.add(new PopularItems(name,quantity));
         });
 
+        popularItems.sort(
+                Comparator.comparingInt(PopularItems::getPopular_items_quantity).reversed()
+        );
 
         itemName.setCellValueFactory(new PropertyValueFactory<>("popular_items_name"));
         itemQuantity.setCellValueFactory(new PropertyValueFactory<>("popular_items_quantity"));
@@ -71,6 +75,7 @@ public class SalesConntroller {
         itemQuantity.setReorderable(false);
 
         popularListView.setItems(popularItems);
+
     }
 
 

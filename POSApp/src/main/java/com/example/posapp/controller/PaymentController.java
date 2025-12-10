@@ -418,20 +418,41 @@ public class PaymentController {
             return;
         }
 
-        if (isFieldEmpty(nameField)
-                || isFieldEmpty(cardNumberField)
-                || isDateEmpty()) {
-            showErrorInformation("At least one field is empty. Please fill out all fields.");
-            return;
-        }
-        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT){
-             isFieldEmpty(threeDigitCardNumber);
-            showErrorInformation("At least one field is empty. Please fill out all fields.");
+        if(choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT || choiceOfPayment.getValue() == Payment.PaymentMethod.DEBIT) {
+            if (isFieldEmpty(nameField)
+                    || isFieldEmpty(cardNumberField)
+                    || isDateEmpty()) {
+                showErrorInformation("At least one field is empty. Please fill out all fields.");
+                return;
+            }
+
+            if (!isDateValid()) {
+                showErrorInformation("Date is expired. Cannot proceed with payment");
+                return;
+            }
+
+            if (!isCardNameValid(nameField.getText())) {
+                showErrorInformation("Invalid name on card.");
+                return;
+            }
+
+            if (!isCardNumValid(cardNumberField.getText())) {
+                showErrorInformation("Invalid card number. Must be 16 digits.");
+                return;
+            }
+
         }
 
-        if (!isDateValid()) {
-            showErrorInformation("Date is expired. Cannot proceed with payment");
-            return;
+        if (choiceOfPayment.getValue() == Payment.PaymentMethod.CREDIT){
+            if (isFieldEmpty(threeDigitCardNumber)) {
+                showErrorInformation("CVV field is empty.");
+                return;
+            }
+            if (!isCVVValid(threeDigitCardNumber.getText())) {
+                showErrorInformation("Invalid CVV. Must be exactly 3 digits.");
+                threeDigitCardNumber.clear();
+                return;
+            }
         }
 
         if (salesOrderController != null) {
