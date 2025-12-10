@@ -1,10 +1,8 @@
 package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
-import com.example.posapp.models.Inventory;
-import com.example.posapp.models.MenuIngredient;
+import com.example.posapp.models.*;
 import com.example.posapp.models.MenuItem;
-import com.example.posapp.models.SalesOrder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,24 +17,21 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
-import javax.management.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.example.posapp.models.SalesOrder.*;
-import static com.example.posapp.models.SalesOrderItems.getMenuItemsBySalesOrderID;
-import static com.example.posapp.models.SalesOrderItems.removeItems;
+
 
 public class SalesOrderController {
     @FXML
     private TextField totalPriceText;
     @FXML
-    private TableView<SalesOrder> orderTableView;
+    private TableView<SalesOrderItem> orderTableView;
     @FXML
     private TableColumn<SalesOrder, String> colItemName;
     @FXML
@@ -46,19 +41,23 @@ public class SalesOrderController {
     @FXML
     private TextField searchText;
 
+    // current rows in the table (each is a menu item + qty + price)
+    private ObservableList<SalesOrderItem> items;
 
-    private ObservableList<SalesOrder> items;
+    // for popular-items table: menuId -> quantity sold
     private HashMap<Integer, Integer> popularItemsSaleMap = new HashMap<>();
-    private ArrayList<SalesOrder> listOfOrders = new ArrayList<>();
 
+    // list copy used when adjusting inventory
+    private ArrayList<SalesOrderItem> listOfItems = new ArrayList<>();
 
-    public HashMap<Integer, Integer> getPopularItemsSaleMap() {
-        return popularItemsSaleMap;
-    }
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrderController.class.getName());
 
     private boolean inventoryAdjusted = false;
+
+    public HashMap<Integer, Integer> getPopularItemsSaleMap() {
+        return popularItemsSaleMap;
+    }
 
     public void initialize() {
         innitAndLoadInventory();
@@ -78,17 +77,18 @@ public class SalesOrderController {
         colQuantity.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
     }
 
-    public void loadOrder(ObservableList<SalesOrder> menuItems) {
+    // called from MenuItemConntroller after user clicks "Proceed"
+    public void loadOrder(ObservableList<SalesOrderItem> orderLines) {
         if (items == null) {
             items = FXCollections.observableArrayList();
         } else {
             items.clear();  // Clear old items to avoid duplicates
         }
 
-        items.addAll(menuItems);
+        items.addAll(orderLines);
 
-        listOfOrders.clear();
-        listOfOrders.addAll(items);
+        listOfItems.clear();
+        listOfItems.addAll(items);
 
         orderTableView.setItems(items);
         refreshSubTotal();
@@ -96,21 +96,20 @@ public class SalesOrderController {
 
     // called from PaymentController when payment is successful
     public void applyInventoryForCurrentOrder() {
-        // Optional: prevent double-apply
+
         if (inventoryAdjusted) {
             return;
         }
 
 
         //getting each ingredient from the sales order needed
-        for (SalesOrder order : listOfOrders) {
-            int menuId  = order.getMenu_id();
-            int orderQuantity = order.getQuantity();
+        for (SalesOrderItem item : listOfItems) {
+            int menuId  = item.getMenuItemId();
+            int orderQuantity = item.getQuantityUsed();
 
             //testing
             System.out.println("Processing order: menuId=" + menuId +  ", qty=" + orderQuantity);
 
-            // FIXED: using getById as you asked earlier
             MenuItem menuItem = MenuItem.getById(menuId);
             if (menuItem == null) {
                 System.out.println("No MenuItem found for menuId=" + menuId);
@@ -149,26 +148,37 @@ public class SalesOrderController {
 
     public void refreshSubTotal() {
         double totalPrice = 0;
-        for (int i = 0; i < orderTableView.getItems().size(); i++) {
-            int quantity = orderTableView.getItems().get(i).getQuantity();
-            double price = orderTableView.getItems().get(i).getPrice();
-            totalPrice += quantity * price;
+        for (SalesOrderItem item : orderTableView.getItems()) {
+            int menuId = item.getMenuItemId();
+            MenuItem menuItem = MenuItem.getById(menuId);
+
+            int orderQuantity = item.getQuantityUsed();
+
+            totalPrice += orderQuantity * menuItem.getPrice();
         }
-        totalPriceText.setText("$ " + String.format("%.2f", (totalPrice)));
+        totalPriceText.setText("$ " + String.format("%.2f", totalPrice));
     }
 
     public double getSubtotalAsDouble() {
         double total = 0;
-        for (SalesOrder order : orderTableView.getItems()) {
-            total += order.getQuantity() * order.getPrice();
+        for (SalesOrderItem item : orderTableView.getItems()) {
+            int menuId = item.getMenuItemId();
+            MenuItem menuItem = MenuItem.getById(menuId);
+
+            total += item.getQuantityUsed() * menuItem.getPrice();
         }
         return total;
     }
 
     public double getTotalCostPrice() {
         double totalCostPrice = 0;
-        for (SalesOrder order : listOfOrders) {
-            totalCostPrice += order.getQuantity() * order.getTotalCostPrice();
+        for (SalesOrderItem item : listOfItems) {
+            int quantityUsed = item.getQuantityUsed();
+
+            int menuId = item.getMenuItemId();
+            MenuItem menuItem = MenuItem.getById(menuId);
+
+            totalCostPrice += quantityUsed * menuItem.getPrice();
         }
         return totalCostPrice;
     }
@@ -177,15 +187,14 @@ public class SalesOrderController {
     @FXML
     public void searchButtonClick() {
         String search = searchText.getText();
-        ObservableList<SalesOrder> salesOrdersList = items;
 
-        ObservableList<SalesOrder> filteredSalesOrderList = FXCollections.observableArrayList();
-        for (SalesOrder salesOrder : salesOrdersList) {
-            if (salesOrder.getItemName().contains(search)) {
-                filteredSalesOrderList.add(salesOrder);
+        ObservableList<SalesOrderItem> filteredSalesOrderList = FXCollections.observableArrayList();
+        for (SalesOrderItem item : items) {
+            if (item.getItemName().toLowerCase().contains(search.toLowerCase())) {
+                filtered.add(item);
             }
         }
-        orderTableView.setItems(filteredSalesOrderList);
+        orderTableView.setItems(filtered);
     }
 
     @FXML

@@ -1,12 +1,9 @@
 package com.example.posapp.controller;
 
 import com.example.posapp.LogConfig;
-import com.example.posapp.models.Inventory;
-import com.example.posapp.models.MenuIngredient;
-import com.example.posapp.models.SalesOrder;
+import com.example.posapp.models.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
 import javafx.stage.Stage;
@@ -23,14 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-import com.example.posapp.models.MenuItem;
-
-import static com.example.posapp.models.SalesOrder.addSaleOrderInitial;
-import static com.example.posapp.models.SalesOrder.sizeSalesOrder;
-import static com.example.posapp.models.SalesOrderItems.addMenuItemsToSalesOrderItems;
-import static com.example.posapp.models.SalesOrderItems.getMenuItemsBySalesOrderID;
 
 
 public class MenuItemConntroller {
@@ -257,33 +245,37 @@ public class MenuItemConntroller {
     public void proceedClick(ActionEvent event) {
         try {
 
-            if(activeOrder.isEmpty()){
-                invalidMenuOrder("Proceeding to Sales Order","You can't continue without adding an item!");
+            if (activeOrder.isEmpty()) {
+                invalidMenuOrder("Proceeding to Sales Order", "You can't continue without adding an item!");
+                return;
             }
-            else{
-                // Load the FXML file for the second scene
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-order.fxml"));
-                Parent newRoot = loader.load();
-                Scene newScene = new Scene(newRoot);
 
-                addSaleOrderInitial();
+            // create a new sale_order row and get its id
+            int orderId = SalesOrder.addSaleOrderInitial();
 
-                int size = sizeSalesOrder();
-                activeOrder.forEach((Integer key, Integer value) -> {
-                    for (int i = 0; i < value; i++) {
-                        addMenuItemsToSalesOrderItems(key, size);
-                    }
-                });
+            // save all items in the join table with their quantities
+            activeOrder.forEach((menuId, qty) -> SalesOrderItem.addMenuItemToOrder(menuId, orderId, qty));
 
-                ObservableList<SalesOrder> menuItems = getMenuItemsBySalesOrderID(sizeSalesOrder());
-                SalesOrderController controller = loader.getController();
-                controller.loadOrder(menuItems);
+            // get the items for this order for the SalesOrder screen
+            ObservableList<SalesOrderItem> orderLines =
+                    SalesOrderItem.getMenuItemsBySalesOrderID(orderId);
 
-                // Get the current stage (e.g., from a component's scene and window)
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(newScene);
-                stage.setTitle("Sales-Order Report");
-            }
+            // Load the FXML file for the second scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/posapp/sales-order.fxml"));
+            Parent newRoot = loader.load();
+
+            SalesOrderController controller = loader.getController();
+            controller.loadOrder(orderLines);
+
+
+            Scene newScene = new Scene(newRoot);
+
+
+            // Get the current stage (e.g., from a component's scene and window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(newScene);
+            stage.setTitle("Sales-Order Report");
+
         }
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() +"\nError loading sales order view");

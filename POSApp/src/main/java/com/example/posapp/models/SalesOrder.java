@@ -20,45 +20,24 @@ public class SalesOrder {
     private double subtotal;
     private double tax_total;
     private double total;
-
-    private ArrayList<MenuItem> menu_items;
-
-    //need to take all these out
-    private int menu_id;
-    private String itemName;
-    private int quantity;
-    private double price;
     private double totalCostPrice;
 
 
+    private List <SalesOrderItem> items;
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
 
     public SalesOrder() {
-        menu_items = new ArrayList<>();
+       items = new ArrayList<>();
     }
 
-    public SalesOrder(double totalCostPrice, double subtotal,String created_at) {
-        this.totalCostPrice = totalCostPrice;
+    public SalesOrder(double subtotal,String created_at) {
         this.subtotal = subtotal;
         this.created_at = created_at;
+        this.items = new ArrayList<>();
     }
 
-
-
-    public SalesOrder(int menu_id, int quantity) {
-        this.menu_id = menu_id;
-        this.quantity = quantity;
-    }
-
-    public SalesOrder(int menu_id,String itemName, int quantity, double price, double totalCostPrice) {
-        this.menu_id =  menu_id;
-        this.itemName = itemName;
-        this.quantity = quantity;
-        this.price = price;
-        this.totalCostPrice = totalCostPrice;
-    }
 
     public SalesOrder(int order_id, String status, String created_at, String finalized_at, double subtotal, double tax_total, double total) {
         this.order_id = order_id;
@@ -68,48 +47,7 @@ public class SalesOrder {
         this.subtotal = subtotal;
         this.tax_total = tax_total;
         this.total = total;
-    }
-
-
-
-    public double getTotalCostPrice() {
-        return this.totalCostPrice;
-    }
-
-    public void setTotalCostPrice(double totalCostPrice) {
-        this.totalCostPrice = totalCostPrice;
-    }
-
-    public int getMenu_id() {
-        return menu_id;
-    }
-
-    public void setMenu_id(int menu_id) {
-        this.menu_id = menu_id;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+        this.items = new ArrayList<>();
     }
 
     public int getOrder_id() {
@@ -160,22 +98,37 @@ public class SalesOrder {
         this.tax_total = tax_total;
     }
 
-
     public double getTotal() {
         return total;
     }
 
     public void setTotal(double total) {
-            this.total = total;
-        }
+        this.total = total;
+    }
 
+    public double getTotalCostPrice() {
+        return totalCostPrice;
+    }
 
+    public void setTotalCostPrice(double totalCostPrice) {
+        this.totalCostPrice = totalCostPrice;
+    }
+
+    public List<SalesOrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<SalesOrderItem> items) {
+        this.items = items;
+    }
+
+    public void loadItems() {
+        this.items = SalesOrderItem.getItemsForOrder(this.order_id);
+    }
 
     //CRUD
-
-    public static List<SalesOrder> getALLSales(){
+    public static List<SalesOrder> getAllSales(){
         List<SalesOrder> list = new ArrayList<>();
-
 
         final String sql = "SELECT subtotal, totalCostPrice FROM sale_order";
 
@@ -226,7 +179,7 @@ public class SalesOrder {
         final String sql = "UPDATE sale_order SET subtotal = ?, totalCostPrice = ? WHERE order_id = ?";
 
         try (Connection connection = ConfigManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
 
             preparedStatement.setDouble(1,subtotal);
             preparedStatement.setDouble(2, totalCostPrice);
@@ -235,10 +188,7 @@ public class SalesOrder {
             int insertRow = preparedStatement.executeUpdate();
 
             if(insertRow > 0){
-                ResultSet resultSet = preparedStatement.getGeneratedKeys();
-                if(resultSet.next()){
-                    return resultSet.getInt(1);//return orderID
-                }
+                return orderId;
             }
         }
         catch (SQLException | ParserConfigurationException | IOException | SAXException e) {
