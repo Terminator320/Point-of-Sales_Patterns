@@ -19,6 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SalesOrderItem {
+
+    //VARIABLES
+
     private int salesOrderItemId; //PK
     private int salesOrderId; //FK
     private int menuItemId; //FK
@@ -26,12 +29,17 @@ public class SalesOrderItem {
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrderItem.class.getName());
 
+
+    //CONSTRUCTORS
+
     public SalesOrderItem(int salesOrderItemId, int salesOrderId, int menuItemId, int quantityUsed) {
         this.salesOrderItemId = salesOrderItemId;
         this.salesOrderId = salesOrderId;
         this.menuItemId = menuItemId;
         this.quantityUsed = quantityUsed;
     }
+
+    // GETTERS AND SETTERS
 
     public int getSalesOrderItemId() {
         return salesOrderItemId;
@@ -130,6 +138,7 @@ public class SalesOrderItem {
         }
     }
 
+    //retrieves all menu items ordered with a sales order id.
     public static List<SalesOrderItem> getItemsForOrder(int salesOrderId) {
         List<SalesOrderItem> items = new ArrayList<>();
         final String sql = "SELECT sales_order_items_id, menu_item_id, sales_order_id, quantity " +

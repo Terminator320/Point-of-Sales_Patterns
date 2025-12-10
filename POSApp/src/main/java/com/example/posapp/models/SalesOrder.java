@@ -13,6 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SalesOrder {
+
+    //VARIABLES
+
     private int order_id;
     private String status;
     private String created_at;
@@ -27,6 +30,8 @@ public class SalesOrder {
 
     private static final Logger LOGGER = LogConfig.getLogger(SalesOrder.class.getName());
 
+
+    //CONSTRUCTORS
 
     public SalesOrder() {
        items = new ArrayList<>();
@@ -49,6 +54,8 @@ public class SalesOrder {
         this.total = total;
         this.items = new ArrayList<>();
     }
+
+    //SETTERS AND GETTERS
 
     public int getOrder_id() {
         return order_id;
@@ -149,6 +156,8 @@ public class SalesOrder {
         return list;
     }
 
+
+    //Adds a basic version of a sales order when the person continues after the menu.
     public static int addSaleOrderInitial(){
         final String sql = "INSERT INTO sale_order (subtotal, totalCostPrice) VALUES(?,?)";
 
@@ -198,6 +207,7 @@ public class SalesOrder {
     }
 
 
+    //Completes the order by adding all the information.
     public static void finalizeSale(int order_id, String status, String finalized_at, double subtotal, double tax_total, double total){// double total
         final String sql = "UPDATE sale_order SET status = ?, finalized_at = ?, subtotal = ?, tax_total = ?, total = ? WHERE order_id = ?;";//total = ?
 
@@ -217,6 +227,7 @@ public class SalesOrder {
         }
     }
 
+    //Removes the order from the database anytime the user cancels the order, works with the "cancel" buttons
     public static void cancelledOrder(int order_id){
         final String sql = "DELETE FROM sale_order WHERE order_id = ?;";
 
@@ -232,6 +243,7 @@ public class SalesOrder {
         }
     }
 
+    //Updates the popular items map by counting up what has been ordered (to display on the most popular items later on).
     public static void updateQuantityItems(int id, int quantity){
         final String sql = "UPDATE popular_items SET popular_items_quantity = ? + popular_items_quantity WHERE popular_items_id = ?;";
 
@@ -248,6 +260,7 @@ public class SalesOrder {
         }
     }
 
+    //Finds the most recent order that was made.
     public static int sizeSalesOrder() {
         final String sql = "SELECT order_id FROM sale_order ORDER BY order_id DESC LIMIT 1;";
 

@@ -68,6 +68,8 @@ public class SalesOrderController {
 
     @FXML
     public void innitAndLoadInventory() {
+        // Retrieves the MenuItem linked to the SalesOrderItem
+        // Displays the item name, or "Unknown" if no MenuItem exists
         colItemName.setCellValueFactory(cellData -> {
             SalesOrderItem soi = cellData.getValue();
             MenuItem mi = soi.getMenuItem();
@@ -75,6 +77,7 @@ public class SalesOrderController {
             return new SimpleStringProperty(name);
         });
 
+        // Displays the quantity of the menu item.
         colQuantity.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(
                         cellData.getValue().getQuantityUsed()
@@ -89,6 +92,7 @@ public class SalesOrderController {
             return new SimpleDoubleProperty(price).asObject();
         });
 
+        //makes the columns not be able the move around the tables (with dragging).
         colItemName.setReorderable(false);
         colQuantity.setReorderable(false);
         colPrice.setReorderable(false);
@@ -152,6 +156,7 @@ public class SalesOrderController {
         inventoryAdjusted = true;
     }
 
+    //Recalculates the subtotal e.g: after an item is removed.
     public void refreshSubTotal() {
         double totalPrice = 0;
         for (SalesOrderItem item : orderTableView.getItems()) {
@@ -162,6 +167,7 @@ public class SalesOrderController {
         totalPriceText.setText("$ " + String.format("%.2f", totalPrice));
     }
 
+    //CALCULATES SUBTOTAL
     public double getSubtotalAsDouble() {
         double total = 0;
         for (SalesOrderItem item : orderTableView.getItems()) {
@@ -172,6 +178,7 @@ public class SalesOrderController {
         return total;
     }
 
+    //CALCLATES COST PRICE OF ITEMS.
     public double getTotalCostPrice() {
         double totalCostPrice = 0;
         for (SalesOrderItem item : listOfItems) {
@@ -184,6 +191,8 @@ public class SalesOrderController {
     }
 
 
+
+    // uses a search and displays the menu items ordered that match the search (works with the search text box).
     @FXML
     public void searchButtonClick() {
         String search = searchText.getText();
@@ -208,6 +217,8 @@ public class SalesOrderController {
         searchText.clear();
     }
 
+
+    //Removes the selected item (works with the remove item button.)
     @FXML
     public void removeItem(ActionEvent event) throws IOException {
         SalesOrderItem selectedItem = orderTableView.getSelectionModel().getSelectedItem();
@@ -231,7 +242,7 @@ public class SalesOrderController {
             Parent newRoot2 = loader2.load();
             Scene newScene2 = new Scene(newRoot2);
 
-            cancelledOrder(sizeSalesOrder());
+            cancelledOrder(sizeSalesOrder()); // removes the current sales order id from the db when returning back to menu since the customer has no items in his cart.
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage2 = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -250,7 +261,7 @@ public class SalesOrderController {
             Parent newRoot = loader.load();
             Scene newScene = new Scene(newRoot);
 
-            cancelledOrder(sizeSalesOrder());
+            cancelledOrder(sizeSalesOrder()); // removes the current sales order id from the db when the user cancels the order with the cancel button.
 
             // Get the current stage (e.g., from a component's scene and window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

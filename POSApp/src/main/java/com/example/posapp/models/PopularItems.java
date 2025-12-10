@@ -13,14 +13,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PopularItems {
+
+    //VARIABLES
     private int popular_items_id;
     private String popular_items_name;
     private int popular_items_quantity;
+
+    //CONSTRUCTORS
 
     public PopularItems(String popular_items_name, int popular_items_quantity) {
         this.popular_items_name = popular_items_name;
         this.popular_items_quantity = popular_items_quantity;
     }
+
+    //GETTERS AND SETTERS
 
     public int getPopular_items_id() {
         return popular_items_id;
@@ -49,6 +55,7 @@ public class PopularItems {
     private static final Logger LOGGER = LogConfig.getLogger(InventoryController.class.getName());
 
 
+    //Finds the 5 most popular items by quantity
 
     public static HashMap<String, Integer> popularItemsFinder(){
         final String sql = "SELECT popular_items_name, popular_items_quantity FROM popular_items ORDER BY popular_items_quantity DESC LIMIT 5;";
@@ -60,7 +67,7 @@ public class PopularItems {
                 String name = rs.getString("popular_items_name");
                 int id = rs.getInt("popular_items_quantity");
 
-                popularItemsMap.put(name, id);
+                popularItemsMap.put(name, id); //puts them in a map, to send them as a whole.
             }
 
 
