@@ -78,7 +78,7 @@ public class MenuItemConntroller {
 
             invalidMenuOrder3(
                     "Out of Stock",
-                    item.getName() + "cannot be added",
+                    item.getName() + " cannot be added",
                     invName + " is out of stock or not enough for this quantity.");
             return;
         }
@@ -188,16 +188,16 @@ public class MenuItemConntroller {
     public void iceCoffeeClick() { addItemToOrder(17); }
 
     @FXML
-    public void frappeClick(ActionEvent event) { addItemToOrder(16); }
+    public void frappeClick() { addItemToOrder(16); }
 
     @FXML
     public void greenTeaClick() { addItemToOrder(5); }
 
     @FXML
-    public void chaiLatteTeaClick(ActionEvent event) { addItemToOrder(6); }
+    public void chaiLatteTeaClick() { addItemToOrder(6); }
 
     @FXML
-    public void blackTeaClick(ActionEvent event) { addItemToOrder(18); }
+    public void blackTeaClick() { addItemToOrder(18); }
 
     @FXML
     public void oolongTeaClick() { addItemToOrder(19); }
@@ -207,9 +207,8 @@ public class MenuItemConntroller {
 
     @FXML
     public void starwberryTeaClick() { addItemToOrder(21); }
-
     @FXML
-    public void croissantClick(ActionEvent event) { addItemToOrder(7); }
+    public void croissantClick() { addItemToOrder(7); }
 
     @FXML
     public void muffinClick() { addItemToOrder(8); }
@@ -230,13 +229,13 @@ public class MenuItemConntroller {
     public void starwberrySmoClick() { addItemToOrder(22); }
 
     @FXML
-    public void mixedBerrySmClick(ActionEvent event) { addItemToOrder(13); }
+    public void mixedBerrySmClick() { addItemToOrder(13); }
 
     @FXML
-    public void proteinShakenClick(ActionEvent event) { addItemToOrder(15); }
+    public void proteinShakenClick() { addItemToOrder(15); }
 
     @FXML
-    public void mangoSmClick(ActionEvent event) { addItemToOrder(14); }
+    public void mangoSmClick() { addItemToOrder(14); }
 
 
     @FXML

@@ -89,10 +89,6 @@ public class SalesOrderController {
             return new SimpleDoubleProperty(price).asObject();
         });
 
-        //colItemName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
-        //colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        //colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-
         colItemName.setReorderable(false);
         colQuantity.setReorderable(false);
         colPrice.setReorderable(false);
@@ -119,23 +115,20 @@ public class SalesOrderController {
 
     // called from PaymentController when payment is successful
     public void applyInventoryForCurrentOrder() {
-
+        // If we already changed the inventory once, stop so we don’t do it again
         if (inventoryAdjusted) {
             return;
         }
 
-
         //getting each ingredient from the sales order needed
         for (SalesOrderItem item : listOfItems) {
-            int menuId  = item.getMenuItemId();
-            int orderQuantity = item.getQuantityUsed();
+            int menuId  = item.getMenuItemId(); // The menu item’s ID number
+            int orderQuantity = item.getQuantityUsed(); //amount customer bought
 
-            //testing
-            System.out.println("Processing order: menuId=" + menuId +  ", qty=" + orderQuantity);
-
+            // Find the menu item information
             MenuItem menuItem = MenuItem.getById(menuId);
             if (menuItem == null) {
-                System.out.println("No MenuItem found for menuId=" + menuId);
+                LOGGER.log(Level.SEVERE, "Unknown menu item id: " + menuId);
                 continue;
             }
 
@@ -149,25 +142,15 @@ public class SalesOrderController {
 
                 int totalQty = orderQuantity * quantityUsed;
 
-                //these are for testing and debuging REMOVE AFTER
-                System.out.println("TotalQTY: " + totalQty);
-
-                System.out.println("   uses invId=" + inventoryId
-                        + " (" + ingredient.getInventory().getInvName() + ")"
-                        + ", qtyUsedPerItem=" + quantityUsed
-                        + ", totalSubtract=" + totalQty);
-
-
                 boolean ok = Inventory.subtractQuantitySafe(inventoryId, totalQty);
                 if (!ok) {
-                    System.out.println("ERROR: not enough stock for invId=" + inventoryId);
+                    LOGGER.log(Level.SEVERE, "Inventory subtraction failed");
                 }
-
             }
         }
+        // Mark that we already changed the inventory so it won’t happen twice
         inventoryAdjusted = true;
     }
-
 
     public void refreshSubTotal() {
         double totalPrice = 0;
@@ -236,7 +219,7 @@ public class SalesOrderController {
         //remove from DB
         SalesOrderItem.removeItemsBySalesOrderId(selectedItem.getSalesOrderId());
 
-        //remove for list
+        //remove for a list
         items.remove(selectedItem);
         orderTableView.refresh();
         refreshSubTotal();
@@ -277,7 +260,6 @@ public class SalesOrderController {
             LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nError while going back to the main");
         }
     }
-
 
 
     @FXML
@@ -328,7 +310,4 @@ public class SalesOrderController {
         processingAlert.setContentText(msg);
         processingAlert.show();
     }
-
-
 }
-

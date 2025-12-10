@@ -113,7 +113,6 @@ public class Inventory {
         for(int i = 0; i < getAllInventory().size(); i++){
             if(getAllInventory().get(i).getInvId() == invId){
                 item = getAllInventory().get(i);
-                System.out.println("Name: "+  item.getInvName() + ", Quantity"+ item.qty);
             }
         }
         return item;

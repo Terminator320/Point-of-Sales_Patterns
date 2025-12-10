@@ -24,7 +24,6 @@ public class MenuItem {
     //logger
     private static final Logger LOGGER = LogConfig.getLogger(MenuItem.class.getName());
 
-
     public MenuItem(int menuItemId, String name, double price, double costPrice) {
         this.menuItemId = menuItemId;
         this.name = name;
@@ -32,7 +31,6 @@ public class MenuItem {
         this.costPrice = costPrice;
         this.ingredients = MenuIngredient.getByMenuItemId(menuItemId);
     }
-
 
     public int getMenuItemId() {
         return menuItemId;
