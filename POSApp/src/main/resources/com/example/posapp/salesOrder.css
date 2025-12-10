@@ -19,6 +19,10 @@
     -fx-font-size: 10px;
 }
 
+.label {
+    -fx-font-family: Georgia, serif;
+}
+
 .button:pressed {
     -fx-background-color: linear-gradient(#ff8a00, #d86b00);
     -fx-font-family: "Georgia";

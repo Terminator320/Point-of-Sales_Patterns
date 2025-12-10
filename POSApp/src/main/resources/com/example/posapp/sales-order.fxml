@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="salesOrderBackground" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1040.0" stylesheets="@salesOrder.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
+<AnchorPane fx:id="salesOrderBackground" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1040.0" stylesheets="@salesOrder.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesOrderController">
     <children>
         <Label alignment="CENTER" layoutX="443.0" layoutY="78.0" prefHeight="55.0" prefWidth="155.0" text="ORDER" textFill="WHITE">
             <font>
@@ -42,6 +42,6 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Button layoutX="478.0" layoutY="572.0" mnemonicParsing="false" onAction="#removeItem" prefHeight="37.0" prefWidth="84.0" text="Remove Button" />
+      <Button layoutX="478.0" layoutY="572.0" mnemonicParsing="false" onAction="#removeItem" prefHeight="37.0" prefWidth="84.0" text="Remove Item" />
     </children>
 </AnchorPane>

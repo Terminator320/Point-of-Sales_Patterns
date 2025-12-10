@@ -87,6 +87,7 @@ public class InventoryController {
 
                 // Update DB
                 Inventory.editLowStoke(newValue, item.getInvId());
+                inventoryListView.getSelectionModel().clearSelection();
 
             } catch (NumberFormatException e) {
                 item.setLowStockThreshold(oldStock);
@@ -132,6 +133,7 @@ public class InventoryController {
 
                 // Update DB
                 Inventory.editItemQTY(newValue, item.getInvId());
+                inventoryListView.getSelectionModel().clearSelection();
 
             } catch (NumberFormatException e) {
                 item.setLowStockThreshold(oldQTY);
@@ -197,13 +199,13 @@ public class InventoryController {
     @FXML
     public void searchInventory() {
         // get the text the user typed to search
-        String search = input_TF.getText();
+        String search = input_TF.getText().toLowerCase();
         ObservableList<Inventory> inventoryList = getInventory();
 
         // list that will hold only the items that match the search
         ObservableList<Inventory> filteredInventoryList = FXCollections.observableArrayList();
         for (Inventory inventory : inventoryList) {
-            if (inventory.getInvName().contains(search)) {
+            if (inventory.getInvName().toLowerCase().contains(search)) {
                 filteredInventoryList.add(inventory);
             }
         }

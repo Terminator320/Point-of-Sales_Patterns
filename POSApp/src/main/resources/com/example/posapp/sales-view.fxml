@@ -8,24 +8,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="profitPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1040.0" stylesheets="@salesBackgroud.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesConntroller">
+<AnchorPane fx:id="profitPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="1040.0" stylesheets="@salesBackgroud.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.posapp.controller.SalesConntroller">
    <children>
 
        <PieChart fx:id="profitLossPieChart" layoutX="127.0" layoutY="159.0" prefHeight="300" prefWidth="400" title="Profit vs Loss" />
-      <Button layoutX="449.0" layoutY="477.0" mnemonicParsing="false" onAction="#back" text="Main Menu" />
+      <Button layoutX="449.0" layoutY="477.0" mnemonicParsing="false" onAction="#back" prefHeight="47.0" prefWidth="122.0" text="Main Menu" />
       <Label fx:id="netProfitLbl" layoutX="83.0" layoutY="213.0" prefHeight="17.0" prefWidth="138.0" textFill="#77ff00" />
       <Label fx:id="costLbl" layoutX="91.0" layoutY="247.0" prefHeight="17.0" prefWidth="122.0" textFill="RED" />
       <Label fx:id="profitLbl" layoutX="91.0" layoutY="277.0" prefHeight="17.0" prefWidth="122.0" textFill="#40ff00" />
-      <Label layoutX="563.0" layoutY="188.0" text="Top 5 Most Ordered Items" textFill="WHITE">
+      <Label layoutX="599.0" layoutY="188.0" text="Top 5 Most Ordered Items" textFill="WHITE">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TableView fx:id="popularListView" layoutX="535.0" layoutY="233.0" prefHeight="152.0" prefWidth="242.0">
+      <TableView fx:id="popularListView" layoutX="578.0" layoutY="233.0" prefHeight="152.0" prefWidth="242.0">
         <columns>
           <TableColumn fx:id="itemName" prefWidth="165.0" resizable="false" sortable="false" text="Item Name" />
           <TableColumn fx:id="itemQuantity" prefWidth="75.0" resizable="false" text="Quantity" />
         </columns>
       </TableView>
+      <Label fx:id="salesLabel" layoutX="425.0" layoutY="67.0" text="Sales View" />
    </children>
 </AnchorPane>
