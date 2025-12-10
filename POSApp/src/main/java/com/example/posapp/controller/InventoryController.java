@@ -30,60 +30,78 @@ public class InventoryController {
 
     private static final Logger LOGGER = LogConfig.getLogger(InventoryController.class.getName());
 
-
     @FXML
     public void initialize() {
-
         innitAndLoadInventory(); // setting up the table for the inventory
         checkQTY(); //checking if the qty is below the threshold hold  to set it to yellow or red
         updateStoke(); // if the user updates the stock
         updateQTY(); //if the user updates the quantity
     }
 
-    private void reloadInventory(){
+    @FXML
+    public void innitAndLoadInventory() {
+        // allow the user to edit cells in the table
+        inventoryListView.setEditable(true);
+
+        // connect table columns to Inventory class fields
+        colId.setCellValueFactory(new PropertyValueFactory<>("invId"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("invName"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        colLow.setCellValueFactory(new PropertyValueFactory<>("lowStockThreshold"));
+
+        // go through each inventory item
+        colId.setReorderable(false);
+        colName.setReorderable(false);
+        colQty.setReorderable(false);
+        colLow.setReorderable(false);
+
+        // go through each inventory item
         ObservableList<Inventory> inventoryList = getInventory();
         inventoryListView.setItems(inventoryList);
     }
 
     // handle editing the "low stock" value in the table
     private void updateStoke(){
-
         colLow.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         // this runs when the user finishes editing a low stock cell
         colLow.setOnEditCommit(event -> {
             Inventory item = event.getRowValue(); // the row we are editing
             int oldStock = item.getLowStockThreshold(); // remember the old value
-            Integer newStock = event.getNewValue(); // the new value user typed
+            String typed   = event.getNewValue() == null ? null : event.getNewValue().toString();
+            try {
+                // Validate input
+                if (typed == null || typed.trim().isEmpty()) {
+                    throw new NumberFormatException("Empty value not allowed");
+                }
 
-            if(newStock >= 0) { // new value must be 0 or more
-                item.setLowStockThreshold(newStock);
-                //update to db
-                try
-                {
-                    // update the value in the database
-                    Inventory.editLowStoke(newStock,item.getInvId());
+                // Try converting text → number
+                int newValue = Integer.parseInt(typed.trim());
+
+                // Check negative
+                if (newValue < 0) {
+                    throw new NumberFormatException("Negative number");
                 }
-                catch (Exception e) {
-                    //if there is an error while updating the db go back to old value
-                    item.setLowStockThreshold(oldStock);
-                    LOGGER.log(Level.SEVERE, "Error updating low stock threshold the database.");
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"An error has occurred while trying to update the DB.");
-                    alert.showAndWait();
-                }
-            }
-            else {
+
+                // Update model
+                item.setLowStockThreshold(newValue);
+
+                // Update DB
+                Inventory.editLowStoke(newValue, item.getInvId());
+
+            } catch (NumberFormatException e) {
                 item.setLowStockThreshold(oldStock);
-                //logger
-                LOGGER.log(Level.SEVERE, "Error updating low stock threshold the database.");
+                showInfo("Invalid Input", "You must enter a whole number ≥ 0.");
+                inventoryListView.refresh();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Low Stoke Threshold can not be a negative number.");
-                alert.showAndWait();
+            } catch (Exception e) {
+                item.setLowStockThreshold(oldStock);
+                LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nDatabase error updating low stock.");
+                showError("Database Error", "Could not update the low stock threshold.");
                 inventoryListView.refresh();
             }
         });
 
-        //clears selection after edit
-        // after editing, clear the row selection so it does not stay highlighted
+        // Clear highlight after edit
         Platform.runLater(() ->
                 inventoryListView.getSelectionModel().clearSelection()
         );
@@ -94,43 +112,44 @@ public class InventoryController {
         colQty.setOnEditCommit(event -> {
             Inventory item = event.getRowValue(); // the row we are editing
             int oldQTY = item.getQty(); // remember the old quantity
-            Integer newQTY = event.getNewValue();  //the new quantity user typed
-
-            //if user inputted negative or null value
-            if (newQTY == null || newQTY < 0 || newQTY == oldQTY) {
-                item.setQty(oldQTY);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Quantity can not be a negative number or empty or same value.");
-                alert.showAndWait();
-                LOGGER.log(Level.WARNING, "User inputted a negative number or empty value or the same value.");
-
-                inventoryListView.refresh();
-                return;
-            }
-
-            //if value is valid set new qty and update db
-            item.setQty(newQTY);
-
-            //update to db
+            String typed  = event.getNewValue() == null ? null : event.getNewValue().toString();
             try {
-                // save the new quantity to the database
-                Inventory.editItemQTY(newQTY, item.getInvId());
-            } catch (Exception e) {
-                //if there is an error while updating the db go back to old value
-                item.setQty(oldQTY);
+                // Validate input
+                if (typed == null || typed.trim().isEmpty()) {
+                    throw new NumberFormatException("Empty value not allowed");
+                }
+
+                // Try converting text → number
+                int newValue = Integer.parseInt(typed.trim());
+
+                // Check negative
+                if (newValue < 0) {
+                    throw new NumberFormatException("Negative number");
+                }
+
+                // Update model
+                item.setQty(newValue);
+
+                // Update DB
+                Inventory.editItemQTY(newValue, item.getInvId());
+
+            } catch (NumberFormatException e) {
+                item.setLowStockThreshold(oldQTY);
+                showInfo("Invalid Input", "You must enter a whole number ≥ 0.");
                 inventoryListView.refresh();
 
-                Alert alert = new Alert(Alert.AlertType.ERROR, "An error has occurred while trying to update the DB");
-                alert.showAndWait();
-
-                LOGGER.log(Level.SEVERE, e.getCause() + e.getMessage()+" /nError updating quantity the database.");
+            } catch (Exception e) {
+                item.setLowStockThreshold(oldQTY);
+                LOGGER.log(Level.SEVERE, e.getCause()+e.getMessage()+"\nDatabase error updating low stock.");
+                showError("Database Error", "Could not update the low stock threshold.");
+                inventoryListView.refresh();
             }
-
-            // after editing, clear the row selection
-            Platform.runLater(() ->
-                    inventoryListView.getSelectionModel().clearSelection()
-            );
         });
 
+        // Clear highlight after edit
+        Platform.runLater(() ->
+                inventoryListView.getSelectionModel().clearSelection()
+        );
     }
 
     private void checkQTY(){
@@ -156,16 +175,16 @@ public class InventoryController {
         }
 
         if (row.isSelected()) {
-            // if row is selected, use normal style so selection color shows
+            // if a row is selected, use normal style so selection color shows
             row.setStyle("");
             return;
         }
 
-        // if quantity is 0, background is dark red
+        // if quantity is 0, the background is dark-red
         if (item.getQty() == 0) {
             row.setStyle("-fx-background-color: #5a0000;");
         }
-        // if quantity is less than low stock threshold, background is yellow-ish
+        // if quantity is less than a low stock threshold, the background is yellow-ish
         else if (item.getQty() < item.getLowStockThreshold()) {
             row.setStyle("-fx-background-color: #665200; fx-font-weight: bold;");
         }
@@ -173,28 +192,6 @@ public class InventoryController {
         else {
             row.setStyle("");
         }
-    }
-
-    @FXML
-    public void innitAndLoadInventory() {
-        // allow the user to edit cells in the table
-        inventoryListView.setEditable(true);
-
-        // connect table columns to Inventory class fields
-        colId.setCellValueFactory(new PropertyValueFactory<>("invId"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("invName"));
-        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
-        colLow.setCellValueFactory(new PropertyValueFactory<>("lowStockThreshold"));
-
-        // go through each inventory item
-        colId.setReorderable(false);
-        colName.setReorderable(false);
-        colQty.setReorderable(false);
-        colLow.setReorderable(false);
-
-        // go through each inventory item
-        ObservableList<Inventory> inventoryList = getInventory();
-        inventoryListView.setItems(inventoryList);
     }
 
     @FXML
@@ -214,7 +211,6 @@ public class InventoryController {
         inventoryListView.setItems(filteredInventoryList);
     }
 
-
     @FXML
     public void clearSearch() {
         input_TF.clear(); // clear the search text field
@@ -222,7 +218,7 @@ public class InventoryController {
     }
 
 
-    //going back to main menu
+    //going back to the main menu
     @FXML
     private void backMainMenu(ActionEvent event) {
         try {
@@ -245,5 +241,19 @@ public class InventoryController {
     // helper method: get all inventory items from the database
     public static ObservableList<Inventory> getInventory(){
         return Inventory.getAllInventory();
+    }
+
+    private void showError(String title, String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR, msg);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.showAndWait();
+    }
+
+    private void showInfo(String title, String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION, msg);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.showAndWait();
     }
 }

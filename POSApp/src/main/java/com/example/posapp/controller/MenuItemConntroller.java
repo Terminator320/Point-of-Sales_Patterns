@@ -26,7 +26,7 @@ public class MenuItemConntroller {
     @FXML private ListView<String> recitedView;
 
     //menuId , MenuItem
-    private  Map<Integer, MenuItem> menuItems = new HashMap<>();
+    private final Map<Integer, MenuItem> menuItems = new HashMap<>();
 
     // menuId , quantity
     private final Map<Integer, Integer> activeOrder = new HashMap<>();
@@ -43,14 +43,12 @@ public class MenuItemConntroller {
         initMenuItems(); //setting up the menuItems
     }
 
-
     private  void initMenuItems(){
         // Load all menu items from DB; each one loads its ingredients
         for (MenuItem item : MenuItem.getMenuItems()) {
             menuItems.put(item.getMenuItemId(), item);
         }
     }
-
 
     //addMethod
     private void addItemToOrder(int menuId) {
@@ -65,7 +63,7 @@ public class MenuItemConntroller {
 
             Inventory invSnapshot = ingredientOutOfStock.getInventory();
 
-            //ternary operater
+            //ternary operator
             Inventory freshInv = invSnapshot == null ? null : Inventory.getOne(invSnapshot.getInvId());
 
             String invName;
@@ -89,7 +87,7 @@ public class MenuItemConntroller {
         rebuildReceipt();
     }
 
-    //checking if the ingredient needed are out of stock
+    //checking if the ingredient needed is out of stock
     //This checks the total needed for this ingredient across the whole order
     private MenuIngredient findOutOfStockIngredient(MenuItem item) {
 
@@ -175,25 +173,25 @@ public class MenuItemConntroller {
 
 
     @FXML
-    public void espressoClick(ActionEvent event) { addItemToOrder(1); }
+    public void espressoClick() { addItemToOrder(1); }
 
     @FXML
-    public void latteClick(ActionEvent event) { addItemToOrder(2); }
+    public void latteClick() { addItemToOrder(2); }
 
     @FXML
-    public void cappuccinoClick(ActionEvent event) { addItemToOrder(3); }
+    public void cappuccinoClick() { addItemToOrder(3); }
 
     @FXML
-    public void iceAmeriClick(ActionEvent event) { addItemToOrder(4); }
+    public void iceAmeriClick() { addItemToOrder(4); }
 
     @FXML
-    public void iceCoffeeClick(ActionEvent event) { addItemToOrder(17); }
+    public void iceCoffeeClick() { addItemToOrder(17); }
 
     @FXML
     public void frappeClick(ActionEvent event) { addItemToOrder(16); }
 
     @FXML
-    public void greenTeaClick(ActionEvent event) { addItemToOrder(5); }
+    public void greenTeaClick() { addItemToOrder(5); }
 
     @FXML
     public void chaiLatteTeaClick(ActionEvent event) { addItemToOrder(6); }
@@ -202,34 +200,34 @@ public class MenuItemConntroller {
     public void blackTeaClick(ActionEvent event) { addItemToOrder(18); }
 
     @FXML
-    public void oolongTeaClick(ActionEvent event) { addItemToOrder(19); }
+    public void oolongTeaClick() { addItemToOrder(19); }
 
     @FXML
-    public void peachTeaClick(ActionEvent event) { addItemToOrder(20); }
+    public void peachTeaClick() { addItemToOrder(20); }
 
     @FXML
-    public void starwberryTeaClick(ActionEvent event) { addItemToOrder(21); }
+    public void starwberryTeaClick() { addItemToOrder(21); }
 
     @FXML
     public void croissantClick(ActionEvent event) { addItemToOrder(7); }
 
     @FXML
-    public void muffinClick(ActionEvent event) { addItemToOrder(8); }
+    public void muffinClick() { addItemToOrder(8); }
 
     @FXML
-    public void cheeseBagelClick(ActionEvent event) { addItemToOrder(9); }
+    public void cheeseBagelClick() { addItemToOrder(9); }
 
     @FXML
-    public void btlSandwichClick(ActionEvent event) { addItemToOrder(10); }
+    public void btlSandwichClick() { addItemToOrder(10); }
 
     @FXML
-    public void grilledCheeseClick(ActionEvent event) { addItemToOrder(11); }
+    public void grilledCheeseClick() { addItemToOrder(11); }
 
     @FXML
-    public void chickenWrapClick(ActionEvent event) { addItemToOrder(12); }
+    public void chickenWrapClick() { addItemToOrder(12); }
 
     @FXML
-    public void starwberrySmoClick(ActionEvent event) { addItemToOrder(22); }
+    public void starwberrySmoClick() { addItemToOrder(22); }
 
     @FXML
     public void mixedBerrySmClick(ActionEvent event) { addItemToOrder(13); }
@@ -307,7 +305,7 @@ public class MenuItemConntroller {
         removeSelectedItem();
     }
 
-    public void invalidMenuOrder(String title,String msg){
+    private void invalidMenuOrder(String title,String msg){
         Alert processingAlert = new Alert(Alert.AlertType.INFORMATION);
         processingAlert.setTitle(title);
         processingAlert.setHeaderText(null);
@@ -315,7 +313,7 @@ public class MenuItemConntroller {
         processingAlert.show();
     }
 
-    public void invalidMenuOrder3(String title,String header,String msg){
+    private void invalidMenuOrder3(String title,String header,String msg){
         Alert processingAlert = new Alert(Alert.AlertType.WARNING);
         processingAlert.setTitle(title);
         processingAlert.setHeaderText(header);

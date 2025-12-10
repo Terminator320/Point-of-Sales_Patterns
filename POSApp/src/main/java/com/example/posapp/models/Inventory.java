@@ -19,8 +19,6 @@ public class Inventory {
 
     private static final Logger LOGGER = LogConfig.getLogger(Inventory.class.getName());
 
-
-
     public Inventory(String invName,int qty, int lowStockThreshold) {
         this.invName = invName;
         this.qty = qty;
@@ -84,8 +82,7 @@ public class Inventory {
         return Objects.hash(getInvId(), getQty(), getLowStockThreshold(), getInvName());
     }
 
-    //crud
-
+    //CRUD
     //read
     public static ObservableList<Inventory> getAllInventory(){
         ObservableList<Inventory> inventoryData = FXCollections.observableArrayList();
@@ -106,7 +103,7 @@ public class Inventory {
             }
         }
         catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " /n Database error while fetching inventory");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \n Database error while fetching inventory");
         }
         return inventoryData;
     }
@@ -121,8 +118,6 @@ public class Inventory {
         }
         return item;
     }
-
-
 
     //update (edit)
     public static void editLowStoke(int lowStockThreshold,int invId) {
@@ -172,7 +167,7 @@ public class Inventory {
             int currentQty = rs.getInt("qty");
             if (currentQty < amount) {
                 LOGGER.log(Level.SEVERE, currentQty + " is less than " + amount);
-                return false; // not enough stock, do not update
+                return false; // not enough stocks, do not update
             }
 
             updateStmt.setInt(1, amount);
@@ -181,11 +176,9 @@ public class Inventory {
             return true;
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause()
-                    + " \n Database error while removing quantity");
+            LOGGER.log(Level.SEVERE, e.getMessage() + e.getCause() + " \n Database error while removing quantity");
             return false;
         }
     }
-
 
 }

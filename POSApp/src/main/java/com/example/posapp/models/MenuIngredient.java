@@ -80,8 +80,4 @@ public class MenuIngredient {
         }
         return list;
     }
-
-
-
-
 }

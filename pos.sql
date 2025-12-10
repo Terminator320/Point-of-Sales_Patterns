@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2025 at 04:33 AM
+-- Generation Time: Dec 10, 2025 at 06:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,38 +39,36 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`invId`, `invName`, `qty`, `lowStockThreshold`) VALUES
-(1, 'Espresso Beans', 8, 10),
-(2, 'Milk', 9, 10),
-(3, 'Foam Ingredients', 11, 10),
-(4, 'Americano brewed ', 15, 10),
-(5, 'Green Tea Leaves', 15, 10),
-(6, 'Chai Mix', 15, 10),
-(7, 'Croissants', 15, 15),
-(8, 'Muffins', 0, 15),
-(9, 'Cream Cheese', 15, 10),
-(10, 'BLT Ingredients', 15, 10),
-(11, 'Cheese & Bread', 15, 10),
-(12, 'Chicken Wrap Ingredients', 15, 10),
-(13, 'Berry Mix', 14, 10),
-(14, 'Mango Mix', 15, 10),
-(15, 'Protein Shake Mix', 15, 10),
-(16, 'Brewed Coffee', 13, 15),
+(1, 'Espresso Beans', 4, 10),
+(2, 'Milk', 0, 10),
+(3, 'Foam Ingredients', 8, 10),
+(4, 'Americano brewed ', 14, 10),
+(5, 'Green Tea Leaves', 14, 10),
+(6, 'Chai Mix', 14, 10),
+(7, 'Croissants', 14, 15),
+(8, 'Muffins', 14, 15),
+(9, 'Cream Cheese', 13, 10),
+(11, 'Yellow Cheese', 14, 10),
+(13, 'Berry Mix', 13, 10),
+(14, 'Mango Mix', 14, 10),
+(15, 'Protein Shake Mix', 14, 10),
+(16, 'Brewed Coffee', 14, 15),
 (17, 'Instant Coffee', 15, 15),
-(18, 'Black Tea leaves', 15, 10),
-(19, 'Oolong Tea leaves', 13, 15),
-(20, 'Dried Peach Pieces', 15, 10),
-(21, 'Dried Strawberries', 15, 15),
-(22, 'Strawberry Mix', 11, 10),
-(24, 'Bread Slice', 15, 10),
-(25, 'Bacon Slice', 15, 10),
-(26, 'Lettuce Leaf', 15, 10),
+(18, 'Black Tea leaves', 14, 10),
+(19, 'Oolong Tea leaves', 114, 15),
+(20, 'Dried Peach Pieces', 14, 10),
+(21, 'Dried Strawberries', 14, 15),
+(22, 'Strawberry Mix', 9, 10),
+(24, 'Bread Slice', 11, 10),
+(25, 'Bacon Slice', 13, 10),
+(26, 'Lettuce Leaf', 14, 10),
 (27, 'Tomato Slice', 15, 10),
 (28, 'Mayonnaise', 15, 5),
-(29, 'Tortilla Wrap', 15, 10),
-(30, 'Grilled Chicken', 15, 10),
-(31, 'Shredded Cheese', 15, 10),
-(32, 'Wrap Sauce', 15, 5),
-(33, 'Bagel', 15, 15);
+(29, 'Tortilla Wrap', 14, 10),
+(30, 'Grilled Chicken', 13, 10),
+(31, 'Shredded Cheese', 12, 10),
+(32, 'Wrap Sauce', 13, 5),
+(33, 'Bagel', 14, 15);
 
 -- --------------------------------------------------------
 
@@ -111,7 +109,7 @@ INSERT INTO `menu_item` (`menuItem_id`, `name`, `price`, `costPrice`) VALUES
 (19, 'Oolong Tea', 3, 0.5),
 (20, 'Peach Tea', 2.5, 0.5),
 (21, 'Strawberry Tea', 2.5, 0.5),
-(22, 'Strawberry Smoothies', 5.75, 2.3);
+(22, 'Strawberry Smoothie', 5.75, 2.3);
 
 -- --------------------------------------------------------
 
@@ -143,13 +141,20 @@ INSERT INTO `menu_item_ingredient` (`menu_item_id`, `inv_id`, `quantity_used`) V
 (6, 6, 1),
 (7, 7, 1),
 (8, 8, 1),
-(9, 9, 1),
+(9, 9, 2),
+(9, 33, 1),
 (10, 24, 2),
 (10, 25, 2),
 (10, 26, 1),
 (11, 11, 1),
-(12, 12, 1),
+(11, 24, 2),
+(12, 29, 1),
+(12, 30, 2),
+(12, 31, 3),
+(12, 32, 2),
+(13, 2, 1),
 (13, 13, 1),
+(14, 2, 1),
 (14, 14, 1),
 (15, 15, 1),
 (16, 2, 1),
@@ -160,6 +165,7 @@ INSERT INTO `menu_item_ingredient` (`menu_item_id`, `inv_id`, `quantity_used`) V
 (19, 19, 1),
 (20, 20, 1),
 (21, 21, 1),
+(22, 2, 1),
 (22, 22, 1);
 
 -- --------------------------------------------------------
@@ -185,7 +191,8 @@ INSERT INTO `payment` (`payment_ID`, `order_ID`, `method_payment`, `tips`, `paym
 (97, 236, 'DEBIT', 14.20, '2025-12-09 22:15:57'),
 (98, 237, 'CREDIT', 0.30, '2025-12-09 22:18:19'),
 (99, 238, 'DEBIT', 0.00, '2025-12-09 22:19:33'),
-(100, 241, 'DEBIT', 2.02, '2025-12-09 22:29:03');
+(100, 241, 'DEBIT', 2.02, '2025-12-09 22:29:03'),
+(101, 242, 'CREDIT', 14.32, '2025-12-09 23:20:56');
 
 -- --------------------------------------------------------
 
@@ -204,28 +211,28 @@ CREATE TABLE `popular_items` (
 --
 
 INSERT INTO `popular_items` (`popular_items_id`, `popular_items_name`, `popular_items_quantity`) VALUES
-(1, 'Espresso', 3),
-(2, 'Latte', 3),
-(3, 'Cappuccino', 1),
-(4, 'Ice Americano', 0),
-(5, 'Green Tea', 0),
-(6, 'Chai Latte', 0),
-(7, 'Croissant', 0),
-(8, 'Muffin', 15),
-(9, 'Bagel with Cream Cheese', 0),
-(10, 'BLT Sandwich', 0),
-(11, 'Grilled Cheese', 0),
-(12, 'Chicken Wrap', 0),
-(13, 'Berry Smoothie', 1),
-(14, 'Mango Smoothie', 0),
-(15, 'Protein Shake', 0),
+(1, 'Espresso', 4),
+(2, 'Latte', 4),
+(3, 'Cappuccino', 3),
+(4, 'Ice Americano', 1),
+(5, 'Green Tea', 1),
+(6, 'Chai Latte', 1),
+(7, 'Croissant', 1),
+(8, 'Muffin', 16),
+(9, 'Bagel with Cream Cheese', 1),
+(10, 'BLT Sandwich', 1),
+(11, 'Grilled Cheese', 1),
+(12, 'Chicken Wrap', 1),
+(13, 'Berry Smoothie', 2),
+(14, 'Mango Smoothie', 1),
+(15, 'Protein Shake', 1),
 (16, 'Greek Frappe', 0),
-(17, 'Ice Coffee', 2),
-(18, 'Black Tea', 0),
-(19, 'Oolong Tea', 2),
-(20, 'Peach Tea', 0),
-(21, 'Strawberry Tea', 0),
-(22, 'Strawberry Smoothie', 4);
+(17, 'Ice Coffee', 3),
+(18, 'Black Tea', 1),
+(19, 'Oolong Tea', 3),
+(20, 'Peach Tea', 1),
+(21, 'Strawberry Tea', 1),
+(22, 'Strawberry Smoothie', 6);
 
 -- --------------------------------------------------------
 
@@ -259,7 +266,28 @@ INSERT INTO `sales_order_items` (`sales_order_items_id`, `menu_item_id`, `sales_
 (558, 1, 241, 1),
 (559, 17, 241, 1),
 (560, 2, 241, 1),
-(561, 19, 241, 1);
+(561, 19, 241, 1),
+(562, 1, 242, 1),
+(563, 2, 242, 1),
+(564, 3, 242, 2),
+(565, 4, 242, 1),
+(566, 5, 242, 1),
+(567, 6, 242, 1),
+(568, 7, 242, 1),
+(569, 8, 242, 1),
+(570, 9, 242, 1),
+(571, 10, 242, 1),
+(572, 11, 242, 1),
+(573, 12, 242, 1),
+(574, 13, 242, 1),
+(575, 14, 242, 1),
+(576, 15, 242, 1),
+(577, 17, 242, 1),
+(578, 18, 242, 1),
+(579, 19, 242, 1),
+(580, 20, 242, 1),
+(581, 21, 242, 1),
+(582, 22, 242, 2);
 
 -- --------------------------------------------------------
 
@@ -288,7 +316,8 @@ INSERT INTO `sale_order` (`order_id`, `status`, `created_at`, `finalized_at`, `s
 (237, 'CLOSED', '2025-12-09 22:17:51', '2025-12-09T22:18:19.379132300', 3.00, 0.45, 3.75, 3.00),
 (238, 'CLOSED', '2025-12-09 22:19:13', '2025-12-09T22:19:33.608103', 5.75, 0.86, 6.61, 5.75),
 (240, '\'OPEN\'', '2025-12-09 22:23:48', NULL, 0.00, 0.00, 0.00, 0.00),
-(241, 'CLOSED', '2025-12-09 22:25:57', '2025-12-09T22:29:03.471710', 13.49, 2.02, 17.54, 13.49);
+(241, 'CLOSED', '2025-12-09 22:25:57', '2025-12-09T22:29:03.471710', 13.49, 2.02, 17.54, 13.49),
+(242, 'CLOSED', '2025-12-09 23:19:12', '2025-12-09T23:20:56.886282100', 95.49, 14.32, 124.14, 95.49);
 
 --
 -- Indexes for dumped tables
@@ -361,19 +390,19 @@ ALTER TABLE `menu_item`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `sales_order_items`
 --
 ALTER TABLE `sales_order_items`
-  MODIFY `sales_order_items_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=562;
+  MODIFY `sales_order_items_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=583;
 
 --
 -- AUTO_INCREMENT for table `sale_order`
 --
 ALTER TABLE `sale_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=242;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=243;
 
 --
 -- Constraints for dumped tables

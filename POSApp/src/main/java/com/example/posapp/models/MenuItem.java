@@ -19,9 +19,7 @@ public class MenuItem {
     private String name;
     private double price,costPrice;
 
-
     private List<MenuIngredient> ingredients = new ArrayList<>();
-
 
     //logger
     private static final Logger LOGGER = LogConfig.getLogger(MenuItem.class.getName());
@@ -97,7 +95,8 @@ public class MenuItem {
     public synchronized static ObservableList<MenuItem> getMenuItems() {
         ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
         //get the statement
-        final String sql = "SELECT menuItem_id, name, price, costPrice FROM menu_item";
+        final String sql;
+        sql = "SELECT menuItem_id, name, price, costPrice FROM menu_item";
 
         try (Connection connection = ConfigManager.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -109,7 +108,7 @@ public class MenuItem {
                 double price = resultSet.getDouble("price");
                 double costPrice = resultSet.getDouble("costPrice");
 
-                // auto-load ingredients from menu_item_ingredient
+                // autoload ingredients from menu_item_ingredient
                 MenuItem item = new MenuItem(menu_item_id, name, price, costPrice);
                 menuItems.add(item);
             }

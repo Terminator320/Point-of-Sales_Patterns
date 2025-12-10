@@ -1,6 +1,5 @@
 package com.example.posapp.controller;
 
-import com.example.posapp.HelloApplication;
 import com.example.posapp.LogConfig;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -11,7 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
